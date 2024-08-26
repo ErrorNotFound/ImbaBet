@@ -1,0 +1,204 @@
+﻿@model ImbaBetWeb.ViewModels.Betting.MyBetsViewModel
+
+@{
+    ViewData["Title"] = "My Bets";
+}
+<h1>@ViewData["Title"]</h1>
+<br/>
+
+@if(Model.OpenBets.Any())
+{
+    <form method="post" asp-action="MyBets">
+        <table class="table table-hover">
+            <colgroup>
+                <col span="1" style="width: 15%;">
+                <col span="1" style="width: 15%;">
+                <col span="1" style="width: 38%;">
+                <col span="1" style="width: 12%;">
+                <col span="1" style="width: 20%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>
+                        Open Bets
+                    </th>
+                    <th style="text-align: center;">
+                        Your Bet
+                    </th>
+                    <th>
+            
+                    </th>
+                    <th>
+                        Match Group
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.OpenBets.Count; i++)
+                {
+                    @Html.HiddenFor(modelItem => Model.OpenBets[i].Id)
+                    @Html.HiddenFor(modelItem => Model.OpenBets[i].MatchId)
+                    @Html.HiddenFor(modelItem => Model.OpenBets[i].UserId)
+                    <tr @(Model.OpenBets[i].Id == 0 ? "class=table-warning" : "")>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.OpenBets[i].Match.TeamA)
+                    </td>
+                    <td style="text-align: center;">
+                        @Html.TextBoxFor(model => Model.OpenBets[i].GoalsA, new { style = "width:30px;text-align:center;" }) : 
+                        @Html.TextBoxFor(model => Model.OpenBets[i].GoalsB, new { style = "width:30px;text-align:center;" })
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.OpenBets[i].Match.TeamB)
+                    </td>
+                        <td>
+                                @Html.DisplayFor(modelItem => Model.OpenBets[i].Match.MatchGroup.Name)
+                        </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.OpenBets[i].Match.DateTime)
+                    </td>
+                </tr>
+                }
+            </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+    <br />
+    <br />
+}
+else
+{
+    <p>No open bets</p>
+}
+@if (Model.ActiveBets.Any())
+{
+    <table class="table table-hover">
+        <colgroup>
+            <col span="1" style="width: 15%;">
+            <col span="1" style="width: 15%;">
+            <col span="1" style="width: 20%;">
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 12%;">
+            <col span="1" style="width: 20%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>
+                    Active Bets
+                </th>
+                <th style="text-align: center;">
+                    Result
+                </th>
+                <th>
+
+                </th>
+                <th>
+                    Your Bet
+                </th>
+                <th>
+                    Match Group
+                </th>
+                <th>
+                    Date
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var bet in Model.ActiveBets)
+            {
+                <tr onclick="location.href = '@Url.Action("Match", "GamePlan", new { matchId = bet.MatchId })'">
+                    <td>
+                        @Html.DisplayFor(modelItem => bet.Match.TeamA)
+                    </td>
+                    <td style="text-align: center;">
+                        @Html.DisplayFor(modelItem => bet.Match.GoalsA) : @Html.DisplayFor(modelItem => bet.Match.GoalsB)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bet.Match.TeamB)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => bet.GoalsA) : @Html.DisplayFor(modelItem => bet.GoalsB)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bet.Match.MatchGroup.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bet.Match.DateTime)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <br />
+}
+@if(Model.ClosedBets.Any())
+{
+    <table class="table table-hover">
+        <colgroup>
+            <col span="1" style="width: 15%;">
+            <col span="1" style="width: 15%;">
+            <col span="1" style="width: 20%;">
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 8%;">
+            <col span="1" style="width: 12%;">
+            <col span="1" style="width: 20%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>
+                    Closed Bets
+                </th>
+                <th style="text-align: center;">
+                    Result
+                </th>
+                <th>
+            
+                </th>
+                <th>
+                    Your Bet
+                </th>
+                <th>
+                    Points
+                </th>
+                <th>
+                    Match Group
+                </th>
+                <th>
+                    Date
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var bet in Model.ClosedBets)
+        {
+            <tr @(bet.Points > 0 ? "class=table-success" : "") >
+                <td onclick="location.href = '@Url.Action("Match", "GamePlan", new { matchId = bet.MatchId })'">
+                    @Html.DisplayFor(modelItem => bet.Match.TeamA)
+                </td>
+                    <td style="text-align: center;">
+                    @Html.DisplayFor(modelItem => bet.Match.GoalsA) : @Html.DisplayFor(modelItem => bet.Match.GoalsB)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => bet.Match.TeamB)
+                </td>
+            
+                <td>
+                    @Html.DisplayFor(modelItem => bet.GoalsA) : @Html.DisplayFor(modelItem => bet.GoalsB)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => bet.Points)
+                </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => bet.Match.MatchGroup.Name)
+                    </td>
+                <td>
+                    @Html.DisplayFor(modelItem => bet.Match.DateTime)
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

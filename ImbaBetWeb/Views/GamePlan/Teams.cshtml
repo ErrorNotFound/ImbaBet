@@ -1,0 +1,67 @@
+﻿@using ImbaBetWeb.Logic.Ranking
+@using ImbaBetWeb.Logic.Ranking.Details
+@model IList<RankingItem<TeamDetails>>
+
+@{
+    ViewData["Title"] = "Teams";
+}
+<h1>@ViewData["Title"]</h1>
+<br/>
+
+<table class="table table-hover">
+    <colgroup>
+        <col span="1" style="width: 5%;">
+        <col span="1" style="width: 35%;">
+        <col span="1" style="width: 15%;">
+        <col span="1" style="width: 15%;">
+        <col span="1" style="width: 15%;">
+        <col span="1" style="width: 15%;">
+    </colgroup>
+    <thead>
+        <tr>
+            <th>
+               # 
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Matches played
+            </th>
+            <th>
+                Won
+            </th>
+            <th>
+                Drawn
+            </th>
+            <th>
+                Lost
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rank)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Details.Team)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Details.MatchesPlayed)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Details.Wins)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Details.Draws)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Details.Lost)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,45 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ImbaBetWeb.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = await UserManager.GetUserAsync(User);
+    <li>
+        <a asp-controller="Account" asp-action="Profile" asp-route-userId="@(user.Id)">
+                <img width="38px" height="38px" src="@(user.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" style="border-radius: 50%;" />
+        </a>
+    </li>
+    <li></li>
+    <li class="nav-item dropdown">
+        <a class="nav-link text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Hello @UserManager.GetUserName(User)!
+        </a>
+        <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Manage Account</a>
+            </li>
+            <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Profile" asp-route-userId="@((await UserManager.GetUserAsync(User))!.Id)">Profile</a>
+            </li>
+        </ul>
+    </li>
+    <li class="nav-item">
+        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+}
+</ul>

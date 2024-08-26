@@ -1,0 +1,130 @@
+﻿@model List<Setting>
+
+@{
+    ViewData["Title"] = "Settings";
+}
+<h1>@ViewData["Title"]</h1>
+<br />
+
+
+
+<table class="table table-hover">
+    <colgroup>
+        <col span="1" style="width: 20%;">
+        <col span="1" style="width: 80%;">
+    </colgroup>
+    <thead>
+        <tr>
+            <th>
+                Action
+            </th>
+            <th>
+                Description
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @Html.ActionLink("Delete ALL Data",                      // Button Text
+                         "DeleteAllData",                        // controller action
+                         "Admin",                                // controller
+                         null,                                   // action parameters aka route values
+                         new { onclick = "return confirm('Are you sure you want to delete ALL data?')", @class = "btn btn-danger", @style = "width:180px;" })
+            </td>
+            <td>
+                <p>Deletes all database tables.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.ActionLink("Seed",                                 // Button Text
+                         "Seed",                                 // controller action
+                         "Admin",                                // controller
+                         null,                                   // action parameters aka route values
+                         new { @class = "btn btn-success", @style = "width:180px;" })
+            </td>
+            <td>
+                <p>Seeds the database with default values.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.ActionLink("Update Leaderboards",                                 // Button Text
+                         "UpdateLeaderboards",                                 // controller action
+                         "Admin",                                // controller
+                         null,                                   // action parameters aka route values
+                         new { @class = "btn btn-primary", @style = "width:180px;" })
+            </td>
+            <td>
+                <p>Updates all leaderboards by recalculating points.</p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<br />
+<br />
+
+<table class="table table-hover">
+    <colgroup>
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 10%;">
+        <col span="1" style="width: 10%;">
+        <col span="1" style="width: 35%;">
+        <col span="1" style="width: 20%;">
+    </colgroup>
+    <thead>
+        <tr>
+            <th>
+                Key
+            </th>
+            <th>
+                Value
+            </th>
+            <th>
+                Default Value
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Options
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var setting in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => setting.Key)
+                </td>
+                <td>
+                    <input id="@setting.Key" value="@setting.Value" />
+                </td>
+                <td>
+                    @Html.DisplayFor(model => setting.Default)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => setting.Description)
+                </td>
+                <td>
+                    <button onclick="SaveSetting('@setting.Key')" class="btn btn-primary">Save</button>
+                    &nbsp;
+                    <button onclick="ResetSetting('@setting.Key')" class="btn btn-secondary">Reset</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function SaveSetting(settingId) {
+        var settingValue = document.getElementById(settingId).value;
+        window.location = "/Admin/SaveSetting?key=" + settingId + "&value=" + settingValue;
+    }
+    function ResetSetting(settingId) {
+        window.location = "/Admin/ResetSetting?key=" + settingId;
+    }
+</script>

@@ -1,0 +1,96 @@
+﻿@model Dictionary<MatchGroup, IList<RankingItem<TeamDetails>>>
+@using ImbaBetWeb.Logic
+@using ImbaBetWeb.Logic.Ranking
+@using ImbaBetWeb.Logic.Ranking.Details
+@{
+    ViewData["Title"] = "Groups";
+}
+<h1>@ViewData["Title"]</h1>
+<br />
+
+@foreach (var entry in Model.OrderBy(x => x.Key.StackRank))
+{
+    var matchGroup = entry.Key;
+
+    <table class="table table-hover">
+        <colgroup>
+            <col span="1" style="width: 5%;">
+            <col span="1" style="width: 30%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>
+                    #
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => matchGroup.Name)
+                </th>
+                <th>
+                    Played
+                </th>
+                <th>
+                    Won
+                </th>
+                <th>
+                    Drawn
+                </th>
+                <th>
+                    Lost
+                </th>
+                <th>
+                    Goals
+                </th>
+                <th>
+                    Against
+                </th>
+                <th>
+                    Goal difference
+                </th>
+                <th>
+                    Points
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var ranking = entry.Value;
+            }
+            @foreach (var item in ranking)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Rank)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Details.Team)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Details.MatchesPlayed)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Details.Wins)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Details.Draws)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Details.Lost)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Details.Goals)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Details.GoalsAgainst)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Details.GoalDifference)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Points)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

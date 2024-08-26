@@ -1,0 +1,7 @@
+﻿@model ApplicationUser
+
+<div>
+	<a asp-controller="Account" asp-action="Profile" asp-route-userId="@(Model.Id)" style="text-decoration:none" class="text-dark">
+		<img src="@Url.Content(Model.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" alt="Image" width="24" height="24" style="border-radius: 50%;" />&nbsp;&nbsp;@Model.UserName
+	</a>
+</div>

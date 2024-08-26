@@ -1,0 +1,65 @@
+﻿@page
+@model IndexModel
+
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+
+    var user = await UserManager.GetUserAsync(User);
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<br />
+<h4>Profile Picture</h4>
+<div>
+    <img width="200" height="200" src="@(user!.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" style="border-radius: 50%;" />
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <form enctype="multipart/form-data" method="post">
+            <dl>
+                <dt>
+                    <label asp-for="FileUpload.FormFile"></label>
+                </dt>
+                <dd>
+                    <input asp-for="FileUpload.FormFile" type="file" />
+                    <span asp-validation-for="FileUpload.FormFile"></span>
+                </dd>
+            </dl>
+            <input asp-page-handler="Upload" class="w-100 btn btn-lg btn-primary" type="submit" value="Upload" />
+        </form>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <input asp-page-handler="DeletePicture" class="w-100 btn btn-lg btn-danger" type="submit" value="Delete" />
+        </form>
+    </div>
+</div>
+<br />
+<br />
+<h4>Username</h4>
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <p>Remaining name changes: @(user?.RemainingRenames)</p>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Username" disabled="@(!(user?.RemainingRenames > 0))" class="form-control" placeholder="Please choose your username." />
+                <label asp-for="Input.Username" class="form-label"></label>
+                <span asp-validation-for="Input.Username" class="text-danger"></span>
+            </div>
+            <button id="update-profile-button" type="submit" disabled="@(!(user?.RemainingRenames > 0))" class="w-100 btn btn-lg btn-primary">Change</button>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

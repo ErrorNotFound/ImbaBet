@@ -1,0 +1,86 @@
+﻿@model ImbaBetWeb.ViewModels.Admin.MatchesViewModel
+
+@{
+    ViewData["Title"] = "Matches - Administration";
+}
+<h1>@ViewData["Title"]</h1>
+<br />
+
+<form method="post" asp-action="Matches">
+    @for (int i = 0; i < Model.MatchGroups.Count; i++)
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr class="table-success">
+                    <th>
+                        @Html.DisplayFor(modelItem => Model.MatchGroups[i].Name)
+                        @Html.HiddenFor(modelItem => Model.MatchGroups[i].Name)
+                        @Html.HiddenFor(modelItem => Model.MatchGroups[i].Id)
+                    </th>
+                </tr>
+                <tr class="table-secondary">
+                    <th>
+                        Alternative Team A
+                    </th>
+                    <th>
+                        Team A
+                    </th>
+                    <th>
+                    
+                    </th>
+                    <th>
+                        Team B
+                    </th>
+                    <th>
+                        Alternative Team B
+                    </th>
+                    <th style="text-align: center;">
+                        IsOver
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (int j = 0; j < Model.Matches.Count; j++)
+                {
+                    if(Model.MatchGroups[i].Id != Model.Matches[j].MatchGroupId)
+                    {
+                        continue;
+                    }
+
+                    @Html.HiddenFor(modelItem => Model.Matches[j].Id)
+                    @Html.HiddenFor(modelItem => Model.Matches[j].MatchGroupId)
+                    <tr>
+                        <td>
+                            @Html.TextBoxFor(model => Model.Matches[j].AlternativeTeamAText)
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(model => Model.Matches[j].TeamATeamId, new SelectList(Model.Teams, "Id", "Name"), "", Model.Matches[j].TeamATeamId)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(model => Model.Matches[j].GoalsA, new { style = "width:30px;text-align:center;" }) : @Html.TextBoxFor(model => Model.Matches[j].GoalsB, new { style = "width:30px;text-align:center;" })
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(model => Model.Matches[j].TeamBTeamId, new SelectList(Model.Teams, "Id", "Name"), "", Model.Matches[j].TeamBTeamId)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(model => Model.Matches[j].AlternativeTeamBText)
+                        </td>
+                        <td style="text-align: center;">
+                            @Html.CheckBoxFor(model => Model.Matches[j].IsOver)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(model => Model.Matches[j].DateTime)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+

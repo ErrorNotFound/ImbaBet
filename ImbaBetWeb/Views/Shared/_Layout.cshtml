@@ -1,0 +1,156 @@
+﻿@using ImbaBetWeb.Logic
+@using ImbaBetWeb.Models.Consts
+@using ImbaBetWeb.ViewModels.DTO
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject SettingsManager SettingsManager
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @(await SettingsManager.GetCachedSettingAsync<string>(SettingNames.BETTING_GAME_NAME))</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ImbaBetWeb.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@(await SettingsManager.GetCachedSettingAsync<string>(SettingNames.BETTING_GAME_NAME))</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="GamePlan" asp-action="Teams">Teams</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="GamePlan" asp-action="Matches">Matches</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="GamePlan" asp-action="Groups">Groups</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Betting" asp-action="Leaderboards">Leaderboards</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Betting" asp-action="Communities">Communities</a>
+                        </li>
+                        @if(User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Betting" asp-action="MyBets">My Bets</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Orga" asp-action="MyCommunity">My Community</a>
+                            </li>
+                        }
+                        @if (User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Editor))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Administration
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Matches">Matches</a>
+                                    </li>
+                                    @if (User.IsInRole(UserRoles.Admin))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Accounts">Accounts</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Settings">Settings</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @if (TempData["Alerts"] is string avmJason)
+            {
+                var avm = AlertsDTO.FromJson(avmJason);
+                if(avm.Errors != null)
+                {
+                    foreach (var message in avm.Errors)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @message
+                            <button type="button" class="btn btn-close" auto-close="2000" data-bs-dismiss="alert" aria-label="Close">
+                            </button>
+                        </div>
+                    }
+                }
+                if (avm.Infos != null)
+                {
+                    foreach (var message in avm.Infos)
+                    {
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            @message
+                            <button type="button" class="btn btn-close" auto-close="2000" data-bs-dismiss="alert" aria-label="Close">
+                            </button>
+                        </div>
+                    }
+                }
+
+                if (avm.Successes != null)
+                {
+                    foreach(var message in avm.Successes)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @message
+                            <button type="button" class="btn btn-close" auto-close="2000" data-bs-dismiss="alert" aria-label="Close">
+                            </button>
+                        </div>
+                    }
+                }
+            }
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - @(await SettingsManager.GetCachedSettingAsync<string>(SettingNames.BETTING_GAME_NAME)) - <a asp-area="" asp-controller="Home" asp-action="Rules">Rules</a> - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            window.setTimeout(function () {
+                $(".alert").fadeTo(1500, 0).slideUp(500, function () {
+                    $(this).remove();
+                });
+            }, 3000);
+
+        });
+
+    </script>
+</body>
+</html>

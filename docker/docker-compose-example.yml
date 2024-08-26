@@ -1,0 +1,20 @@
+version: '3.5'
+services:
+  imbabetfe:
+    image: 1337festor/imbabetweb:latest
+    container_name: imbabet
+    restart: unless-stopped
+    ports:
+      - 8111:8080
+      - 8112:8081
+    environment:
+      - ConnectionStrings:DefaultConnection=Server=sqldata;Initial Catalog=ApplicationDatabase;User Id=sa;Password=Pass@word1!;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False
+  sqldata:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - MSSQL_SA_PASSWORD=Pass@word1!
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Developer
+    ports:
+      - "5434:1433"
+      

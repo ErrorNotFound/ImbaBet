@@ -1,0 +1,160 @@
+﻿@using ImbaBetWeb.Logic
+@using ImbaBetWeb.Models.Consts
+@using ImbaBetWeb.ViewModels.Orga
+@using Microsoft.AspNetCore.Identity
+
+@inject SettingsManager SettingsManager
+
+@model ImbaBetWeb.ViewModels.Orga.MyCommunityViewModel
+
+@{
+    ViewData["Title"] = "My Community";
+}
+<h1>@ViewData["Title"]</h1>
+<br />
+
+@if(Model.User == null)
+{
+    <p>Could not load data.</p>
+}
+else if (Model.User.MemberOfCommunityId == null)
+{
+    <h3>Create your own</h3>
+    <br />
+    @using (Html.BeginForm("CreateCommunity", "Orga", FormMethod.Post))
+    {
+        <div class="row">
+            <div class="col">
+                <input name="communityName" class="form-control" placeholder="Name" />
+            </div>
+            <div class="col">
+                <button type="submit" disabled="@(!await SettingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_CREATE))" class="btn btn-primary btn-block">Create</button>
+            </div>
+        </div>
+    }
+    <br />
+    if (Model.Communities.Any())
+    {
+        <h3>Or join someone else</h3>
+        <br />
+        @using (Html.BeginForm("JoinCommunity", "Orga", FormMethod.Post))
+        {
+            var selectionItemList = Model.Communities.Select(c => new SelectListItem()
+                        {
+                            Text = c.Name,
+                            Value = c.Id.ToString(),
+                        });
+
+            <div class="row">
+                <div class="col">
+                    @Html.DropDownList(OrgaConsts.Dropdown_CommunitySelection, selectionItemList, null, new { @class = "form-select" })
+                </div>
+                <div class="col">
+                    <button type="submit" disabled="@(!await SettingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_JOIN))" class="btn btn-primary btn-block">Join</button>
+                </div>
+            </div>
+        }
+    } 
+}
+else
+{
+    var community = Model.Communities.Single(c => c.Id == Model.User.MemberOfCommunityId);
+    var isOwner = Model.User.OwnerOfCommunity == community;
+
+    <h2>@Html.DisplayFor(model => community.Name)</h2>
+    <br />
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Action
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    @Html.ActionLink(
+                                 "Leave",                          // Button Text
+                                 "LeaveCommunity",                      // controller action
+                                 "Orga",                           // controller
+                                 new { },          // action parameters aka route values
+                             new { onclick = "return confirm('Are you sure you want to leave this community?')", @class = "btn btn-danger " + (!await SettingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
+                </td>
+                <td>
+                    @if(isOwner)
+                    {
+                        <p>Leaving your community will delete it. Consider promoting a new owner first.</p>
+                    }
+                    else
+                    {
+                        <p>Leaving this community.</p>
+                    }  
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
+    <br/>
+
+    <h3>Members</h3>
+    <table class="table table-hover">
+        <colgroup>
+            <col span="1" style="width: 40%;">
+            <col span="1" style="width: 30%;">
+            <col span="1" style="width: 30%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Role
+                </th>
+                <th>
+                    @if (isOwner)
+                    {
+                        <p>Options</p>
+                    }
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < community.Members.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => community.Members[i])
+                    </td>
+                    <td>
+                        <i>@(community.Owner.Id == community.Members[i].Id ? "Owner" : "Member")</i>
+                    </td>
+                    <td>
+                        @if (isOwner && community.Members[i].Id != community.Owner.Id)
+                        {
+                            @Html.ActionLink(
+                                     "Kick",                          // Button Text
+                                     "KickMember",                      // controller action
+                                     "Orga",                           // controller
+                                     new { community.Members[i].Id },          // action parameters aka route values
+                                     new { onclick = $"return confirm('Are you sure you want to kick {community.Members[i].UserName}?')", @class = "btn btn-danger " + (!await SettingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
+                            @:&nbsp;
+                            @Html.ActionLink(
+                                     "Promote",                          // Button Text
+                                     "PromoteToOwner",                      // controller action
+                                     "Orga",                           // controller
+                                     new { community.Members[i].Id },          // action parameters aka route values
+                                     new { onclick = $"return confirm('Are you sure you want to make {community.Members[i].UserName} the owner of this community?')", @class = "btn btn-info " })
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}

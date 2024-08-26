@@ -1,0 +1,69 @@
+﻿@model IEnumerable<ImbaBetWeb.Models.MatchGroup>
+
+@{
+    ViewData["Title"] = "Matches";
+}
+<h1>@ViewData["Title"]</h1>
+<br />
+
+@foreach (var matchGroup in Model.OrderBy(x => x.StackRank))
+{
+    <table class="table table-hover">
+        <colgroup>
+            <col span="1" style="width: 20%;">
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 50%;">
+            <col span="1" style="width: 20%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayFor(modelItem => matchGroup.Name)
+                </th>
+                <th>
+                
+                </th>
+                <th>
+
+                </th>
+                <th>
+                    Date
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var match in matchGroup.Matches.OrderBy(x => x.DateTime))
+            {
+                <tr onclick="location.href = '@Url.Action("Match","GamePlan", new { matchId = match.Id })'">
+                    <td>
+                        @if (match.TeamA != null)
+                        {
+                            @Html.DisplayFor(modelItem => match.TeamA)
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => match.AlternativeTeamAText)
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => match.GoalsA) : @Html.DisplayFor(modelItem => match.GoalsB)
+                    </td>
+                    <td>
+                        @if (match.TeamB != null)
+                        {
+                            @Html.DisplayFor(modelItem => match.TeamB)
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => match.AlternativeTeamBText)
+                        }
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => match.DateTime)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

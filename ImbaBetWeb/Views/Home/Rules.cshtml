@@ -1,0 +1,79 @@
+﻿@using ImbaBetWeb.Logic
+@using ImbaBetWeb.Models.Consts
+@inject SettingsManager SettingsManager
+
+@{
+    ViewData["Title"] = "Rules";
+}
+<h1>@ViewData["Title"]</h1>
+<br />
+
+<h3>Bets</h3>
+<p>Bets must be submitted by the start of the match at the latest. Later submission or changes are not possible.</p>
+<br />
+
+<h3>Points</h3>
+<p>The following table shows the possible points per bet:</p>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                Points
+            </th>
+            <th>
+                Case
+            </th>
+            <th>
+                Examples
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @(await SettingsManager.GetSettingAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY))
+            </td>
+            <td>
+                Correct tendency
+            </td>
+            <td>
+                Bet 2:1 and result 4:0
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @(await SettingsManager.GetSettingAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY_AND_DIFFERENCE))
+            </td>
+            <td>
+                Correct tendency and goal difference
+            </td>
+            <td>
+                Bet 2:1 and result 3:2; Bet 0:0 and result 1:1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @(await SettingsManager.GetSettingAsync<int>(SettingNames.BETTING_POINTS_EXACT_RESULT))
+            </td>
+            <td>
+                Exact result
+            </td>
+            <td>
+                Bet 2:1 and result 2:1
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br />
+
+<h3>Communities</h3>
+<p>
+    Players can join together in a community.<br />
+    However, for a community to appear on the Community Leaderboard, it needs at least @(await SettingsManager.GetSettingAsync<int>(SettingNames.MIN_MEMBER_COUNT_FOR_RANKING)) members.
+</p>
+
+<h3></h3>
+<p></p>
+
+<h3></h3>
+<p></p>

@@ -1,0 +1,119 @@
+<MatchPlan>
+  <Teams>
+    <Team Name="Deutschland" Icon="de" />
+    <Team Name="Schottland" Icon="gb-sct" />
+    <Team Name="Ungarn" Icon="hu" />
+    <Team Name="Schweiz" Icon="ch" />
+    <Team Name="Spanien" Icon="es" />
+    <Team Name="Kroatien" Icon="hr" />
+    <Team Name="Italien" Icon="it" />
+    <Team Name="Albanien" Icon="al" />
+    <Team Name="Slowenien" Icon="si" />
+    <Team Name="Dänemark" Icon="dk" />
+    <Team Name="Serbien" Icon="rs" />
+    <Team Name="England" Icon="gb" />
+    <Team Name="Polen" Icon="pl" />
+    <Team Name="Niederlande" Icon="nl" />
+    <Team Name="Österreich" Icon="at" />
+    <Team Name="Frankreich" Icon="fr" />
+    <Team Name="Rumänien" Icon="ro" />
+    <Team Name="Ukraine" Icon="ua" />
+    <Team Name="Belgien" Icon="be" />
+    <Team Name="Slowakei" Icon="sk" />
+    <Team Name="Türkei" Icon="tr" />
+    <Team Name="Georgien" Icon="ge" />
+    <Team Name="Portugal" Icon="pt" />
+    <Team Name="Tschechien" Icon="cz" />
+  </Teams>
+
+  <MatchGroups>
+    <MatchGroup Name="Group A" HasGroupRanking="true">
+      <Matches>
+        <Match TeamA="Deutschland" 	TeamB="Schottland" 	DateTime="2025-06-14T21:00:00.6521226Z"/>
+        <Match TeamA="Ungarn" 			TeamB="Schweiz" 			DateTime="2025-06-15T15:00:00.6521226Z"/>
+        <Match TeamA="Deutschland" 	TeamB="Ungarn" 			DateTime="2025-06-19T18:00:00.6521226Z"/>
+        <Match TeamA="Schottland" 	TeamB="Schweiz" 		DateTime="2025-06-19T21:00:00.6521226Z"/>
+        <Match TeamA="Schweiz" 			TeamB="Deutschland"		DateTime="2025-06-23T21:00:00.6521226Z"/>
+        <Match TeamA="Schottland" 	TeamB="Ungarn" 			DateTime="2025-06-23T21:00:00.6521226Z"/>
+      </Matches>
+    </MatchGroup>
+    <MatchGroup Name="Group B" HasGroupRanking="true">
+      <Matches>
+        <Match TeamA="Spanien" 	TeamB="Kroatien" 	DateTime="2024-06-15T18:00:00.6521226Z"/>
+        <Match TeamA="Italien" 	TeamB="Albanien" 			DateTime="2024-06-15T21:00:00.6521226Z"/>
+        <Match TeamA="Kroatien" TeamB="Albanien" 			DateTime="2024-06-19T15:00:00.6521226Z"/>
+        <Match TeamA="Spanien" 	TeamB="Italien" 		DateTime="2024-06-20T21:00:00.6521226Z"/>
+        <Match TeamA="Albanien" TeamB="Spanien"		DateTime="2024-06-24T21:00:00.6521226Z"/>
+        <Match TeamA="Kroatien" TeamB="Italien" 			DateTime="2024-06-24T21:00:00.6521226Z"/>
+      </Matches>
+    </MatchGroup>
+    <MatchGroup Name="Group C" HasGroupRanking="true">
+      <Matches>
+        <Match TeamA="Slowenien" 	TeamB="Dänemark" 	DateTime="2024-06-16T18:00:00.6521226Z"/>
+        <Match TeamA="Serbien" 			TeamB="England" 			DateTime="2024-06-16T21:00:00.6521226Z"/>
+        <Match TeamA="Slowenien" 	TeamB="Serbien" 			DateTime="2024-06-20T15:00:00.6521226Z"/>
+        <Match TeamA="Dänemark" 	TeamB="England" 		DateTime="2024-06-20T18:00:00.6521226Z"/>
+        <Match TeamA="England" 			TeamB="Slowenien"		DateTime="2024-06-25T21:00:00.6521226Z"/>
+        <Match TeamA="Dänemark" 	TeamB="Serbien" 			DateTime="2024-06-25T21:00:00.6521226Z"/>
+      </Matches>
+    </MatchGroup>
+    <MatchGroup Name="Group D" HasGroupRanking="true">
+      <Matches>
+        <Match TeamA="Polen" 	TeamB="Niederlande" 	DateTime="2024-06-16T15:00:00.6521226Z"/>
+        <Match TeamA="Österreich" 			TeamB="Frankreich" 			DateTime="2024-06-17T21:00:00.6521226Z"/>
+        <Match TeamA="Polen" 	TeamB="Österreich" 			DateTime="2024-06-21T18:00:00.6521226Z"/>
+        <Match TeamA="Niederlande" 	TeamB="Frankreich" 		DateTime="2024-06-21T21:00:00.6521226Z"/>
+        <Match TeamA="Niederlande" 			TeamB="Österreich"		DateTime="2024-06-25T18:00:00.6521226Z"/>
+        <Match TeamA="Frankreich" 	TeamB="Polen" 			DateTime="2024-06-25T18:00:00.6521226Z"/>
+      </Matches>
+    </MatchGroup>
+    <MatchGroup Name="Group E" HasGroupRanking="true">
+      <Matches>
+        <Match TeamA="Rumänien" 	TeamB="Ukraine" 	DateTime="2024-06-17T15:00:00.6521226Z"/>
+        <Match TeamA="Belgien" 			TeamB="Slowakei" 			DateTime="2024-06-17T18:00:00.6521226Z"/>
+        <Match TeamA="Slowakei" 	TeamB="Ukraine" 			DateTime="2024-06-21T15:00:00.6521226Z"/>
+        <Match TeamA="Belgien" 	TeamB="Rumänien" 		DateTime="2024-06-22T21:00:00.6521226Z"/>
+        <Match TeamA="Slowakei" 			TeamB="Rumänien"		DateTime="2024-06-26T18:00:00.6521226Z"/>
+        <Match TeamA="Ukraine" 	TeamB="Belgien" 			DateTime="2024-06-26T18:00:00.6521226Z"/>
+      </Matches>
+    </MatchGroup>
+    <MatchGroup Name="Group F" HasGroupRanking="true">
+      <Matches>
+        <Match TeamA="Türkei" 	TeamB="Georgien" 	DateTime="2024-06-18T18:00:00.6521226Z"/>
+        <Match TeamA="Portugal" 			TeamB="Tschechien" 			DateTime="2024-06-18T21:00:00.6521226Z"/>
+        <Match TeamA="Georgien" 	TeamB="Tschechien" 			DateTime="2024-06-22T15:00:00.6521226Z"/>
+        <Match TeamA="Türkei" 	TeamB="Portugal" 		DateTime="2024-06-22T18:00:00.6521226Z"/>
+        <Match TeamA="Georgien" 			TeamB="Portugal"		DateTime="2024-06-26T21:00:00.6521226Z"/>
+        <Match TeamA="Tschechien" 	TeamB="Türkei" 			DateTime="2024-06-26T21:00:00.6521226Z"/>
+      </Matches>
+    </MatchGroup>
+    <MatchGroup Name="Round of 16">
+      <Matches>
+        <Match DateTime="2024-06-29T18:00:00.6521226Z" AlternativeTeamAText="Second Group A" AlternativeTeamBText="Second Group B" />
+        <Match DateTime="2024-06-29T21:00:00.6521226Z" AlternativeTeamAText="First Group A" AlternativeTeamBText="Second Group C" />
+        <Match DateTime="2024-06-30T18:00:00.6521226Z" AlternativeTeamAText="First Group C" AlternativeTeamBText="Third Group D E F" />
+        <Match DateTime="2024-06-30T21:00:00.6521226Z" AlternativeTeamAText="First Group B" AlternativeTeamBText="Third Group A D E F" />
+        <Match DateTime="2024-07-01T18:00:00.6521226Z" AlternativeTeamAText="Second Group D" AlternativeTeamBText="Second Group E" />
+        <Match DateTime="2024-07-01T21:00:00.6521226Z" AlternativeTeamAText="First Group F" AlternativeTeamBText="Third Group A B C" />
+        <Match DateTime="2024-07-02T18:00:00.6521226Z" AlternativeTeamAText="First Group E" AlternativeTeamBText="Third Group A B C D" />
+        <Match DateTime="2024-07-02T21:00:00.6521226Z" AlternativeTeamAText="First Group D" AlternativeTeamBText="Second Group F" />
+      </Matches>
+    </MatchGroup>
+    <MatchGroup Name="Quarter Finals">
+      <Matches>
+        <Match DateTime="2024-07-05T18:00:00.6521226Z" AlternativeTeamAText="Winner AF1" AlternativeTeamBText="Winner AF3" />
+        <Match DateTime="2024-07-05T21:00:00.6521226Z" AlternativeTeamAText="Winner AF5" AlternativeTeamBText="Winner AF6" />
+        <Match DateTime="2024-07-06T18:00:00.6521226Z" AlternativeTeamAText="Winner AF7" AlternativeTeamBText="Winner AF8" />
+        <Match DateTime="2024-07-06T21:00:00.6521226Z" AlternativeTeamAText="Winner AF2" AlternativeTeamBText="Winner AF4" />
+      </Matches>
+    </MatchGroup>
+    <MatchGroup Name="Semi Finals">
+      <Match DateTime="2024-07-09T21:00:00.6521226Z" AlternativeTeamAText="Winner VF1" AlternativeTeamBText="Winner VF2" />
+      <Match DateTime="2024-07-10T21:00:00.6521226Z" AlternativeTeamAText="Winner VF3" AlternativeTeamBText="Winner VF4" />
+    </MatchGroup>
+    <MatchGroup Name="Finals">
+      <Match DateTime="2024-07-14T21:00:00.6521226Z" AlternativeTeamAText="Winner HF1" AlternativeTeamBText="Winner HF2" />
+    </MatchGroup>
+
+  </MatchGroups>
+</MatchPlan>

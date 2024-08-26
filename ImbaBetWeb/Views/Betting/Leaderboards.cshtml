@@ -1,0 +1,162 @@
+﻿@using ImbaBetWeb.Logic.Ranking
+@using ImbaBetWeb.Logic.Ranking.Details
+@using ImbaBetWeb.ViewModels.Betting
+@model LeaderboardsViewModel
+
+@{
+    ViewData["Title"] = "Leaderboards";
+}
+<h1>@ViewData["Title"]</h1>
+<br />
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="user-tab" data-bs-toggle="tab" data-bs-target="#user-tab-pane" type="button" role="tab" aria-controls="user-tab-pane" aria-selected="true">User Ranking</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="community-tab" data-bs-toggle="tab" data-bs-target="#community-tab-pane" type="button" role="tab" aria-controls="community-tab-pane" aria-selected="false">Community Ranking</button>
+    </li>
+    @if (Model.CommunityInternalRanking != null)
+    {
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="community-internal-tab" data-bs-toggle="tab" data-bs-target="#community-internal-tab-pane" type="button" role="tab" aria-controls="community-internal-tab-pane" aria-selected="false">Community Internal Ranking</button>
+        </li>
+    }
+</ul>
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="user-tab-pane" role="tabpanel" aria-labelledby="user-tab" tabindex="0">
+        <br />
+        <table class="table table-hover">
+            <colgroup>
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 75%;">
+                <col span="1" style="width: 15%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        User
+                    </th>
+                    <th>
+                        Points
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.UserRanking)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Rank)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Details.User)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Points)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="community-tab-pane" role="tabpanel" aria-labelledby="community-tab" tabindex="0">
+        <br />
+        <table class="table table-hover">
+            <colgroup>
+                <col span="1" style="width: 10%;">
+                <col span="1" style="width: 45%;">
+                <col span="1" style="width: 15%;">
+                <col span="1" style="width: 15%;">
+                <col span="1" style="width: 15%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Community
+                    </th>
+                    <th>
+                        Members
+                    </th>
+                    <th>
+                        Total Points
+                    </th>
+                    <th>
+                        Average Points
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CommunityRanking)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Rank)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Details.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Details.MemberCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Points)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Details.AveragePoints)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if(Model.CommunityInternalRanking != null)
+    {
+        <br />
+        <div class="tab-pane fade" id="community-internal-tab-pane" role="tabpanel" aria-labelledby="community-internal-tab" tabindex="0">
+            <table class="table table-hover">
+                <colgroup>
+                    <col span="1" style="width: 10%;">
+                    <col span="1" style="width: 75%;">
+                    <col span="1" style="width: 15%;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>
+                            #
+                        </th>
+                        <th>
+                            User
+                        </th>
+                        <th>
+                            Points
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.CommunityInternalRanking)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Rank)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Details.User)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Points)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+

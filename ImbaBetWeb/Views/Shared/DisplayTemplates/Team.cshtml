@@ -1,0 +1,6 @@
+﻿@using ImbaBetWeb.Logic.Extensions
+@model Team
+
+<div>
+	<img src="@Url.Content(Model.GetSmallFlagPath())" alt="Image" width="20" height="15" />&nbsp;&nbsp;@Model.Name
+</div>

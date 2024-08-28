@@ -15,3 +15,4 @@ jobs:
     run: |
          docker login -u 1337festor -p ${{secrets.DOCKER_HUB_TOKEN}}
          docker push 1337festor/imbabetweb:${{github.event.release.tag_name}}
+         docker push 1337festor/imbabetweb:latest

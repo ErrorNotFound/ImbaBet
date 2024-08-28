@@ -25,7 +25,7 @@
                     <label asp-for="FileUpload.FormFile"></label>
                 </dt>
                 <dd>
-                    <input asp-for="FileUpload.FormFile" type="file" />
+                    <input asp-for="FileUpload.FormFile" type="file" /><br/>
                     <span asp-validation-for="FileUpload.FormFile"></span>
                 </dd>
             </dl>
@@ -37,7 +37,7 @@
 <div class="row">
     <div class="col-md-6">
         <form method="post">
-            <input asp-page-handler="DeletePicture" class="w-100 btn btn-lg btn-danger" type="submit" value="Delete" />
+            <input asp-page-handler="DeletePicture" class="w-100 btn btn-lg btn-danger" disabled="@(user?.ProfilePicturePath == null)" type="submit" value="Delete" />
         </form>
     </div>
 </div>
@@ -50,9 +50,9 @@
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <p>Remaining name changes: @(user?.RemainingRenames)</p>
             <div class="form-floating mb-3">
-                <input asp-for="Input.Username" disabled="@(!(user?.RemainingRenames > 0))" class="form-control" placeholder="Please choose your username." />
-                <label asp-for="Input.Username" class="form-label"></label>
-                <span asp-validation-for="Input.Username" class="text-danger"></span>
+                <input asp-for="UsernameChange.Username" disabled="@(!(user?.RemainingRenames > 0))" class="form-control" placeholder="Please choose your username." />
+                <label asp-for="UsernameChange.Username" class="form-label"></label>
+                <span asp-validation-for="UsernameChange.Username" class="text-danger"></span>
             </div>
             <button id="update-profile-button" type="submit" disabled="@(!(user?.RemainingRenames > 0))" class="w-100 btn btn-lg btn-primary">Change</button>
         </form>

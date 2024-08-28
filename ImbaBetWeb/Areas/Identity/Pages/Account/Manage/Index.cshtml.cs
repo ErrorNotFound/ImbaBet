@@ -2,17 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using ImbaBetWeb.Data;
 using ImbaBetWeb.Logic;
+using ImbaBetWeb.Logic.Extensions;
 using ImbaBetWeb.Logic.Helper;
 using ImbaBetWeb.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 
 namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
 {
@@ -39,52 +36,29 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
             _webHostEnvironment = webHostEnvironment;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
-        public InputModel Input { get; set; }
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public class InputModel
-        {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Display(Name = "Username")]
-            public string Username { get; set; }
-        }
+        public UsernameChangeModel UsernameChange { get; set; }
 
         [BindProperty]
         public FileUploadModel FileUpload { get; set; }
+
+        public class UsernameChangeModel
+        {
+            [Required]
+            [StringLength(20, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
+            [Display(Name = "Username")]
+            [DataType(DataType.Text)]
+            public string Username { get; set; }
+        }
 
         public class FileUploadModel
         {
             [Required]
             [Display(Name = "File")]
             public IFormFile FormFile { get; set; }
-        }
-
-        private async Task LoadAsync(ApplicationUser user)
-        {
-            var userName = await _userManager.GetUserNameAsync(user);
-
-            Input = new InputModel
-            {
-                Username = userName
-            };
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -95,7 +69,11 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadAsync(user);
+            UsernameChange = new UsernameChangeModel
+            {
+                Username = user.UserName
+            };
+
             return Page();
         }
 
@@ -107,17 +85,14 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
             
-            // todo: fix.  ModelState should only validate the corresponding model
-            /*
-            if (!ModelState.IsValid)
+            if (!this.IsValid(UsernameChange))
             {
-                await LoadAsync(user);
                 return Page();
-            }*/
+            }
             
-            if (Input.Username != user.UserName && user.RemainingRenames > 0)
+            if (UsernameChange.Username != user.UserName && user.RemainingRenames > 0)
             {
-                var setUserNameResult = await _userManager.SetUserNameAsync(user, Input.Username);
+                var setUserNameResult = await _userManager.SetUserNameAsync(user, UsernameChange.Username);
                 if (!setUserNameResult.Succeeded)
                 {
                     StatusMessage = "Unexpected error when trying to set username.";
@@ -155,14 +130,6 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            // todo: fix.  ModelState should only validate the corresponding model
-            if (!ModelState.IsValid)
-            {
-                StatusMessage = "Please correct the form.";
-
-                return Page();
-            }
-
             var allowedExtensions = _configuration["ProfilePictureUpload:UploadAllowedExtensions"].Split(';');
             var fileSizeLimit = int.Parse(_configuration["ProfilePictureUpload:FileSizeLimitInBytes"]);
 
@@ -170,7 +137,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
                     FileUpload.FormFile, ModelState, allowedExtensions,
                     fileSizeLimit);
 
-            if (!ModelState.IsValid)
+            if (!this.IsValid(FileUpload))
             {
                 StatusMessage = "Please correct the form.";
 

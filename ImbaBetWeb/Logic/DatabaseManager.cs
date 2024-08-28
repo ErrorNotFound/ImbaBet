@@ -4,8 +4,6 @@ using ImbaBetWeb.Models;
 using ImbaBetWeb.Models.Consts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
-using System.Reflection;
 
 namespace ImbaBetWeb.Logic
 {
@@ -17,6 +15,7 @@ namespace ImbaBetWeb.Logic
         private readonly CommunityManager _communityManager;
         private readonly SettingsManager _settingsManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IConfiguration _configuration;
 
         public DatabaseManager(
             ApplicationContext context, 
@@ -24,7 +23,8 @@ namespace ImbaBetWeb.Logic
             UserManager<ApplicationUser> userManager,
             CommunityManager communityManager,
             SettingsManager settingsManager,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            IConfiguration configuration)
         {
             _context = context;
             _roleManager = roleManager;
@@ -32,6 +32,7 @@ namespace ImbaBetWeb.Logic
             _communityManager = communityManager;
             _settingsManager = settingsManager;
             _webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
         }
 
         public async Task DeleteAllDataAsync()
@@ -111,8 +112,6 @@ namespace ImbaBetWeb.Logic
                 }
             }
 
-            await CreateAdminAsync();
-
             if (!_context.Communities.Any())
             {
                 var user = await _userManager.FindByEmailAsync(userList.First().Email);
@@ -168,14 +167,14 @@ namespace ImbaBetWeb.Logic
             }
 
             var user = new ApplicationUser();
-            user.Email = "admin@admin.de";
-            user.UserName = "admin";
+            user.Email = _configuration.GetSection("InitialSetup")["AdminAccountEMail"];
+            user.UserName = _configuration.GetSection("InitialSetup")["AdminAccountUsername"];
             user.EmailConfirmed = true;
             user.RemainingRenames = await _settingsManager.GetSettingAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
 
             if (await _userManager.FindByEmailAsync(user.Email) == null)
             {
-                await _userManager.CreateAsync(user, "!23Qwe");
+                await _userManager.CreateAsync(user, _configuration.GetSection("InitialSetup")["AdminAccountPassword"]);
                 await _userManager.AddToRoleAsync(user, UserRoles.Admin);
             }
 

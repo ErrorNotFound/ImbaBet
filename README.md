@@ -15,7 +15,11 @@ ImbaBet is a self-hostable MVC application betting game, that lets you and your 
 - Easy administration for your beeting game
 
 # Getting started
-The easiest way to deploy ImbaBet is to use the docker-compose in the [`/docker` directory](https://github.com/ErrorNotFound/ImbaBet/tree/master/docker).
+The easiest way to deploy ImbaBet is to use the docker-compose and .env in the [`/docker` directory](https://github.com/ErrorNotFound/ImbaBet/tree/master/docker).
+After starting your container, you can open http://<SERVER_ADDRESS>:\<PORT>/admin/createadmin to generate an initial admin account with the following credentials:\
+E-Mail: admin@admin.de\
+Password: Admin1!
+
 
 
 # References

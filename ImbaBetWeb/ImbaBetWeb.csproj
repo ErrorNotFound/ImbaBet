@@ -22,12 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="MatchPlanEM2024.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\Resources\Flags\Small\ad.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -788,6 +782,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="wwwroot\Resources\Flags\Small\zw.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Resources\MatchPlanTemplates\EM_2024.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

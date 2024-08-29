@@ -33,6 +33,7 @@ builder.Services.AddScoped<GameManager>();
 builder.Services.AddScoped<CommunityManager>();
 builder.Services.AddScoped<DatabaseManager>();
 builder.Services.AddScoped<SettingsManager>();
+builder.Services.AddScoped<MatchPlanImportService>();
 
 var app = builder.Build();
 

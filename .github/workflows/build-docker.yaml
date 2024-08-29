@@ -10,9 +10,10 @@ jobs:
   - name: checkout
     uses: actions/checkout@v4
   - name: build image
-    run: docker build -t 1337festor/imbabetweb:latest -t 1337festor/imbabetweb:${{github.event.release.tag_name}} -f ImbaBetWeb/Dockerfile .
+    run: docker build -t 1337festor/imbabetweb:latest -t 1337festor/imbabetweb:experimental -t 1337festor/imbabetweb:${{github.event.release.tag_name}} -f ImbaBetWeb/Dockerfile .
   - name: push image to docker hub
     run: |
          docker login -u 1337festor -p ${{secrets.DOCKER_HUB_TOKEN}}
          docker push 1337festor/imbabetweb:${{github.event.release.tag_name}}
          docker push 1337festor/imbabetweb:latest
+         docker push 1337festor/imbabetweb:experimental

@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="MatchPlan">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Teams">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Team">
+                <xs:complexType>
+                  <xs:attribute name="Name" type="xs:string" use="required" />
+                  <xs:attribute name="Icon" type="xs:string" use="optional" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="MatchGroups">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0"  maxOccurs="unbounded" name="MatchGroup">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Matches">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element minOccurs="0" maxOccurs="unbounded" name="Match">
+                            <xs:complexType>
+                              <xs:attribute name="TeamA" type="xs:string" use="optional" />
+                              <xs:attribute name="TeamB" type="xs:string" use="optional" />
+                              <xs:attribute name="DateTime" type="xs:dateTime" use="required" />
+                              <xs:attribute name="AlternativeTeamAText" type="xs:string" use="optional" />
+                              <xs:attribute name="AlternativeTeamBText" type="xs:string" use="optional" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="Name" type="xs:string" use="required" />
+                  <xs:attribute name="HasGroupRanking" type="xs:boolean" use="optional" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

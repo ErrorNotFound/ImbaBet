@@ -21,6 +21,7 @@ namespace ImbaBetWeb.Controllers
         private readonly DatabaseManager _databaseManager;
         private readonly CommunityManager _communityManager;
         private readonly SettingsManager _settingsManager;
+        private readonly MatchPlanImportService _matchPlanImportService;
 
         public AdminController(
             BettingManager bettingManager,
@@ -29,7 +30,8 @@ namespace ImbaBetWeb.Controllers
             RoleManager<IdentityRole> roleManager,
             DatabaseManager databaseManager,
             CommunityManager communityManager,
-            SettingsManager settingsManager)
+            SettingsManager settingsManager,
+            MatchPlanImportService matchPlanImportService)
         {
             _bettingManager = bettingManager;
             _gameManager = gameManager;
@@ -38,6 +40,7 @@ namespace ImbaBetWeb.Controllers
             _databaseManager = databaseManager;
             _communityManager = communityManager;
             _settingsManager = settingsManager;
+            _matchPlanImportService = matchPlanImportService;
         }
 
         public async Task<IActionResult> Matches()
@@ -222,16 +225,6 @@ namespace ImbaBetWeb.Controllers
         }
 
         [Authorize(Roles = UserRoles.Admin)]
-		public async Task<IActionResult> SeedMatchplan()
-        {
-            await _databaseManager.SeedDefaultMatchplanAsync();
-
-            this.SetSuccessAlert("Database has been seeded.");
-
-            return RedirectToAction(nameof(Settings));
-        }
-
-        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> SeedTestdata()
         {
             await _databaseManager.SeedTestDataAsync();
@@ -249,6 +242,42 @@ namespace ImbaBetWeb.Controllers
             this.SetSuccessAlert("Leaderboards have been updated.");
 
             return RedirectToAction(nameof(Settings));
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> ImportMatchplan()
+        {
+            var vm = new ImportMatchplanViewModel
+            {
+                Templates = await _matchPlanImportService.GetTemplatesAsync()
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ImportMatchplan(ImportMatchplanViewModel vm)
+        {
+            var matchplan = vm.MatchPlanInput;
+            var validationResult = _matchPlanImportService.ValidateMatchPlanXmlAsync(matchplan);
+            if (validationResult.isValid)
+            {
+                await _databaseManager.DeleteGameDataAsync();
+                await _matchPlanImportService.ImportAsync(matchplan);
+                this.SetSuccessAlert("MatchPlan has been imported.");
+            }
+            else
+            {
+                this.SetErrorAlert("MatchPlan is not valid.");
+                return View(new ImportMatchplanViewModel
+                {
+                    MatchPlanInput = vm.MatchPlanInput,
+                    Templates = await _matchPlanImportService.GetTemplatesAsync(),
+                    ValidationErrors = validationResult.ValidationErrors
+                });
+            }
+
+            return RedirectToAction(nameof(ImportMatchplan));
         }
 
         [AllowAnonymous]

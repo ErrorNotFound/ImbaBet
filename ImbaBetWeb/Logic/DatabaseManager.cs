@@ -1,5 +1,4 @@
-﻿using ImbaBetWeb.Areas.Identity.Data;
-using ImbaBetWeb.Data;
+﻿using ImbaBetWeb.Data;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Models.Consts;
 using Microsoft.AspNetCore.Identity;
@@ -81,11 +80,6 @@ namespace ImbaBetWeb.Logic
                 await _userManager.UpdateAsync(user);
             }
             catch { }
-        }
-
-        public async Task SeedDefaultMatchplanAsync()
-        {
-            await MatchPlanImporter.ImportAsync(_context);
         }
 
         public async Task InitialDatabaseSeedAsync()

@@ -11,7 +11,7 @@ namespace ImbaBetWeb.Logic
 {
     public class GameManager
     {
-        private ApplicationContext _context;
+        private readonly ApplicationContext _context;
         private readonly SettingsManager _settingsManager;
 
         public GameManager(ApplicationContext context, SettingsManager settingsManager)

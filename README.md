@@ -16,10 +16,10 @@ ImbaBet is a self-hostable MVC application betting game, that lets you and your 
 <img src="/images/screenshot.png" width="70%">
 
 # Features
-- Simple but appealing UI
-- User, Community and Community-internal leaderboards
-- Join forces with friends to form a betting game community and compete with other communities
-- Easy administration for your beeting game
+- Simple, but appealing UI
+- User, community and community-internal leaderboards
+- Join forces with friends to form a community and compete with others
+- Easy administration for your betting game
 
 # Getting started
 The easiest way to deploy ImbaBet is to use the docker-compose and .env in the [`/docker` directory](https://github.com/ErrorNotFound/ImbaBet/tree/master/docker).

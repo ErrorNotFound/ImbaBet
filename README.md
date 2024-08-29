@@ -1,12 +1,19 @@
-[![CI](https://github.com/ErrorNotFound/ImbaBet/actions/workflows/build-docker.yaml/badge.svg)](https://github.com/ErrorNotFound/ImbaBet/actions)
+<p align="center">
 
-# ImbaBet
+<a href="https://github.com/ErrorNotFound/ImbaBet/actions"><img src="https://github.com/ErrorNotFound/ImbaBet/actions/workflows/build-docker.yaml/badge.svg"></a>
+<a href="https://github.com/ErrorNotFound/ImbaBet/releases"><img src="https://img.shields.io/github/v/release/ErrorNotFound/ImbaBet"></a>
+
+</p>
+
+# Welcome to ImbaBet
 
 ImbaBet is a self-hostable MVC application betting game, that lets you and your friends compete against each other at the next major sporting event (e.g. a football World Cup).
 
 - [Features](#features)
 - [Getting started](#getting-started)
 - [References](#references)
+
+<img src="/images/screenshot.png" width="70%">
 
 # Features
 - Simple but appealing UI
@@ -23,5 +30,5 @@ Password: Admin1!
 
 
 # References
-Country flags from https://flagpedia.net/
+Country flags from https://flagpedia.net/ \
 Docker Hub: https://hub.docker.com/r/1337festor/imbabetweb

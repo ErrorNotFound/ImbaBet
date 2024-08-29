@@ -1,6 +1,6 @@
 <p align="center">
-
 <a href="https://github.com/ErrorNotFound/ImbaBet/actions"><img src="https://github.com/ErrorNotFound/ImbaBet/actions/workflows/build-docker.yaml/badge.svg"></a>
+<a href="https://hub.docker.com/r/1337festor/imbabetweb"><img src="https://img.shields.io/badge/ImbaBet-DockerHub-blue"></a>
 <a href="https://github.com/ErrorNotFound/ImbaBet/releases"><img src="https://img.shields.io/github/v/release/ErrorNotFound/ImbaBet"></a>
 
 </p>
@@ -27,8 +27,5 @@ After starting your container, you can open http://<SERVER_ADDRESS>:\<PORT>/admi
 E-Mail: admin@admin.de\
 Password: Admin1!
 
-
-
 # References
-Country flags from https://flagpedia.net/ \
-Docker Hub: https://hub.docker.com/r/1337festor/imbabetweb
+Country flags from https://flagpedia.net/

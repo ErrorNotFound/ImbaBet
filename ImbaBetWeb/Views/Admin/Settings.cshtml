@@ -26,26 +26,38 @@
     <tbody>
         <tr>
             <td>
-                @Html.ActionLink("Delete ALL Data",                      // Button Text
-                         "DeleteAllData",                        // controller action
+                @Html.ActionLink("Delete Game Data",                      // Button Text
+                         "DeleteGameData",                        // controller action
                          "Admin",                                // controller
                          null,                                   // action parameters aka route values
-                         new { onclick = "return confirm('Are you sure you want to delete ALL data?')", @class = "btn btn-danger", @style = "width:180px;" })
+                         new { onclick = "return confirm('Are you sure you want to delete Game data?')", @class = "btn btn-danger", @style = "width:180px;" })
             </td>
             <td>
-                <p>Deletes all database tables.</p>
+                <p>Deletes all game related data, such as the match plan, teams and bets.</p>
             </td>
         </tr>
         <tr>
             <td>
-                @Html.ActionLink("Seed",                                 // Button Text
-                         "Seed",                                 // controller action
+                @Html.ActionLink("Seed Matchplan",                                 // Button Text
+                         "SeedMatchplan",                                 // controller action
                          "Admin",                                // controller
                          null,                                   // action parameters aka route values
                          new { @class = "btn btn-success", @style = "width:180px;" })
             </td>
             <td>
-                <p>Seeds the database with default values.</p>
+                <p>Seeds the database with default matchplan.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.ActionLink("Seed Testdata",                                 // Button Text
+                         "SeedTestdata",                                 // controller action
+                         "Admin",                                // controller
+                         null,                                   // action parameters aka route values
+                         new { @class = "btn btn-success", @style = "width:180px;" })
+            </td>
+            <td>
+                <p>Seeds the database with Testdata.</p>
             </td>
         </tr>
         <tr>

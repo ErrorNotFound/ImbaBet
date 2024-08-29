@@ -5,7 +5,7 @@ namespace ImbaBetWeb.Models.Consts
     public class SettingNames
     {
         [Description("Name of this game.")]
-        [DefaultValue("ImbaBet!")]
+        [DefaultValue("ImbaBet")]
         public const string BETTING_GAME_NAME = "BETTING_GAME_NAME";
 
         [Description("How many members are needed for community to be part of ranking.")]

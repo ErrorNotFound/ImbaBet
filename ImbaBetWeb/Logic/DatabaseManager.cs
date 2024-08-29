@@ -48,6 +48,16 @@ namespace ImbaBetWeb.Logic
             }
         }
 
+        public async Task DeleteGameDataAsync()
+        {
+            var tablesToBeDeleted = new[] { "Bets", "Matches", "MatchGroups", "Teams" };
+
+            foreach (var tableName in tablesToBeDeleted)
+            {
+                await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {tableName}");
+            }
+        }
+
         public async Task DeleteUserAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -73,10 +83,13 @@ namespace ImbaBetWeb.Logic
             catch { }
         }
 
-        public async Task SeedDatabaseAsync()
+        public async Task SeedDefaultMatchplanAsync()
         {
             await MatchPlanImporter.ImportAsync(_context);
+        }
 
+        public async Task InitialDatabaseSeedAsync()
+        {
             // Create Roles
             foreach (var role in UserRoles.AllRoles)
             {
@@ -86,8 +99,13 @@ namespace ImbaBetWeb.Logic
                 }
             }
 
+            await _settingsManager.SeedSettingsAsync();
+        }
+
+        public async Task SeedTestDataAsync()
+        {
             var userList = new[]
-            {
+{
                 new { Email = "Ronaldo@test.de", Username = "Ronaldo", Password = "!23Qwe", Roles = new string[]{UserRoles.Admin } },
                 new { Email = "Neymar@test.de", Username = "Neymar", Password = "!23Qwe", Roles = new string[]{UserRoles.Editor } },
                 new { Email = "Marco@test.de", Username = "Marco", Password = "!23Qwe", Roles = Array.Empty<string>() }
@@ -125,8 +143,6 @@ namespace ImbaBetWeb.Logic
                 user.MemberOfCommunityId = community.Id;
                 await _context.SaveChangesAsync();
             }
-
-            await _settingsManager.SeedSettingsAsync();
         }
 
         public async Task<bool> UpdateRolesAsync(string userId, bool shouldBeAdmin, bool shouldBeEditor)
@@ -180,5 +196,6 @@ namespace ImbaBetWeb.Logic
 
             return user;
         }
+
     }
 }

@@ -3,7 +3,6 @@ using ImbaBetWeb.Logic.Extensions;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Models.Consts;
 using ImbaBetWeb.ViewModels.Admin;
-using ImbaBetWeb.ViewModels.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -213,19 +212,29 @@ namespace ImbaBetWeb.Controllers
         }
 
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> DeleteAllData()
+        public async Task<IActionResult> DeleteGameData()
         {
-            await _databaseManager.DeleteAllDataAsync();
+            await _databaseManager.DeleteGameDataAsync();
 
-            this.SetSuccessAlert("All data has been deleted.");
+            this.SetSuccessAlert("Game data has been deleted.");
 
             return RedirectToAction(nameof(Settings));
         }
 
-		[Authorize(Roles = UserRoles.Admin)]
-		public async Task<IActionResult> Seed()
+        [Authorize(Roles = UserRoles.Admin)]
+		public async Task<IActionResult> SeedMatchplan()
         {
-            await _databaseManager.SeedDatabaseAsync();
+            await _databaseManager.SeedDefaultMatchplanAsync();
+
+            this.SetSuccessAlert("Database has been seeded.");
+
+            return RedirectToAction(nameof(Settings));
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> SeedTestdata()
+        {
+            await _databaseManager.SeedTestDataAsync();
 
             this.SetSuccessAlert("Database has been seeded.");
 

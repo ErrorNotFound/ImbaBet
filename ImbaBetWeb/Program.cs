@@ -67,11 +67,16 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
+    // make sure database is created and migrated
     var context = services.GetRequiredService<ApplicationContext>();
     if (context.Database.GetPendingMigrations().Any())
     {
         context.Database.Migrate();
     }
+
+    // make sure database is seeded with required data
+    var databaseManager = services.GetRequiredService<DatabaseManager>();
+    await databaseManager.InitialDatabaseSeedAsync();
 }
 
 app.Run();

@@ -184,7 +184,7 @@ namespace ImbaBetWeb.Logic
             {
                 // make sure that an owner is also member of the community
                 var user = await _userManager.FindByIdAsync(community.OwnerId);
-                if (user.MemberOfCommunityId != community.Id)
+                if (user != null && user.MemberOfCommunityId != community.Id)
                 {
                     user.MemberOfCommunityId = community.Id;
                 }  

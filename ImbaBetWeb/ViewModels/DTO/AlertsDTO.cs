@@ -14,7 +14,7 @@ namespace ImbaBetWeb.ViewModels.DTO
             return JsonSerializer.Serialize(this);
         }
 
-        public static AlertsDTO FromJson(string json)
+        public static AlertsDTO? FromJson(string json)
         {
             return JsonSerializer.Deserialize<AlertsDTO>(json);
         }

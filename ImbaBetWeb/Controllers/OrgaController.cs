@@ -1,7 +1,6 @@
 using ImbaBetWeb.Logic;
 using ImbaBetWeb.Logic.Extensions;
 using ImbaBetWeb.Models;
-using ImbaBetWeb.ViewModels.DTO;
 using ImbaBetWeb.ViewModels.Orga;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -32,6 +31,10 @@ namespace ImbaBetWeb.Controllers
         {
             var communities = await _communityManager.Communities.ToListAsync();
             var user = await _userManager.GetUserAsync(User);
+            if(user == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
 
             var vm = new MyCommunityViewModel()
             {
@@ -46,6 +49,10 @@ namespace ImbaBetWeb.Controllers
         public async Task<IActionResult> CreateCommunity(string communityName)
         {
             var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
 
             await _communityManager.CreateCommunityAsync(user, communityName);
 
@@ -56,8 +63,17 @@ namespace ImbaBetWeb.Controllers
         public async Task<IActionResult> JoinCommunity()
         {
             var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
             var dropdownValue = Request.Form[OrgaConsts.Dropdown_CommunitySelection];
-            var communityId = int.Parse(dropdownValue);
+            if (string.IsNullOrEmpty(dropdownValue))
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            var communityId = int.Parse(dropdownValue!);
 
             var wasSuccessful = await _communityManager.JoinCommunityAsync(user, communityId);
             if(wasSuccessful)
@@ -72,6 +88,10 @@ namespace ImbaBetWeb.Controllers
         public async Task<IActionResult> LeaveCommunity()
         {
             var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
             var community = user.MemberOfCommunity;
             var isOwner = user.OwnerOfCommunity == user.MemberOfCommunity;
 

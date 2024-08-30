@@ -11,6 +11,13 @@ namespace ImbaBetWeb.Logic.Ranking.Comparing
     {
         public int Compare(RankingItem<TeamDetails>? x, RankingItem<TeamDetails>? y)
         {
+            if (x == null && y == null)
+                return 0;
+            else if (x == null)
+                return 1;
+            else if (y == null)
+                return -1;
+
             var byMatchesPlayed = CompareByMatchesPlayedDescending(x, y);
             if (byMatchesPlayed != 0)
             {
@@ -20,13 +27,12 @@ namespace ImbaBetWeb.Logic.Ranking.Comparing
             return CompareByPointsDescending(x, y);
         }
 
-        private int CompareByPointsDescending(RankingItem<TeamDetails>? x, RankingItem<TeamDetails>? y)
+        private int CompareByPointsDescending(RankingItem<TeamDetails> x, RankingItem<TeamDetails> y)
         {
-
             return y.Points - x.Points;
         }
 
-        private int CompareByMatchesPlayedDescending(RankingItem<TeamDetails>? x, RankingItem<TeamDetails>? y)
+        private int CompareByMatchesPlayedDescending(RankingItem<TeamDetails> x, RankingItem<TeamDetails> y)
         {
             return y.Details.MatchesPlayed - x.Details.MatchesPlayed;
         }

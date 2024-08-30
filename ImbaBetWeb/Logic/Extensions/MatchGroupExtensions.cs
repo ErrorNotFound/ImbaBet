@@ -15,7 +15,10 @@ namespace ImbaBetWeb.Logic.Extensions
     {
         public static List<Team> GetTeamList(this MatchGroup mg)
         {
-            return mg.Matches.Select(a => a.TeamA).Union(mg.Matches.Select(b => b.TeamB)).ToList();
+            var teamsA = mg.Matches.Where(m => m.TeamA != null).Select(m => m.TeamA!);
+            var teamsB = mg.Matches.Where(m => m.TeamB != null).Select(m => m.TeamB!);
+
+            return teamsA.Union(teamsB).ToList();
         }
     }
 }

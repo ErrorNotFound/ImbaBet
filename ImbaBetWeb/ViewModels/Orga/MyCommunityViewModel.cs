@@ -8,8 +8,8 @@ namespace ImbaBetWeb.ViewModels.Orga
 {
     public class MyCommunityViewModel
     {
-        public List<Community> Communities { get; set; }
+        public required List<Community> Communities { get; set; }
 
-        public ApplicationUser User { get; set; }
+        public required ApplicationUser User { get; set; }
     }
 }

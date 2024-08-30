@@ -37,7 +37,7 @@ namespace ImbaBetWeb.Models
         [Required]
         [ForeignKey("MatchGroup")]
         public int MatchGroupId { get; set; }
-        public virtual MatchGroup MatchGroup { get; set; }
+        public virtual MatchGroup MatchGroup { get; set; } = null!;
 
         public override string ToString()
         {

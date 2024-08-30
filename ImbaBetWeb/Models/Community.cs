@@ -8,13 +8,13 @@ namespace ImbaBetWeb.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
-        public string OwnerId { get; set; }
+        public required string OwnerId { get; set; }
         
-        public virtual ApplicationUser Owner { get; set; }
+        public virtual ApplicationUser Owner { get; set; } = null!;
 
-        public virtual IList<ApplicationUser> Members { get; set; }
+        public virtual IList<ApplicationUser> Members { get; set; } = null!;
 
         public override string ToString()
         {

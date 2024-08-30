@@ -75,9 +75,9 @@ namespace ImbaBetWeb.Controllers
             var dtos = users.Select(async u => new UserDTO()
             {
                 Id = u.Id,
-                Username = u.UserName,
-                Email = u.Email,
-                MemberOfCommunityId = u.MemberOfCommunityId,
+                Username = u?.UserName ?? "Username not found",
+                Email = u?.Email ?? "Email not found",
+                MemberOfCommunityId = u!.MemberOfCommunityId,
                 IsAdmin = await _userManager.IsInRoleAsync(u, UserRoles.Admin),
                 IsEditor = await _userManager.IsInRoleAsync(u, UserRoles.Editor)
             }).Select(x => x.Result).ToList();
@@ -249,7 +249,9 @@ namespace ImbaBetWeb.Controllers
         {
             var vm = new ImportMatchplanViewModel
             {
-                Templates = await _matchPlanImportService.GetTemplatesAsync()
+                Templates = await _matchPlanImportService.GetTemplatesAsync(),
+                MatchPlanInput = string.Empty,
+                ValidationErrors = new List<string>()
             };
 
             return View(vm);

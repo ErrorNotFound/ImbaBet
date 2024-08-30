@@ -43,7 +43,9 @@ namespace ImbaBetWeb.Logic
 
             foreach (var tableName in tableNames)
             {
+                #pragma warning disable EF1002
                 await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {tableName}");
+                #pragma warning restore EF1002
             }
         }
 
@@ -53,17 +55,20 @@ namespace ImbaBetWeb.Logic
 
             foreach (var tableName in tablesToBeDeleted)
             {
+                #pragma warning disable EF1002
                 await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {tableName}");
+                #pragma warning restore EF1002
             }
         }
 
         public async Task DeleteUserAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
-
-            await _communityManager.DeleteCommunityOfUserAsync(user);
-
-            await _userManager.DeleteAsync(user);
+            if(user != null)
+            {
+                await _communityManager.DeleteCommunityOfUserAsync(user);
+                await _userManager.DeleteAsync(user);
+            }
         }
 
         public async Task DeleteProfilePicture(string userId)
@@ -127,15 +132,18 @@ namespace ImbaBetWeb.Logic
             if (!_context.Communities.Any())
             {
                 var user = await _userManager.FindByEmailAsync(userList.First().Email);
-                var community = new Community()
+                if (user != null)
                 {
-                    OwnerId = user.Id,
-                    Name = "Die wilde Bande"
-                };
-                _context.Communities.Add(community);
-                await _context.SaveChangesAsync();
-                user.MemberOfCommunityId = community.Id;
-                await _context.SaveChangesAsync();
+                    var community = new Community()
+                    {
+                        OwnerId = user.Id,
+                        Name = "Die wilde Bande"
+                    };
+                    _context.Communities.Add(community);
+                    await _context.SaveChangesAsync();
+                    user.MemberOfCommunityId = community.Id;
+                    await _context.SaveChangesAsync();
+                }
             }
         }
 
@@ -182,9 +190,9 @@ namespace ImbaBetWeb.Logic
             user.EmailConfirmed = true;
             user.RemainingRenames = await _settingsManager.GetSettingAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
 
-            if (await _userManager.FindByEmailAsync(user.Email) == null)
+            if (user.Email != null && await _userManager.FindByEmailAsync(user.Email) == null)
             {
-                await _userManager.CreateAsync(user, _configuration.GetSection("InitialSetup")["AdminAccountPassword"]);
+                await _userManager.CreateAsync(user, _configuration.GetSection("InitialSetup")["AdminAccountPassword"]!);
                 await _userManager.AddToRoleAsync(user, UserRoles.Admin);
             }
 

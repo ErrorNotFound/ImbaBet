@@ -24,7 +24,7 @@ namespace ImbaBetWeb.Logic.Extensions
         private static void UpdateAlerts(Controller controller, Action<AlertsDTO> action)
         {
             var temp = controller.TempData["Alerts"];
-            var dto = temp is string str ? AlertsDTO.FromJson(str) : new AlertsDTO();
+            var dto = temp is string str ? AlertsDTO.FromJson(str) ?? new AlertsDTO() : new AlertsDTO();
 
             action(dto);
 
@@ -34,12 +34,16 @@ namespace ImbaBetWeb.Logic.Extensions
         /// <summary>
         /// Validates a given model of the page
         /// </summary>
-        public static bool IsValid<T>(this PageModel pageModel, T inputModel)
+        public static bool IsValid<T>(this PageModel pageModel, T inputModel) where T : notnull
         {
             var property = pageModel.GetType().GetProperties().Where(x => x.PropertyType == inputModel.GetType()).FirstOrDefault();
+            if (property == null)
+            {
+                return false;
+            }
 
             var hasErrors = pageModel.ModelState.Values
-                .Where(value => value.GetType().GetProperty("Key").GetValue(value).ToString().Contains(property.Name))
+                .Where(value => value.GetType()?.GetProperty("Key")?.GetValue(value)?.ToString()?.Contains(property.Name) ?? false)
                 .Any(value => value.Errors.Any());
 
             return !hasErrors;

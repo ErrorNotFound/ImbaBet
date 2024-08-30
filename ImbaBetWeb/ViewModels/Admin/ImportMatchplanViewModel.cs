@@ -2,10 +2,10 @@
 {
     public class ImportMatchplanViewModel
     {
-        public string MatchPlanInput { get; set; }
+        public required string MatchPlanInput { get; set; }
 
-        public Dictionary<string, string> Templates { get; set; }
+        public required Dictionary<string, string> Templates { get; set; }
 
-        public List<string>? ValidationErrors { get; set; }
+        public required List<string>? ValidationErrors { get; set; }
     }
 }

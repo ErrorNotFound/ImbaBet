@@ -15,7 +15,7 @@ public class ApplicationUser : IdentityUser
     public int? MemberOfCommunityId { get; set; }
     public virtual Community? MemberOfCommunity { get; set; }
 
-    public virtual IList<Bet> Bets { get; set; }
+    public virtual IList<Bet> Bets { get; set; } = null!;
 
     public int Points { get; set; }
 

@@ -5,10 +5,11 @@
 @inject UserManager<ApplicationUser> UserManager
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    var user = await UserManager.GetUserAsync(User);
-    
+    @{
+        var user = await UserManager.GetUserAsync(User);
+    }
+    @if (user != null && SignInManager.IsSignedIn(User))
+    {
     <li class="nav-item dropdown">
         <a class="nav-link text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Hello @UserManager.GetUserName(User)!

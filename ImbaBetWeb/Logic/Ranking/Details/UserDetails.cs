@@ -4,6 +4,6 @@ namespace ImbaBetWeb.Logic.Ranking.Details
 {
     public class UserDetails
     {
-        public ApplicationUser User { get; set; }
+        public required ApplicationUser User { get; set; }
     }
 }

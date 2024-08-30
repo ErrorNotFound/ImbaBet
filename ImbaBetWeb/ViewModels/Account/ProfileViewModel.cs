@@ -5,9 +5,9 @@ namespace ImbaBetWeb.ViewModels.Account
 {
 	public class ProfileViewModel
 	{
-		public ApplicationUser User { get; set; }
+		public required ApplicationUser User { get; set; }
 
-        public IList<Bet> ActiveBets { get; set; }
-        public IList<Bet> ClosedBets { get; set; }
+        public required IList<Bet> ActiveBets { get; set; }
+        public required IList<Bet> ClosedBets { get; set; }
 	}
 }

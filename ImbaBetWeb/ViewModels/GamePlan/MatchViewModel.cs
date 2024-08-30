@@ -5,8 +5,8 @@ namespace ImbaBetWeb.ViewModels.GamePlan
 {
     public class MatchViewModel
     {
-        public Match Match {  get; set; }
-        public IList<Bet> ActiveBets { get; set; }
-        public IList<Bet> ClosedBets { get; set; }
+        public required Match Match {  get; set; }
+        public required IList<Bet> ActiveBets { get; set; }
+        public required IList<Bet> ClosedBets { get; set; }
     }
 }

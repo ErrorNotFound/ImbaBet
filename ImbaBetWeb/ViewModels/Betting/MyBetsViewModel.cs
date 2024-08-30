@@ -4,8 +4,8 @@ namespace ImbaBetWeb.ViewModels.Betting
 {
     public class MyBetsViewModel
     {
-        public IList<Bet> OpenBets { get; set; }
-        public IList<Bet> ClosedBets { get; set; }
-        public IList<Bet> ActiveBets { get; set; }
+        public required IList<Bet> OpenBets { get; set; }
+        public required IList<Bet> ClosedBets { get; set; }
+        public required IList<Bet> ActiveBets { get; set; }
     }
 }

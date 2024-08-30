@@ -47,7 +47,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Betting" asp-action="Communities">Communities</a>
                         </li>
-                        @if(User.Identity.IsAuthenticated)
+                        @if(User?.Identity?.IsAuthenticated ?? false)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Betting" asp-action="MyBets">My Bets</a>
@@ -56,7 +56,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Orga" asp-action="MyCommunity">My Community</a>
                             </li>
                         }
-                        @if (User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Editor))
+                        @if ((User?.IsInRole(UserRoles.Admin) ?? false) || (User?.IsInRole(UserRoles.Editor) ?? false))
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -90,7 +90,7 @@
             @if (TempData["Alerts"] is string avmJason)
             {
                 var avm = AlertsDTO.FromJson(avmJason);
-                if(avm.Errors != null)
+                if(avm != null && avm.Errors != null)
                 {
                     foreach (var message in avm.Errors)
                     {
@@ -101,7 +101,7 @@
                         </div>
                     }
                 }
-                if (avm.Infos != null)
+                if (avm != null && avm.Infos != null)
                 {
                     foreach (var message in avm.Infos)
                     {
@@ -113,7 +113,7 @@
                     }
                 }
 
-                if (avm.Successes != null)
+                if (avm != null && avm.Successes != null)
                 {
                     foreach(var message in avm.Successes)
                     {

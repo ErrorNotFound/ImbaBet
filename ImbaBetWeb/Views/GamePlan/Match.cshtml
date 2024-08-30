@@ -1,4 +1,4 @@
-﻿@using ImbaBetWeb.Logic.Extensions
+﻿@using ImbaBetWeb.Logic.Helper
 @using ImbaBetWeb.ViewModels.DTO
 @using ImbaBetWeb.ViewModels.GamePlan
 @model MatchViewModel
@@ -14,15 +14,15 @@
 <div class="container text-center">
     <div class="row">
         <div class="col">
-            <img src="@Url.Content(match.TeamA.GetLargeFlagPath())" alt="Image" width="256" height="192" /><br /><br />
-            <h2>@(match.TeamA.Name)</h2>
+            <img src="@Url.Content(FlagHelpers.GetLargeFlagPath(match.TeamA))" alt="Image" width="256" height="192" /><br /><br />
+            <h2>@(match.TeamA?.Name ?? match.AlternativeTeamAText)</h2>
         </div>
         <div class="col" style="display: flex; justify-content: center; align-items: center;">
             <h1>@(match.GoalsA) : @(match.GoalsB)</h1>
         </div>
         <div class="col">
-            <img src="@Url.Content(match.TeamB.GetLargeFlagPath())" alt="Image" width="256" height="192" /><br /><br />
-            <h2>@(match.TeamB.Name)</h2>
+            <img src="@Url.Content(FlagHelpers.GetLargeFlagPath(match.TeamB))" alt="Image" width="256" height="192" /><br /><br />
+            <h2>@(match.TeamB?.Name ?? match.AlternativeTeamBText)</h2>
         </div>
     </div>
 </div>

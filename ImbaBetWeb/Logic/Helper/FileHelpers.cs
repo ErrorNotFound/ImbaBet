@@ -44,7 +44,7 @@ namespace ImbaBetWeb.Logic.Helper
             // property associated with this IFormFile. If a display
             // name isn't found, error messages simply won't show
             // a display name.
-            MemberInfo property =
+            MemberInfo? property =
                 typeof(T).GetProperty(
                     formFile.Name.Substring(formFile.Name.IndexOf(".",
                     StringComparison.Ordinal) + 1));
@@ -145,7 +145,7 @@ namespace ImbaBetWeb.Logic.Helper
                         $"The file exceeds {megabyteSizeLimit:N1} MB.");
                     }
                     else if (!IsValidFileExtensionAndSignature(
-                        contentDisposition.FileName.Value, memoryStream,
+                        contentDisposition!.FileName.Value!, memoryStream,
                         permittedExtensions))
                     {
                         modelState.AddModelError("File",

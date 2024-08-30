@@ -7,18 +7,18 @@ namespace ImbaBetWeb.ViewModels.Admin
 {
     public class AccountsViewModel
     {
-        public IList<UserDTO> Users { get; set; }
+        public required IList<UserDTO> Users { get; set; }
 
-        public IList<Community> Communities { get; set; }
+        public required IList<Community> Communities { get; set; }
     }
 
     public class UserDTO
     {
-        public string Username { get; set; }
+        public required string Username { get; set; }
 
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         public int? MemberOfCommunityId { get; set; }
 

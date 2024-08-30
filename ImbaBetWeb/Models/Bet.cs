@@ -17,12 +17,12 @@ namespace ImbaBetWeb.Models
         [Required]
         [ForeignKey("Match")]
         public int MatchId { get; set; }
-        public virtual Match Match { get; set; }
+        public virtual Match Match { get; set; } = null!;
 
         [Required]
         [ForeignKey("User")]
-        public string UserId { get; set; }
-        public virtual ApplicationUser User { get; set; }
+        public required string UserId { get; set; }
+        public virtual ApplicationUser User { get; set; } = null!;
 
         public int GoalsA { get; set; }
 

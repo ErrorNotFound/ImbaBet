@@ -8,13 +8,13 @@ namespace ImbaBetWeb.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         public bool HasGroupRanking { get; set; }
 
         public int StackRank { get; set; }
 
-        public virtual IList<Match> Matches { get; set; }
+        public virtual IList<Match> Matches { get; set; } = null!;
 
         public override string ToString()
         {

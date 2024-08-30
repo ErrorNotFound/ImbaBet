@@ -15,6 +15,13 @@ namespace ImbaBetWeb.Logic.Ranking.Comparing
 
         public int Compare(RankingItem<TeamDetails>? x, RankingItem<TeamDetails>? y)
         {
+            if (x == null && y == null)
+                return 0;
+            else if (x == null)
+                return 1;
+            else if (y == null)
+                return -1;
+
             // StackRank shall always win
             var byStackRank = CompareByStackRank(x, y);
             if (byStackRank != 0)
@@ -37,17 +44,17 @@ namespace ImbaBetWeb.Logic.Ranking.Comparing
             return CompareByGoalDifferenceDescending(x, y);
         }
 
-        private int CompareByPointsDescending(RankingItem<TeamDetails>? x, RankingItem<TeamDetails>? y)
+        private int CompareByPointsDescending(RankingItem<TeamDetails> x, RankingItem<TeamDetails> y)
         {
             return y.Points - x.Points;
         }
 
-        private int CompareByGoalDifferenceDescending(RankingItem<TeamDetails>? x, RankingItem<TeamDetails>? y)
+        private int CompareByGoalDifferenceDescending(RankingItem<TeamDetails> x, RankingItem<TeamDetails> y)
         {
             return y.Details.GoalDifference - x.Details.GoalDifference;
         }
 
-        private int CompareByDirectMatchDescending(RankingItem<TeamDetails>? x, RankingItem<TeamDetails>? y)
+        private int CompareByDirectMatchDescending(RankingItem<TeamDetails> x, RankingItem<TeamDetails> y)
         {
             var directMatch = _matchGroup.Matches.SingleOrDefault(m =>
             m.IsOver
@@ -60,7 +67,7 @@ namespace ImbaBetWeb.Logic.Ranking.Comparing
             return directMatch.HasTeamWon(x.Details.Team) ? -1 : 1;
         }
 
-        private int CompareByStackRank(RankingItem<TeamDetails>? x, RankingItem<TeamDetails>? y)
+        private int CompareByStackRank(RankingItem<TeamDetails> x, RankingItem<TeamDetails> y)
         {
             return x.Details.Team.StackRank - y.Details.Team.StackRank;
         }

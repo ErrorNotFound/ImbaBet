@@ -13,7 +13,7 @@ namespace ImbaBetWeb.Logic
     {
         private readonly ApplicationContext _context;
 
-        private readonly Dictionary<string, Setting> _cachedSettings;
+        private Dictionary<string, Setting> _cachedSettings;
 
         public SettingsManager(ApplicationContext context)
         {
@@ -24,7 +24,10 @@ namespace ImbaBetWeb.Logic
 
         public async Task<List<Setting>> GetAllSettingsAsync()
         {
-            return await _context.Settings.ToListAsync();
+            var settings = await _context.Settings.ToListAsync();
+            _cachedSettings = settings.ToDictionary(k => k.Key, v => v);
+
+            return settings;
         }
 
         public async Task<T> GetCachedSettingAsync<T>(string key) where T : IConvertible
@@ -73,13 +76,6 @@ namespace ImbaBetWeb.Logic
 
         private async Task<Setting> GetSettingInternal(string key)
         {
-            // dirty workaround: in case all tables got deleted
-            if(!_context.Settings.Any())
-            {
-                // try to seed
-                await SeedSettingsAsync();
-            }
-
             return await _context.Settings.SingleOrDefaultAsync(x => x.Key == key) ?? throw new Exception($"Setting not found: {key}");
         }
 

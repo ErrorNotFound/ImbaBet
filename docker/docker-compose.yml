@@ -8,11 +8,11 @@ services:
       - 8111:8080
       - 8112:8081
     environment:
-      - ConnectionStrings:DefaultConnection=Server=sqldata;Initial Catalog=ApplicationDatabase;User Id=sa;Password=Pass@word1!;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False
+      - ConnectionStrings:DefaultConnection=Server=sqldata;Initial Catalog=ApplicationDatabase;User Id=sa;Password=${DATABASE_PASSWORD};Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False
   sqldata:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      - MSSQL_SA_PASSWORD=Pass@word1!
+      - MSSQL_SA_PASSWORD=${DATABASE_PASSWORD}
       - ACCEPT_EULA=Y
       - MSSQL_PID=Developer
     ports:

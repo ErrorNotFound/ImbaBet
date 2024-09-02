@@ -177,11 +177,13 @@ namespace ImbaBetWeb.Logic
             return true;
         }
 
-        public async Task<ApplicationUser> CreateAdminAsync()
+        public async Task CreateAdminAsync()
         {
-            if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
+            // only create admin account if there is no other admin
+            var adminUsers = await _userManager.GetUsersInRoleAsync(UserRoles.Admin);
+            if (adminUsers.Count > 0)
             {
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+                return;
             }
 
             var user = new ApplicationUser();
@@ -196,7 +198,7 @@ namespace ImbaBetWeb.Logic
                 await _userManager.AddToRoleAsync(user, UserRoles.Admin);
             }
 
-            return user;
+            return;
         }
 
     }

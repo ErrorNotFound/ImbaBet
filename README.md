@@ -7,7 +7,7 @@
 
 # Welcome to ImbaBet
 
-ImbaBet is a self-hostable MVC application betting game, that lets you and your friends compete against each other at the next major sporting event (e.g. a football World Cup).
+ImbaBet is a self-hostable betting game, that lets you and your friends compete against each other for the next major sporting event (e.g. a football World Cup).
 
 - [Features](#features)
 - [Getting started](#getting-started)
@@ -23,9 +23,16 @@ ImbaBet is a self-hostable MVC application betting game, that lets you and your 
 
 # Getting started
 The easiest way to deploy ImbaBet is to use the docker-compose and .env in the [`/docker` directory](https://github.com/ErrorNotFound/ImbaBet/tree/master/docker).
-After starting your container, you can open http://<SERVER_ADDRESS>:\<PORT>/admin/createadmin to generate an initial admin account with the following credentials:\
-E-Mail: admin@admin.de\
-Password: Admin1!
+After starting your container, you can open http://<SERVER_ADDRESS>:\<PORT>/admin/createadmin to generate an initial admin account with the following credentials:
+
+## Default admin credentials
+- **E-Mail**: `admin@admin.de`
+- **Password**: `Admin1!`
+
+## Environment variables
+| ENV name				| Description									|
+|-----------------------|-----------------------------------------------|
+|DATABASE_PASSWORD		| Password used for sql database, see <a href="https://hub.docker.com/r/microsoft/mssql-server">Microsoft SQL Server Image</a>.| 
 
 # References
-Country flags from https://flagpedia.net/
+- Country flags from https://flagpedia.net/

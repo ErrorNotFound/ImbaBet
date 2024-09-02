@@ -6,6 +6,7 @@ using ImbaBetWeb.Logic;
 using ImbaBetWeb.Logic.Extensions;
 using ImbaBetWeb.Logic.Helper;
 using ImbaBetWeb.Models;
+using ImbaBetWeb.Validation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -89,22 +90,37 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
             {
                 return Page();
             }
-            
-            if (UsernameChange.Username != user.UserName && user.RemainingRenames > 0)
-            {
-                var setUserNameResult = await _userManager.SetUserNameAsync(user, UsernameChange.Username);
-                if (!setUserNameResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set username.";
-                    return RedirectToPage();
-                }
-                user.RemainingRenames -= 1;
-                await _userManager.UpdateAsync(user);
-			}
 
-            await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
-            return RedirectToPage();
+            var existingUsernames = _userManager.Users.Select(x => x.UserName).ToList();
+            var validator = new UsernameValidator(existingUsernames);
+            var validationResult = validator.Validate(UsernameChange.Username);
+            if (validationResult.IsValid)
+            {
+                if (UsernameChange.Username != user.UserName && user.RemainingRenames > 0)
+                {
+                    var setUserNameResult = await _userManager.SetUserNameAsync(user, UsernameChange.Username);
+                    if (!setUserNameResult.Succeeded)
+                    {
+                        StatusMessage = "Unexpected error when trying to set username.";
+                        return RedirectToPage();
+                    }
+                    user.RemainingRenames -= 1;
+                    await _userManager.UpdateAsync(user);
+                }
+
+                await _signInManager.RefreshSignInAsync(user);
+                StatusMessage = "Your profile has been updated";
+                return RedirectToPage();
+            }
+            else
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostDeletePictureAsync()

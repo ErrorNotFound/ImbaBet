@@ -2,6 +2,7 @@
 using ImbaBetWeb.Logic.Extensions;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Models.Consts;
+using ImbaBetWeb.Validation;
 using ImbaBetWeb.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -58,10 +59,23 @@ namespace ImbaBetWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Matches(MatchesViewModel vm)
         {
-            await _gameManager.UpdateMatchesAsync(vm.Matches);
-            await _bettingManager.UpdatePointsAsync();
+            var validator = new MatchesViewModelValidator();
+            var validationResult = validator.Validate(vm);
 
-            this.SetSuccessAlert("Matches have been saved and points updated.");
+            if(validationResult.IsValid)
+            {
+                await _gameManager.UpdateMatchesAsync(vm.Matches);
+                await _bettingManager.UpdatePointsAsync();
+
+                this.SetSuccessAlert("Matches have been saved and points updated.");
+            }
+            else
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    this.SetErrorAlert(error.ErrorMessage);
+                }
+            }
 
             return RedirectToAction(nameof(Matches));
         }

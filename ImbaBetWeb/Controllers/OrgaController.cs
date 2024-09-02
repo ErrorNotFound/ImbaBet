@@ -1,6 +1,7 @@
 using ImbaBetWeb.Logic;
 using ImbaBetWeb.Logic.Extensions;
 using ImbaBetWeb.Models;
+using ImbaBetWeb.Validation;
 using ImbaBetWeb.ViewModels.Orga;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -54,7 +55,21 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
-            await _communityManager.CreateCommunityAsync(user, communityName);
+            var communities = await _communityManager.Communities.ToListAsync();
+
+            var validator = new CommunityNameValidator(communities.Select(x => x.Name));
+            var validationResult = validator.Validate(communityName);
+            if(validationResult.IsValid)
+            {
+                await _communityManager.CreateCommunityAsync(user, communityName);
+            }
+            else
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    this.SetErrorAlert(error.ErrorMessage);
+                }
+            }
 
             return RedirectToAction(nameof(MyCommunity));
         }

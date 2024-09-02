@@ -1,6 +1,7 @@
 ﻿using ImbaBetWeb.Logic;
 using ImbaBetWeb.Logic.Extensions;
 using ImbaBetWeb.Models;
+using ImbaBetWeb.Validation;
 using ImbaBetWeb.ViewModels.Betting;
 using ImbaBetWeb.ViewModels.DTO;
 using Microsoft.AspNetCore.Authorization;
@@ -74,14 +75,27 @@ namespace ImbaBetWeb.Controllers
         [Authorize]
         public async Task<IActionResult> MyBets(MyBetsViewModel vm)
         {
-            var success = await _bettingManager.UpdateBetsAsync(vm.OpenBets);
-            if (success)
+            var validator = new MyBetsViewModelValidator();
+            var validationResult = validator.Validate(vm);
+
+            if (validationResult.IsValid)
             {
-                this.SetSuccessAlert("Your bets have been saved.");
+                var success = await _bettingManager.UpdateBetsAsync(vm.OpenBets);
+                if (success)
+                {
+                    this.SetSuccessAlert("Your bets have been saved.");
+                }
+                else
+                {
+                    this.SetErrorAlert("Error while saving your bets.");
+                }
             }
             else
             {
-                this.SetErrorAlert("Error while saving your bets.");
+                foreach(var error in validationResult.Errors)
+                {
+                    this.SetErrorAlert(error.ErrorMessage);
+                }                
             }
 
             return RedirectToAction(nameof(MyBets));

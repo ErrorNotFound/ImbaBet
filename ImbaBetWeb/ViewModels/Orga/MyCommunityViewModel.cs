@@ -1,8 +1,4 @@
-﻿using ImbaBetWeb.Logic.Ranking.Details;
-using ImbaBetWeb.Logic.Ranking;
-using ImbaBetWeb.Models;
-using ImbaBetWeb.ViewModels.DTO;
-using System.ComponentModel.DataAnnotations;
+﻿using ImbaBetWeb.Models;
 
 namespace ImbaBetWeb.ViewModels.Orga
 {

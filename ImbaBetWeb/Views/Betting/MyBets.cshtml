@@ -47,8 +47,8 @@
                         @Html.DisplayFor(modelItem => Model.OpenBets[i].Match.TeamA)
                     </td>
                     <td style="text-align: center;">
-                        @Html.TextBoxFor(model => Model.OpenBets[i].GoalsA, new { style = "width:30px;text-align:center;" }) : 
-                        @Html.TextBoxFor(model => Model.OpenBets[i].GoalsB, new { style = "width:30px;text-align:center;" })
+                        @Html.TextBoxFor(model => Model.OpenBets[i].GoalsA, new { style = "width:40px;text-align:center;", type = "number" }) : 
+                        @Html.TextBoxFor(model => Model.OpenBets[i].GoalsB, new { style = "width:40px;text-align:center;", type = "number" })
                     <td>
                         @Html.DisplayFor(modelItem => Model.OpenBets[i].Match.TeamB)
                     </td>

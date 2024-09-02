@@ -61,7 +61,7 @@
                             @Html.DropDownListFor(model => Model.Matches[j].TeamATeamId, new SelectList(Model.Teams, "Id", "Name"), "", Model.Matches[j].TeamATeamId)
                         </td>
                         <td>
-                            @Html.TextBoxFor(model => Model.Matches[j].GoalsA, new { style = "width:30px;text-align:center;" }) : @Html.TextBoxFor(model => Model.Matches[j].GoalsB, new { style = "width:30px;text-align:center;" })
+                            @Html.TextBoxFor(model => Model.Matches[j].GoalsA, new { style = "width:40px;text-align:center;", type = "number" }) : @Html.TextBoxFor(model => Model.Matches[j].GoalsB, new { style = "width:40px;text-align:center;", type = "number" })
                         </td>
                         <td>
                             @Html.DropDownListFor(model => Model.Matches[j].TeamBTeamId, new SelectList(Model.Teams, "Id", "Name"), "", Model.Matches[j].TeamBTeamId)

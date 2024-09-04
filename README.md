@@ -24,7 +24,7 @@ ImbaBet is a self-hostable betting game, that lets you and your friends compete 
 - Easy administration for your betting game
 
 # Getting started
-The easiest way to deploy ImbaBet is to use the docker-compose and .env in the [`/docker` directory](https://github.com/ErrorNotFound/ImbaBet/tree/master/docker).
+The easiest way to deploy ImbaBet is to use the docker-compose and .env in the [`/docker`](https://github.com/ErrorNotFound/ImbaBet/tree/master/docker) directory.
 After starting your container, you can open http://<SERVER_ADDRESS>:\<PORT>/admin/createadmin to generate an initial admin account with the following credentials:
 
 ## Default admin credentials
@@ -35,6 +35,9 @@ After starting your container, you can open http://<SERVER_ADDRESS>:\<PORT>/admi
 | ENV name				| Description									|
 |-----------------------|-----------------------------------------------|
 |DATABASE_PASSWORD		| Password used for sql database, see <a href="https://hub.docker.com/r/microsoft/mssql-server">Microsoft SQL Server Image</a>.| 
+|ADMIN_ACCOUNT_EMAIL	| Overwrites the default admin account email	|
+|ADMIN_ACCOUNT_USERNAME	| Overwrites the default admin account username	|
+|ADMIN_ACCOUNT_PASSWORD	| Overwrites the default admin account password	|
 
 # References
 - Country flags from https://flagpedia.net/

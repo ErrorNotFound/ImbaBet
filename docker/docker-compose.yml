@@ -9,6 +9,9 @@ services:
       - 8112:8081
     environment:
       - ConnectionStrings:DefaultConnection=Server=sqldata;Initial Catalog=ApplicationDatabase;User Id=sa;Password=${DATABASE_PASSWORD};Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False
+      - InitialSetup:AdminAccountEMail=${ADMIN_ACCOUNT_EMAIL}
+      - InitialSetup:AdminAccountUsername=${ADMIN_ACCOUNT_USERNAME}
+      - InitialSetup:AdminAccountPassword=${ADMIN_ACCOUNT_PASSWORD}
   sqldata:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:

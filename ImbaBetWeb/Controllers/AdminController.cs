@@ -91,6 +91,7 @@ namespace ImbaBetWeb.Controllers
                 Id = u.Id,
                 Username = u?.UserName ?? "Username not found",
                 Email = u?.Email ?? "Email not found",
+                EmailConfirmed = await _userManager.IsEmailConfirmedAsync(u!),
                 MemberOfCommunityId = u!.MemberOfCommunityId,
                 IsAdmin = await _userManager.IsInRoleAsync(u, UserRoles.Admin),
                 IsEditor = await _userManager.IsInRoleAsync(u, UserRoles.Editor)
@@ -204,13 +205,35 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteProfilePicture(string userId)
         {
-            await _databaseManager.DeleteProfilePicture(userId);
-
-            this.SetSuccessAlert($"Profile picture of {userId} has been deleted.");
+            var success = await _databaseManager.DeleteProfilePicture(userId);
+            if(success)
+            {
+                this.SetSuccessAlert($"Profile picture of {userId} has been deleted.");
+            }
+            else
+            {
+                this.SetErrorAlert($"Profile picture of {userId} could not be deleted.");
+            }
 
             return RedirectToAction(nameof(Accounts));
         }
 
+        [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> ConfirmEMail(string userId)
+        {
+            var success = await _databaseManager.ConfirmEMail(userId);
+            if (success)
+            {
+                this.SetSuccessAlert($"E-Mail of user {userId} confirmed.");
+            }
+            else
+            {
+                this.SetErrorAlert($"E-Mail of user {userId} could not be confirmed.");
+            }
+
+            return RedirectToAction(nameof(Accounts));
+        }
 
         [HttpGet]
         [Authorize(Roles = UserRoles.Admin)]

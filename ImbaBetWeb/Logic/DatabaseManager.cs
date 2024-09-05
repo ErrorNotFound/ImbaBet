@@ -71,11 +71,14 @@ namespace ImbaBetWeb.Logic
             }
         }
 
-        public async Task DeleteProfilePicture(string userId)
+        public async Task<bool> DeleteProfilePicture(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null || user.ProfilePicturePath == null)
-                return;
+            if (user == null)
+                return false;
+
+            if(user.ProfilePicturePath == null)
+                return true;
 
             try
             {
@@ -83,8 +86,23 @@ namespace ImbaBetWeb.Logic
                 File.Delete(fileToBeDeleted);
                 user.ProfilePicturePath = null;
                 await _userManager.UpdateAsync(user);
+                return true;
             }
-            catch { }
+            catch 
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> ConfirmEMail(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return false;
+
+            user.EmailConfirmed = true;
+            await _userManager.UpdateAsync(user);
+            return true;
         }
 
         public async Task InitialDatabaseSeedAsync()

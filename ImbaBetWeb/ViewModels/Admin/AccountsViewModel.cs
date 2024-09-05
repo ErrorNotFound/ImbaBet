@@ -1,7 +1,4 @@
 ﻿using ImbaBetWeb.Models;
-using ImbaBetWeb.Models.Consts;
-using ImbaBetWeb.ViewModels.DTO;
-using Microsoft.AspNetCore.Identity;
 
 namespace ImbaBetWeb.ViewModels.Admin
 {
@@ -19,6 +16,8 @@ namespace ImbaBetWeb.ViewModels.Admin
         public required string Id { get; set; }
 
         public required string Email { get; set; }
+
+        public bool EmailConfirmed { get; set; }
 
         public int? MemberOfCommunityId { get; set; }
 

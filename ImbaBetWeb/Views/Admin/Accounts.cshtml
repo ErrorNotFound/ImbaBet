@@ -47,6 +47,7 @@
                     @for (int i = 0; i < Model.Users.Count; i++)
                     {
                         @Html.HiddenFor(model => model.Users[i].Id)
+                        @Html.HiddenFor(model => model.Users[i].EmailConfirmed)
                         <tr>
                             <td>
                                 @Html.DisplayFor(model => model.Users[i].Username)
@@ -66,19 +67,27 @@
                                 @Html.CheckBoxFor(model => model.Users[i].IsEditor)
                             </td>
                             <td>
-                                @Html.ActionLink(
-                                         "Delete",                          // Button Text
-                                         "DeleteUser",                      // controller action
-                                         "Admin",                           // controller
-                                         new { userId = Model.Users[i].Id },          // action parameters aka route values
-                                         new { onclick = "return confirm('Are you sure you want to delete this user?')", @class = "btn btn-danger" })
-
+                                @if (!Model.Users[i].EmailConfirmed)
+                                {
+                                    @Html.ActionLink(
+                                             "Confirm E-Mail",                  // Button Text
+                                             "ConfirmEMail",            // controller action
+                                             "Admin",                           // controller
+                                             new { userId = Model.Users[i].Id },          // action parameters aka route values
+                                             new { @class = "btn btn-primary" })
+                                }
                                 @Html.ActionLink(
                                          "Delete Picture",                  // Button Text
                                          "DeleteProfilePicture",            // controller action
                                          "Admin",                           // controller
                                          new { userId = Model.Users[i].Id },          // action parameters aka route values
                                          new { @class = "btn btn-warning" })
+                                @Html.ActionLink(
+                                         "Delete",                          // Button Text
+                                         "DeleteUser",                      // controller action
+                                         "Admin",                           // controller
+                                         new { userId = Model.Users[i].Id },          // action parameters aka route values
+                                         new { onclick = "return confirm('Are you sure you want to delete this user?')", @class = "btn btn-danger" })
                             </td>
                         </tr>
                     }

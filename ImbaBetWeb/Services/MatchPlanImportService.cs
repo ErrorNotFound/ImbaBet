@@ -5,7 +5,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 
-namespace ImbaBetWeb.Logic
+namespace ImbaBetWeb.Services
 {
     public class MatchPlanImportService
     {
@@ -27,8 +27,8 @@ namespace ImbaBetWeb.Logic
         private const string XML_ATTRIBUTE_NAME_ALTERNATE_B = "AlternativeTeamBText";
 
         public MatchPlanImportService(
-            ApplicationContext context, 
-            IConfiguration configuration, 
+            ApplicationContext context,
+            IConfiguration configuration,
             IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
@@ -41,7 +41,7 @@ namespace ImbaBetWeb.Logic
             var path = _webHostEnvironment.WebRootPath + _configuration.GetSection("Configuration")["MatchPlanTemplateDirectory"];
             var files = Directory.GetFiles(path);
             var templates = new Dictionary<string, string>();
-            
+
             foreach (var file in files)
             {
                 var fileContent = await File.ReadAllTextAsync(file);
@@ -66,27 +66,27 @@ namespace ImbaBetWeb.Logic
                 if (args.Severity == XmlSeverityType.Warning)
                 {
                     errors.Add("Matching schema not found. No validation occurred");
-                }   
+                }
                 else
                 {
                     errors.Add($"Line {args.Exception.LineNumber}: \tValidation error: " + args.Message);
                 }
-                    
+
             };
             settings.Schemas.Add(null, xsdPath);
 
             XmlReader reader = XmlReader.Create(new StringReader(content), settings);
 
             try
-            { 
+            {
                 while (reader.Read()) ;
             }
             catch (Exception ex)
             {
                 errors.Add($"{ex.Message}");
-            }            
+            }
 
-            if(errors.Any())
+            if (errors.Any())
             {
                 return (false, errors);
             }
@@ -125,12 +125,12 @@ namespace ImbaBetWeb.Logic
                     var match = new Match();
                     match.MatchGroup = matchGroup;
 
-                    if(m.Attribute(XML_ATTRIBUTE_NAME_TEAM_A) != null)
+                    if (m.Attribute(XML_ATTRIBUTE_NAME_TEAM_A) != null)
                     {
                         var attributeValue = m.Attribute(XML_ATTRIBUTE_NAME_TEAM_A)!.Value;
                         // try to find the corresponding team
                         var team = teams.SingleOrDefault(x => x.Name == attributeValue);
-                        if(team != null)
+                        if (team != null)
                         {
                             match.TeamA = team;
                         }

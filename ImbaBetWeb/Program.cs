@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Logic;
 using System.Data;
+using ImbaBetWeb.Services;
+using System.Configuration;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +37,16 @@ builder.Services.AddScoped<CommunityManager>();
 builder.Services.AddScoped<DatabaseManager>();
 builder.Services.AddScoped<SettingsManager>();
 builder.Services.AddScoped<MatchPlanImportService>();
+
+builder.Services.AddTransient<IEmailSender, EmailService>(i =>
+                new EmailService(
+                    builder.Configuration["EmailService:Host"]!,
+                    builder.Configuration.GetValue<int>("EmailService:Port"),
+                    builder.Configuration.GetValue<bool>("EmailService:EnableSSL"),
+                    builder.Configuration["EmailService:UserName"]!,
+                    builder.Configuration["EmailService:Password"]!
+                )
+            );
 
 var app = builder.Build();
 

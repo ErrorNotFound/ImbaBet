@@ -2,10 +2,12 @@
 using ImbaBetWeb.Logic.Extensions;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Models.Consts;
+using ImbaBetWeb.Services;
 using ImbaBetWeb.Validation;
 using ImbaBetWeb.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,36 +15,27 @@ using Microsoft.EntityFrameworkCore;
 namespace ImbaBetWeb.Controllers
 {
     [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.Editor}")]
-    public class AdminController : Controller
+    public class AdminController(
+        BettingManager bettingManager,
+        GameManager gameManager,
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        DatabaseManager databaseManager,
+        CommunityManager communityManager,
+        SettingsManager settingsManager,
+        MatchPlanImportService matchPlanImportService,
+        IEmailSender emailSender) : Controller
     {
-        private readonly BettingManager _bettingManager;
-        private readonly GameManager _gameManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly DatabaseManager _databaseManager;
-        private readonly CommunityManager _communityManager;
-        private readonly SettingsManager _settingsManager;
-        private readonly MatchPlanImportService _matchPlanImportService;
+        private readonly BettingManager _bettingManager = bettingManager;
+        private readonly GameManager _gameManager = gameManager;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly DatabaseManager _databaseManager = databaseManager;
+        private readonly CommunityManager _communityManager = communityManager;
+        private readonly SettingsManager _settingsManager = settingsManager;
+        private readonly MatchPlanImportService _matchPlanImportService = matchPlanImportService;
+        private readonly IEmailSender _emailSender = emailSender;
 
-        public AdminController(
-            BettingManager bettingManager,
-            GameManager gameManager,
-            UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            DatabaseManager databaseManager,
-            CommunityManager communityManager,
-            SettingsManager settingsManager,
-            MatchPlanImportService matchPlanImportService)
-        {
-            _bettingManager = bettingManager;
-            _gameManager = gameManager;
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _databaseManager = databaseManager;
-            _communityManager = communityManager;
-            _settingsManager = settingsManager;
-            _matchPlanImportService = matchPlanImportService;
-        }
 
         public async Task<IActionResult> Matches()
         {
@@ -267,6 +260,22 @@ namespace ImbaBetWeb.Controllers
             await _databaseManager.SeedTestDataAsync();
 
             this.SetSuccessAlert("Database has been seeded.");
+
+            return RedirectToAction(nameof(Settings));
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> SendTestMail()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction(nameof(Settings));
+            }
+
+            await _emailSender.SendEmailAsync(user.Email!, "ImbaBet: Testmail", "This is a mail for testing purposes.");
+
+            this.SetSuccessAlert("E-Mail has been sent.");
 
             return RedirectToAction(nameof(Settings));
         }

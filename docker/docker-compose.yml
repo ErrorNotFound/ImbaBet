@@ -12,6 +12,11 @@ services:
       - InitialSetup:AdminAccountEMail=${ADMIN_ACCOUNT_EMAIL}
       - InitialSetup:AdminAccountUsername=${ADMIN_ACCOUNT_USERNAME}
       - InitialSetup:AdminAccountPassword=${ADMIN_ACCOUNT_PASSWORD}
+      - EmailService:Host={EMAIL_HOST}
+      - EmailService:Port={EMAIL_PORT}
+      - EmailService:EnableSSL={EMAIL_USESSL}
+      - EmailService:UserName={EMAIL_USERNAME}
+      - EmailService:Password={EMAIL_PASSWORD}
   sqldata:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:

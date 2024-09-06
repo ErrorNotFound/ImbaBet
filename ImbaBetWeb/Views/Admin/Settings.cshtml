@@ -33,7 +33,7 @@
                          new { onclick = "return confirm('Are you sure you want to delete Game data?')", @class = "btn btn-danger", @style = "width:180px;" })
             </td>
             <td>
-                <p>Deletes all game related data, such as the match plan, teams and bets.</p>
+                <p>Delete all game related data, such as the match plan, teams and bets.</p>
             </td>
         </tr>
         <tr>
@@ -57,7 +57,7 @@
                          new { @class = "btn btn-success", @style = "width:180px;" })
             </td>
             <td>
-                <p>Seeds the database with Testdata.</p>
+                <p>Seed the database with Testdata.</p>
             </td>
         </tr>
         <tr>
@@ -69,7 +69,19 @@
                          new { @class = "btn btn-primary", @style = "width:180px;" })
             </td>
             <td>
-                <p>Updates all leaderboards by recalculating points.</p>
+                <p>Update all leaderboards by recalculating points.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.ActionLink("Send Testmail",                                 // Button Text
+                         "SendTestMail",                                 // controller action
+                         "Admin",                                // controller
+                         null,                                   // action parameters aka route values
+                         new { @class = "btn btn-primary", @style = "width:180px;" })
+            </td>
+            <td>
+                <p>Send a testmail to your email adress.</p>
             </td>
         </tr>
     </tbody>

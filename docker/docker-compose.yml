@@ -17,6 +17,7 @@ services:
       - EmailService:EnableSSL=${EMAIL_USESSL}
       - EmailService:UserName=${EMAIL_USERNAME}
       - EmailService:Password=${EMAIL_PASSWORD}
+      - Configuration:ContactEMail=${CONTACT_EMAIL}
   sqldata:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:

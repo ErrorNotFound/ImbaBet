@@ -1,0 +1,35 @@
+﻿@using ImbaBetWeb.ViewModels.Home
+@model ContactViewModel
+
+@{
+    ViewData["Title"] = "Contact";
+}
+<h1>@ViewData["Title"]</h1>
+<br />
+@using (Html.BeginForm("Contact", "Home", FormMethod.Post))
+{
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        @Html.TextBoxFor(model => model.Name, "", new { @class = "form-control" })
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Email address</label>
+        @Html.TextBoxFor(model => model.EMail, "", new { @class = "form-control" })
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Subject</label>
+        @Html.TextBoxFor(model => model.Subject, "", new { @class = "form-control" })
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Message</label>
+        @Html.TextAreaFor(model => model.Message, 10, 1, new { @class = "form-control" })
+    </div>
+    <div class="mb-3 form-check">
+        @Html.CheckBoxFor(model => model.SendCopy, new { @class = "form-check-input" })
+        <label class="form-label">Send copy to you</label>
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary btn-block">Send</button>
+    </div>
+}
+

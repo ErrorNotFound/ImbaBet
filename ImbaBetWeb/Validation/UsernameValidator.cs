@@ -7,7 +7,7 @@ namespace ImbaBetWeb.Validation
     {
         public UsernameValidator(IEnumerable<string> exisitingUsernames) 
         {
-            RuleFor(x => x).NotNull().NotEmpty().Length(3, 30).OverridePropertyName("Username");
+            RuleFor(x => x).Cascade(CascadeMode.Stop).NotNull().NotEmpty().Length(3, 30).OverridePropertyName("Username");
             RuleFor(x => x).Must(x => !exisitingUsernames.Any(name => name == x)).WithMessage("Username already existing.");
         }
 

@@ -53,7 +53,7 @@ namespace ImbaBetWeb.Controllers
                 var content = $"Name: {vm.Name} <br>" +
                     $"Email: {vm.EMail} <br>" +
                     $"Subject: {vm.Subject} <br>" +
-                    $"Message:<br>{vm.Message}";
+                    $"Message:<br>{vm.Message!.Replace("\r\n", "<br>")}";
 
                 var targetEMail = _configuration.GetSection("Configuration")["ContactEMail"];
                 if (string.IsNullOrEmpty(targetEMail)) 
@@ -62,11 +62,20 @@ namespace ImbaBetWeb.Controllers
                     return View(vm);
                 }
 
-                await _emailSender.SendEmailAsync(targetEMail, subject, content);
-                if (vm.SendCopy)
+                try
                 {
-                    await _emailSender.SendEmailAsync(vm.EMail!, subject, content);
+                    await _emailSender.SendEmailAsync(targetEMail, subject, content);
+                    if (vm.SendCopy)
+                    {
+                        await _emailSender.SendEmailAsync(vm.EMail!, subject, content);
+                    }
+                    this.SetSuccessAlert("E-Mail has been sent successfully.");
                 }
+                catch (Exception)
+                {
+                    this.SetErrorAlert("Error while sending your email.");
+                    return View(vm);
+                }                
 
                 return RedirectToAction(nameof(Contact));
             }

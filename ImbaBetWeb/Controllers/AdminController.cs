@@ -272,10 +272,16 @@ namespace ImbaBetWeb.Controllers
             {
                 return RedirectToAction(nameof(Settings));
             }
+            try
+            {
+                await _emailSender.SendEmailAsync(user.Email!, "ImbaBet: Testmail", "This is a mail for testing purposes.");
 
-            await _emailSender.SendEmailAsync(user.Email!, "ImbaBet: Testmail", "This is a mail for testing purposes.");
-
-            this.SetSuccessAlert("E-Mail has been sent.");
+                this.SetSuccessAlert("E-Mail has been sent.");
+            }
+            catch (Exception ex)
+            {
+                this.SetErrorAlert($"Error while sending email: {ex.Message}");
+            }            
 
             return RedirectToAction(nameof(Settings));
         }

@@ -166,8 +166,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
 
             using (var fileStream = System.IO.File.Create(filePathAbsolute))
             {
-                await fileStream.WriteAsync(formFileContent);
-                
+                await fileStream.WriteAsync(formFileContent); 
             }
 
             await _databaseManager.DeleteProfilePicture(user.Id);

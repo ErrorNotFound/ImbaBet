@@ -13,9 +13,11 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ImbaBetWeb.Areas.Identity.Pages.Account
 {
@@ -147,9 +149,16 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
                             pageHandler: null,
                             values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                             protocol: Request.Scheme);
-
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                        try
+                        {
+                            await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                             $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        }
+                        catch (Exception)
+                        {
+                            ModelState.AddModelError(string.Empty, "Error while sending your email. Please contact your administrator.");
+                            return Page();
+                        }
 
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         {

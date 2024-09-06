@@ -32,12 +32,18 @@ After starting your container, you can open http://<SERVER_ADDRESS>:\<PORT>/admi
 - **Password**: `Admin1!`
 
 ## Environment variables
-| ENV name				| Description									|
-|-----------------------|-----------------------------------------------|
+| ENV name				| Description										|
+|-----------------------|-----------------------------------------------	|
 |DATABASE_PASSWORD		| Password used for sql database, see <a href="https://hub.docker.com/r/microsoft/mssql-server">Microsoft SQL Server Image</a>.| 
-|ADMIN_ACCOUNT_EMAIL	| Overwrites the default admin account email	|
-|ADMIN_ACCOUNT_USERNAME	| Overwrites the default admin account username	|
-|ADMIN_ACCOUNT_PASSWORD	| Overwrites the default admin account password	|
+|ADMIN_ACCOUNT_EMAIL	| Overwrites the default admin account email.		|
+|ADMIN_ACCOUNT_USERNAME	| Overwrites the default admin account username.	|
+|ADMIN_ACCOUNT_PASSWORD	| Overwrites the default admin account password.	|
+|EMAIL_HOST				| Host adress of your SMTP server.					|
+|EMAIL_PORT				| Port of your SMTP server.							|
+|EMAIL_USESSL			| Use SSL for your SMTP server.						|
+|EMAIL_USERNAME			| Username of your SMTP server.						|
+|EMAIL_PASSWORD			| Password of your SMTP server.						|
+|CONTACT_EMAIL			| E-Mail address to which contact form messages are sent to.	|
 
 # References
 - Country flags from https://flagpedia.net/

@@ -38,9 +38,11 @@ jobs:
       retention-days: 20
 
   - name: Clean up gh-pages branch (optional)
+    continue-on-error: true  
     run: |
       git checkout -f gh-pages
       git rm -rf .
+    
 
  report:
   name: Report

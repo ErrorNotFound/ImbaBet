@@ -24,7 +24,7 @@ jobs:
     run: dotnet build --no-restore
 
   - name: Test with the dotnet CLI
-    run: dotnet test #--no-build
+    run: dotnet test --no-build
 
   - name: View Files
     run: ls -R  
@@ -33,7 +33,7 @@ jobs:
     uses: actions/upload-artifact@v4.0.0
     with:
       name: allure-results
-      path: .\ImbaBetWeb.Test\bin\Debug\net8.0\allure-results
+      path: ./ImbaBetWeb.Test/bin/Debug/net8.0/allure-results
       if-no-files-found: error
       retention-days: 20
 

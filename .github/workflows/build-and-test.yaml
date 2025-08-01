@@ -5,8 +5,8 @@ on:
    - master
 
 jobs:
- build:
-  name: Build
+ build-test:
+  name: Build and Test
   runs-on: ubuntu-latest
   steps:
   - name: Checkout
@@ -23,11 +23,6 @@ jobs:
   - name: Build
     run: dotnet build --no-restore
 
- test:
-  name: Test
-  needs: build
-  runs-on: ubuntu-latest
-  steps:
   - name: Test with the dotnet CLI
     run: dotnet test --no-build
 
@@ -38,6 +33,7 @@ jobs:
       path: .\bin\Debug\net8.0\allure-results
       if-no-files-found: error
       retention-days: 20
+
   - name: Clean up gh-pages branch (optional)
     run: |
       git checkout -f gh-pages
@@ -45,7 +41,7 @@ jobs:
 
  report:
   name: Report
-  needs: test
+  needs: build-test
   runs-on: ubuntu-latest
   steps:
     - name: Download Build Artifact

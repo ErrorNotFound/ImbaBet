@@ -1,4 +1,4 @@
-name: Build and Publish image to Docker Hub - Experimental
+name: Build docker image and publish to Docker Hub - Experimental
 on:
  push:
   branches:
@@ -6,13 +6,14 @@ on:
 
 jobs:
  publish_images:
+  name: Publish images
   runs-on: ubuntu-latest
   steps:
-  - name: checkout
+  - name: Checkout
     uses: actions/checkout@v4
-  - name: build image
+  - name: Build image
     run: docker build -t 1337festor/imbabetweb:experimental -f ImbaBetWeb/Dockerfile .
-  - name: push image to docker hub
+  - name: Push image to Docker Hub
     run: |
          docker login -u 1337festor -p ${{secrets.DOCKER_HUB_TOKEN}}
          docker push 1337festor/imbabetweb:experimental

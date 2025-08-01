@@ -48,3 +48,4 @@ After starting your container, you can open http://<SERVER_ADDRESS>:\<PORT>/admi
 # References
 - Country flags from https://flagpedia.net/
 - FluentValidation (https://github.com/FluentValidation/FluentValidation)
+- Allure (https://github.com/allure-framework)

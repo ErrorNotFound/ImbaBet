@@ -7,22 +7,22 @@ namespace ImbaBetWeb.Test.Validation
     public class CommunityNameValidatorTests
     {
         private CommunityNameValidator validator;
+        private readonly List<string> existingNames =
+            [
+                "NameA",
+                "NameB",
+                "NameC"
+            ];
+
 
         [SetUp]
         public void Setup()
         {
-            var existingNames = new List<string>()
-            {
-                "NameA",
-                "NameB",
-                "NameC"
-            };
-
             validator = new CommunityNameValidator(existingNames);
         }
 
         [TestCase("abc")]
-        public void CommunityNameValidator_ShouldPass_WhenGoalCountReasonable(string nameUnderTest)
+        public void CommunityNameValidator_ShouldPass_WhenGivenNameReasonable(string nameUnderTest)
         {
             // Act
             var result = validator.Validate(nameUnderTest);
@@ -44,10 +44,10 @@ namespace ImbaBetWeb.Test.Validation
         }
 
         [Test]
-        public void CommunityNameValidator_ShouldFail_WhenGivenNameAlreadyUsed()
+        public void CommunityNameValidator_ShouldFail_WhenGivenNameIsAlreadyUsed()
         {
             // Act
-            var result = validator.Validate("NameA");
+            var result = validator.Validate(existingNames.First());
 
             // Assert
             Assert.That(result.IsValid, Is.False);

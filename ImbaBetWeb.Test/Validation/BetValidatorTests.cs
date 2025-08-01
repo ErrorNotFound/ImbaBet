@@ -1,8 +1,10 @@
-﻿using ImbaBetWeb.Models;
+﻿using Allure.NUnit;
+using ImbaBetWeb.Models;
 using ImbaBetWeb.Validation;
 
 namespace ImbaBetWeb.Test.Validation
 {
+    [AllureNUnit]
     public class BetValidatorTests
     {
         private BetValidator validator;

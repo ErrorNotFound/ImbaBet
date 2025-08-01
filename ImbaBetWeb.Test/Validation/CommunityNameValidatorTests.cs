@@ -1,7 +1,9 @@
-﻿using ImbaBetWeb.Validation;
+﻿using Allure.NUnit;
+using ImbaBetWeb.Validation;
 
 namespace ImbaBetWeb.Test.Validation
 {
+    [AllureNUnit]
     public class CommunityNameValidatorTests
     {
         private CommunityNameValidator validator;

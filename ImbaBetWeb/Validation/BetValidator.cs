@@ -7,8 +7,9 @@ namespace ImbaBetWeb.Validation
     {
         public BetValidator()
         {
-            RuleFor(x => x.GoalsA).InclusiveBetween(0, 99).OverridePropertyName("Goal");
-            RuleFor(x => x.GoalsB).InclusiveBetween(0, 99).OverridePropertyName("Goal");
+            var goalValidator = new GoalValidator();
+            RuleFor(x => x.GoalsA).SetValidator(goalValidator);
+            RuleFor(x => x.GoalsB).SetValidator(goalValidator);
         }
     }
 }

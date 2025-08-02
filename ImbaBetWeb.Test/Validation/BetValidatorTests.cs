@@ -1,6 +1,8 @@
 ﻿using Allure.NUnit;
+using FluentValidation.TestHelper;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace ImbaBetWeb.Test.Validation
 {
@@ -15,37 +17,11 @@ namespace ImbaBetWeb.Test.Validation
             validator = new BetValidator();
         }
 
-        [TestCase(0, 0)]
-        [TestCase(1, 1)]
-        [TestCase(0, 5)]
-        [TestCase(5, 0)]
-        [TestCase(10, 10)]
-        public void BetValidator_ShouldPass_WhenGoalCountReasonable(int goalA, int goalB)
+        [Test]
+        public void BetValidator_Goals_ValidatedByGoalValidator()
         {
-            // Arrange
-            var bet = new Bet() { UserId = string.Empty, GoalsA = goalA, GoalsB = goalB };
-
-            // Act
-            var result = validator.Validate(bet);
-
-            // Assert
-            Assert.That(result.IsValid, Is.True);
-        }
-
-        [TestCase(-1, 0)]
-        [TestCase(0, -1)]
-        [TestCase(999, 0)]
-        [TestCase(0, 999)]
-        public void BetValidator_ShouldFail_WhenGoalCountUnreasonable(int goalA, int goalB)
-        {
-            // Arrange
-            var bet = new Bet() { UserId = string.Empty, GoalsA = goalA, GoalsB = goalB };
-
-            // Act
-            var result = validator.Validate(bet);
-
-            // Assert
-            Assert.That(result.IsValid, Is.False);
+            validator.ShouldHaveChildValidator(x => x.GoalsA, typeof(GoalValidator));
+            validator.ShouldHaveChildValidator(x => x.GoalsB, typeof(GoalValidator));
         }
     }
 }

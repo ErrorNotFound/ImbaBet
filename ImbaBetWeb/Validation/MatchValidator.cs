@@ -7,9 +7,11 @@ namespace ImbaBetWeb.Validation
     {
         public MatchValidator() 
         {
+            var goalValidator = new GoalValidator();
+
             // make sure goals are in the correct range
-            RuleFor(m => m.GoalsA).InclusiveBetween(0, 99).OverridePropertyName("Goal");
-            RuleFor(m => m.GoalsB).InclusiveBetween(0, 99).OverridePropertyName("Goal");
+            RuleFor(m => m.GoalsA).SetValidator(goalValidator);
+            RuleFor(m => m.GoalsB).SetValidator(goalValidator);
 
             // make sure alternate text is set when team is not set
             RuleFor(m => m.AlternativeTeamAText).Must((match, text) => match.TeamATeamId == null ? !string.IsNullOrEmpty(text) : true).WithMessage("Alternative Text needs to be set if no team is selected.");

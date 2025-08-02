@@ -38,7 +38,9 @@ namespace ImbaBetWeb.Test.Validation
         public void UsernameValidator_ShouldFail_WhenGivenNameUnreasonable(string? nameUnderTest)
         {
             // Act
+            #pragma warning disable CS8604 // Possible null reference argument.
             var result = validator.Validate(nameUnderTest);
+            #pragma warning restore CS8604 // Possible null reference argument.
 
             // Assert
             Assert.That(result.IsValid, Is.False);

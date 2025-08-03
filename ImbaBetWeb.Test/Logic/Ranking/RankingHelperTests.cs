@@ -9,7 +9,7 @@ namespace ImbaBetWeb.Test.Logic.Ranking
     {
 
         [Test]
-        public void SortAndSetRanks_GivenComparerIsUsed()
+        public void SortDescendingAndSetRanks_GivenComparerIsUsed()
         {
             // Arrange
             var list = new List<RankingItem<string>>()
@@ -28,7 +28,7 @@ namespace ImbaBetWeb.Test.Logic.Ranking
         }
 
         [Test]
-        public void SortAndSetRanks_TwoIdenticalRankingItems_IdenticalRankIsGiven()
+        public void SortDescendingAndSetRanks_TwoIdenticalRankingItems_IdenticalRankIsGiven()
         {
             // Arrange
             var list = new List<RankingItem<string>>()
@@ -47,7 +47,7 @@ namespace ImbaBetWeb.Test.Logic.Ranking
         }
 
         [Test]
-        public void SortAndSetRanks_FirstItem_HasRankOfOne()
+        public void SortDescendingAndSetRanks_FirstItem_HasRankOfOne()
         {
             // Arrange
             var list = new List<RankingItem<string>>()
@@ -64,7 +64,7 @@ namespace ImbaBetWeb.Test.Logic.Ranking
         }
 
         [Test]
-        public void SortAndSetRanks_NonEqualItems_SortedWithIncreasingRanks()
+        public void SortDescendingAndSetRanks_NonEqualItems_SortedWithIncreasingRanks()
         {
             // Arrange
             var list = new List<RankingItem<string>>()

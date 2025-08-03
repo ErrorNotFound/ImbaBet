@@ -35,11 +35,13 @@ namespace ImbaBetWeb.Logic.Ranking.Comparer
                 return byPoints;
             }
 
-            var byDirectCompare = CompareByPoints(x, y);
+            /*
+            var byDirectCompare = CompareByDirectMatch(x, y);
             if (byDirectCompare != 0)
             {
                 return byDirectCompare;
             }
+            */
 
             return CompareByGoalDifference(x, y);
         }

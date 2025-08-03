@@ -1,7 +1,7 @@
 ﻿using ImbaBetWeb.Data;
 using ImbaBetWeb.Logic.Extensions;
 using ImbaBetWeb.Logic.Ranking;
-using ImbaBetWeb.Logic.Ranking.Comparing;
+using ImbaBetWeb.Logic.Ranking.Comparer;
 using ImbaBetWeb.Logic.Ranking.Details;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Models.Consts;
@@ -101,7 +101,7 @@ namespace ImbaBetWeb.Logic
                 list.Add(item);
             }
 
-            RankingHelper.SortAndSetRanks(list, comparer);
+            RankingHelper.SortDescendingAndSetRanks(list, comparer);
 
             return list;
         }

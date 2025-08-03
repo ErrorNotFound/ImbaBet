@@ -1,7 +1,7 @@
 ﻿using ImbaBetWeb.Data;
 using ImbaBetWeb.Logic.Extensions;
 using ImbaBetWeb.Logic.Ranking;
-using ImbaBetWeb.Logic.Ranking.Comparing;
+using ImbaBetWeb.Logic.Ranking.Comparer;
 using ImbaBetWeb.Logic.Ranking.Details;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Models.Consts;
@@ -144,7 +144,7 @@ namespace ImbaBetWeb.Logic
                 return item;
             }).ToList();
 
-            RankingHelper.SortAndSetRanks(list, new CommunityComparer());
+            RankingHelper.SortDescendingAndSetRanks(list, new CommunityComparer());
 
             return list;
         }
@@ -192,7 +192,7 @@ namespace ImbaBetWeb.Logic
                 });
             }
 
-            RankingHelper.SortAndSetRanks(rankingList, new UserComparer());
+            RankingHelper.SortDescendingAndSetRanks(rankingList, new UserComparer());
             return rankingList;
         }
 

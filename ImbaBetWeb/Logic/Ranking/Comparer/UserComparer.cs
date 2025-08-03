@@ -1,6 +1,6 @@
 ﻿using ImbaBetWeb.Logic.Ranking.Details;
 
-namespace ImbaBetWeb.Logic.Ranking.Comparing
+namespace ImbaBetWeb.Logic.Ranking.Comparer
 {
     public class UserComparer : IComparer<RankingItem<UserDetails>>
     {
@@ -9,11 +9,11 @@ namespace ImbaBetWeb.Logic.Ranking.Comparing
             if (x == null && y == null)
                 return 0;
             else if (x == null)
-                return 1;
-            else if (y == null)
                 return -1;
+            else if (y == null)
+                return 1;
             else
-                return y.Points - x.Points; // Descending order
+                return x.Points - y.Points; // Descending order
         }
     }
 }

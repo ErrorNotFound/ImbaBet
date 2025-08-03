@@ -1,13 +1,4 @@
-﻿using ImbaBetWeb.Logic.Ranking;
-using ImbaBetWeb.Logic.Ranking.Comparing;
-using ImbaBetWeb.Logic.Ranking.Details;
-using ImbaBetWeb.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using ImbaBetWeb.Models;
 
 namespace ImbaBetWeb.Logic.Extensions
 {

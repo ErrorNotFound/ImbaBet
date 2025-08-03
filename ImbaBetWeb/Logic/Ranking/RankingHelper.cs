@@ -1,37 +1,37 @@
-﻿
-using ImbaBetWeb.Logic;
-using ImbaBetWeb.Logic.Ranking.Details;
-using ImbaBetWeb.Models;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Newtonsoft.Json.Linq;
-
-namespace ImbaBetWeb.Logic.Ranking
+﻿namespace ImbaBetWeb.Logic.Ranking
 {
     public static class RankingHelper
     {
-        public static void SortAndSetRanks<T>(List<RankingItem<T>> list, IComparer<RankingItem<T>> comparer) where T : class
+        /// <summary>
+        /// Sorts the given list with the given comparer. Then the rank of each item is set, starting with 1. If two or more items are equal, they are given the same rank.
+        /// </summary>
+        public static void SortDescendingAndSetRanks<T>(List<RankingItem<T>> list, IComparer<RankingItem<T>> comparer) where T : class
         {
             list.Sort(comparer);
+            list.Reverse();
 
-            var currentRank = 1;
-
-            var first = list.FirstOrDefault();
-            if(first != null)
+            for(int i = 0, currentRank = 1; i < list.Count; i++)
             {
-                first.Rank = currentRank;
-            }
-            
-            for (var i = 1; i < list.Count; i++)
-            {
-                var dCompare = comparer.Compare(list[i - 1], list[i]);
-                if (dCompare < 0)
-                {
-                    list[i].Rank = i + 1;
-                    currentRank = i + 1;
-                }
-                else if (dCompare == 0)
+                if(i+1 == list.Count)
                 {
                     list[i].Rank = currentRank;
+                    break;
+                }
+
+                var compareResult = comparer.Compare(list[i], list[i + 1]);
+                if(compareResult > 0) // [i] > [i+1]
+                {
+                    list[i].Rank = currentRank;
+                    currentRank++;
+                }
+                else if(compareResult == 0) // [i] == [i+1]
+                {
+                    list[i].Rank = currentRank;
+                }
+                else // [i] < [i+1]
+                {
+                    // means the given list is not sorted as expected
+                    throw new Exception("The given list was not sorted correctly: " + string.Join(",", list.Select(x => x.Details.ToString())));
                 }
             }
         }

@@ -1,4 +1,4 @@
-name: Build, Run tests and create Pull Request to Master
+name: Development Branch OnPush
 on:
  push:
   branches:
@@ -11,18 +11,14 @@ jobs:
   steps:
   - name: Checkout
     uses: actions/checkout@v4
-
   - name: Setup dotnet
     uses: actions/setup-dotnet@v4
     with:
       dotnet-version: '8.0.x'
-
   - name: Install dependencies
     run: dotnet restore
-
   - name: Build
     run: dotnet build --no-restore
-
   - name: Test with the dotnet CLI
     run: dotnet test --no-build
 
@@ -37,6 +33,20 @@ jobs:
     run: gh pr create -B master -H development --title 'Merge development into master' --body 'Created by Github action'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+ publish_images:
+  name: Publish docker images to experimental
+  needs: build-test
+  runs-on: ubuntu-latest
+  steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+  - name: Build image
+    run: docker build -t 1337festor/imbabetweb:experimental -f ImbaBetWeb/Dockerfile .
+  - name: Push image to Docker Hub
+    run: |
+         docker login -u 1337festor -p ${{secrets.DOCKER_HUB_TOKEN}}
+         docker push 1337festor/imbabetweb:experimental
 
 
     

@@ -8,13 +8,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{256FE3B2-A9B5-43A0-8A59-767CA18D20C8}"
 	ProjectSection(SolutionItems) = preProject
 		docker\.env = docker\.env
-		.github\workflows\development_publish-docker-experimental.yaml = .github\workflows\development_publish-docker-experimental.yaml
-		.github\workflows\development_build-test-pull.yaml = .github\workflows\development_build-test-pull.yaml
+		.github\workflows\development_OnPush.yaml = .github\workflows\development_OnPush.yaml
 		docker\docker-compose.yml = docker\docker-compose.yml
 		LICENSE = LICENSE
-		.github\workflows\master_build-and-test.yaml = .github\workflows\master_build-and-test.yaml
-		.github\workflows\master_publish-docker.yaml = .github\workflows\master_publish-docker.yaml
+		.github\workflows\master_OnPullRequest_AutoMerge.yaml = .github\workflows\master_OnPullRequest_AutoMerge.yaml
 		README.md = README.md
+		.github\workflows\master_OnPush.yaml = .github\workflows\master_OnPush.yaml
+		.github\workflows\master_OnPublish.yaml = .github\workflows\master_OnPublish.yaml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImbaBetWeb.Test", "ImbaBetWeb.Test\ImbaBetWeb.Test.csproj", "{FACAFA47-BA96-4DD8-A343-76FB7ECB1E69}"

@@ -1,4 +1,4 @@
-name: Build project and run tests
+name: Master Branch OnPush
 on:
  push:
   branches:

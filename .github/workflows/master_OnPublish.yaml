@@ -1,11 +1,11 @@
-name: Build docker image and publish to Docker Hub
+name: Master Branch OnPublish
 on:
  release:
   types: [published]
 
 jobs:
  publish_images:
-  name: Publish images
+  name: Build docker image and publish to Docker Hub
   runs-on: ubuntu-latest
   steps:
   - name: Checkout

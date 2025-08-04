@@ -2,7 +2,7 @@ name: Build docker image and publish to Docker Hub - Experimental
 on:
  push:
   branches:
-   - master
+   - development
 
 jobs:
  publish_images:

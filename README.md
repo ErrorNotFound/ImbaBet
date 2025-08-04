@@ -1,6 +1,6 @@
 <p align="center">
 <a href="https://errornotfound.github.io/ImbaBet"><img src="https://img.shields.io/github/actions/workflow/status/ErrorNotFound/ImbaBet/build-and-test.yaml"></a>
-<a href="https://github.com/ErrorNotFound/ImbaBet/actions"><img src="https://github.com/ErrorNotFound/ImbaBet/actions/workflows/publish-docker.yaml/badge.svg"></a>
+<a href="https://github.com/ErrorNotFound/ImbaBet/actions"><img src="https://github.com/ErrorNotFound/ImbaBet/actions/workflows/master_publish-docker.yaml/badge.svg"></a>
 <a href="https://hub.docker.com/r/1337festor/imbabetweb"><img src="https://img.shields.io/badge/ImbaBet-DockerHub-blue"></a>
 <a href="https://github.com/ErrorNotFound/ImbaBet/releases"><img src="https://img.shields.io/github/v/release/ErrorNotFound/ImbaBet"></a>
 <img src="/images/logo.png" width="80%">

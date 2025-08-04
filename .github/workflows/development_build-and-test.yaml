@@ -1,0 +1,42 @@
+name: Build project and run tests
+on:
+ push:
+  branches:
+   - development
+
+jobs:
+ build-test:
+  name: Build and Test
+  runs-on: ubuntu-latest
+  steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+
+  - name: Setup dotnet
+    uses: actions/setup-dotnet@v4
+    with:
+      dotnet-version: '8.0.x'
+
+  - name: Install dependencies
+    run: dotnet restore
+
+  - name: Build
+    run: dotnet build --no-restore
+
+  - name: Test with the dotnet CLI
+    run: dotnet test --no-build
+
+ merge:
+  name: Create Pull-Request to master
+  needs: build-test
+  runs-on: ubuntu-latest
+  steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+  - name: Create pull request to master
+    run: gh pr create -B master -H development --title 'Merge development into master' --body 'Created by Github action'
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+    

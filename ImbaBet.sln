@@ -8,8 +8,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{256FE3B2-A9B5-43A0-8A59-767CA18D20C8}"
 	ProjectSection(SolutionItems) = preProject
 		docker\.env = docker\.env
-		.github\workflows\development_build-and-test.yaml = .github\workflows\development_build-and-test.yaml
 		.github\workflows\development_publish-docker-experimental.yaml = .github\workflows\development_publish-docker-experimental.yaml
+		.github\workflows\development_build-test-pull.yaml = .github\workflows\development_build-test-pull.yaml
 		docker\docker-compose.yml = docker\docker-compose.yml
 		LICENSE = LICENSE
 		.github\workflows\master_build-and-test.yaml = .github\workflows\master_build-and-test.yaml

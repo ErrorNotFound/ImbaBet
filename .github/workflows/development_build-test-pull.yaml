@@ -1,4 +1,4 @@
-name: Build project and run tests
+name: Build, Run tests and create Pull Request to Master
 on:
  push:
   branches:

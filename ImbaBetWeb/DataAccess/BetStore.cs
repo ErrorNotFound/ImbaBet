@@ -1,13 +1,10 @@
-﻿using ImbaBetWeb.Model;
+﻿using ImbaBetWeb.DataAccess.Interfaces;
+using ImbaBetWeb.Model;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace ImbaBetWeb.DataAccess
 {
-    public interface IBetStore : ICrud<NBet>
-    {
-    }
-
     public class BetStore(string connectionString) : IBetStore
     {
         private readonly string connectionString = connectionString;
@@ -103,45 +100,68 @@ namespace ImbaBetWeb.DataAccess
             await connection.CloseAsync();
         }
 
-        public async Task<NBet> RetrieveAsync(int key)
+        public async Task<NBet> GetAsync(int id)
+        {
+            var itemList = await InternalGetAsync(id);
+            var count = itemList.Count();
+
+            if(count == 0)
+                throw new InvalidOperationException("No records were returned.");
+
+            if (count > 1)
+                throw new InvalidOperationException("Multiple records were returned.");
+
+            return itemList.Single();
+        }
+
+        public async Task<IEnumerable<NBet>> GetAllAsync()
+        {
+            return await InternalGetAsync(null);
+        }
+
+        private async Task<IEnumerable<NBet>> InternalGetAsync(int? id)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
 
-            command.CommandText =
-                $"SELECT * FROM {TableName} " +
-                $"WHERE {colName_Id}=@{colName_Id}";
-
-            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = key;
+            if(id != null)
+            {
+                command.CommandText = $"SELECT * FROM {TableName} WHERE {colName_Id}=@{colName_Id}";
+                command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = id;  
+            }
+            else
+            {
+                command.CommandText = $"SELECT * FROM {TableName}";
+            }
 
             await connection.OpenAsync();
             await command.PrepareAsync();
             var reader = await command.ExecuteReaderAsync();
- 
-            if (!reader.Read())
-                throw new InvalidOperationException("No records were returned.");
 
-            int id = reader.GetOrdinal(colName_Id);
-            int matchId = reader.GetOrdinal(colName_MatchId);
-            int userId = reader.GetOrdinal(colName_UserId);
-            int goalA = reader.GetOrdinal(colName_GoalsA);
-            int goalB = reader.GetOrdinal(colName_GoalsB);
-            int points = reader.GetOrdinal(colName_Points);
+            int oId = reader.GetOrdinal(colName_Id);
+            int oMatchId = reader.GetOrdinal(colName_MatchId);
+            int oUserId = reader.GetOrdinal(colName_UserId);
+            int oGoalA = reader.GetOrdinal(colName_GoalsA);
+            int oGoalB = reader.GetOrdinal(colName_GoalsB);
+            int oPoints = reader.GetOrdinal(colName_Points);
 
-            var bet = new NBet
+            var list = new List<NBet>();
+
+            while (await reader.ReadAsync())
             {
-                Id = reader.GetInt32(id),
-                MatchId = reader.GetInt32(matchId),
-                UserId = reader.GetInt32(userId),
-                GoalsA = reader.GetInt32(goalA),
-                GoalsB = reader.GetInt32(goalB),
-                Points = reader.GetInt32(points)
-            };
+                list.Add(new NBet
+                {
+                    Id = reader.GetInt32(oId),
+                    MatchId = reader.GetInt32(oMatchId),
+                    UserId = reader.GetInt32(oUserId),
+                    GoalsA = reader.GetInt32(oGoalA),
+                    GoalsB = reader.GetInt32(oGoalB),
+                    Points = reader.GetInt32(oPoints)
+                });
+            }
 
-            if (reader.Read())
-                throw new InvalidOperationException("Multiple records were returned.");
             await connection.CloseAsync();
-            return bet;
+            return list;
         }
 
         public async Task UpdateAsync(NBet bet)
@@ -165,5 +185,7 @@ namespace ImbaBetWeb.DataAccess
             await command.ExecuteNonQueryAsync();
             await connection.CloseAsync();
         }
+
+        
     }
 }

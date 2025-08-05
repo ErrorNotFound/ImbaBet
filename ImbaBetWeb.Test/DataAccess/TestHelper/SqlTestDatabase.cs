@@ -2,7 +2,7 @@
 
 namespace ImbaBetWeb.Test.DataAccess.TestHelper
 {
-    internal class SqlTestDatabase
+    public class SqlTestDatabase
     {
         public string ConnectionString => $"{DataSource};Initial Catalog={TestDatabaseName};";
         private string DataSource = "Data Source=(localdb)\\MSSQLLocalDB";

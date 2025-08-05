@@ -7,6 +7,7 @@ using System.Data;
 using ImbaBetWeb.Services;
 using System.Configuration;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using ImbaBetWeb.DataAccess;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -86,6 +87,9 @@ using (var scope = app.Services.CreateScope())
     // make sure database is seeded with required data
     var databaseManager = services.GetRequiredService<DatabaseManager>();
     await databaseManager.InitialDatabaseSeedAsync();
+
+    var test = new BetStore(connectionString);
+    await test.EnsureInitializedAsync();
 }
 
 app.Run();

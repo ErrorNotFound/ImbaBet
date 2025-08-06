@@ -1,6 +1,6 @@
 ﻿using ImbaBetWeb.Models;
 
-namespace ImbaBetWeb.Logic.Ranking.Details
+namespace ImbaBetWeb.Business.Ranking.Details
 {
     public class UserDetails
     {

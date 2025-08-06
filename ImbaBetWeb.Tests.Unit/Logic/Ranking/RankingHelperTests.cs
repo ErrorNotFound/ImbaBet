@@ -1,5 +1,5 @@
 ﻿using Allure.NUnit;
-using ImbaBetWeb.Logic.Ranking;
+using ImbaBetWeb.Business.Ranking;
 using Moq;
 
 namespace ImbaBetWeb.Tests.Unit.Logic.Ranking

@@ -1,5 +1,5 @@
-﻿using ImbaBetWeb.Logic.Ranking.Details;
-using ImbaBetWeb.Logic.Ranking;
+﻿using ImbaBetWeb.Business.Ranking.Details;
+using ImbaBetWeb.Business.Ranking;
 using ImbaBetWeb.Models;
 
 namespace ImbaBetWeb.ViewModels.Betting

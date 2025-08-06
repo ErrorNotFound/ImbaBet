@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using ImbaBetWeb.Logic;
-using ImbaBetWeb.Logic.Extensions;
-using ImbaBetWeb.Logic.Helper;
+using ImbaBetWeb.Business;
+using ImbaBetWeb.Business.Extensions;
+using ImbaBetWeb.Business.Helper;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Validation;
 using Microsoft.AspNetCore.Identity;

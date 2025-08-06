@@ -1,6 +1,6 @@
 ﻿using ImbaBetWeb.Models;
 
-namespace ImbaBetWeb.Logic.Helper
+namespace ImbaBetWeb.Business.Helper
 {
     public static class FlagHelpers
     {

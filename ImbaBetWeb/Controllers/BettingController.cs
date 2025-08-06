@@ -1,5 +1,5 @@
-﻿using ImbaBetWeb.Logic;
-using ImbaBetWeb.Logic.Extensions;
+﻿using ImbaBetWeb.Business;
+using ImbaBetWeb.Business.Extensions;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Validation;
 using ImbaBetWeb.ViewModels.Betting;

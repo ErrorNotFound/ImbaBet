@@ -3,7 +3,7 @@
 #nullable disable
 
 using ImbaBetWeb.Data;
-using ImbaBetWeb.Logic;
+using ImbaBetWeb.Business;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Models.Consts;
 using ImbaBetWeb.Validation;

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ImbaBetWeb.Logic.Extensions
+namespace ImbaBetWeb.Business.Extensions
 {
     public static class Extensions
     {

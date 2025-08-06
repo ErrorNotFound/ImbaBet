@@ -4,7 +4,7 @@ using ImbaBetWeb.Models.Consts;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace ImbaBetWeb.Logic
+namespace ImbaBetWeb.Business
 {
     public class SettingsManager
     {

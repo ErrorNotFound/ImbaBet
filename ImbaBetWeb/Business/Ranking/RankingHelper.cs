@@ -1,4 +1,4 @@
-﻿namespace ImbaBetWeb.Logic.Ranking
+﻿namespace ImbaBetWeb.Business.Ranking
 {
     public static class RankingHelper
     {

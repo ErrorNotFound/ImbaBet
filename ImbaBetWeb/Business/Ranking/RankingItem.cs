@@ -1,6 +1,6 @@
 ﻿using ImbaBetWeb.Models;
 
-namespace ImbaBetWeb.Logic.Ranking
+namespace ImbaBetWeb.Business.Ranking
 {
     public record RankingItem<T>
     {

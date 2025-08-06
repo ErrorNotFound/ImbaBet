@@ -1,7 +1,7 @@
 using ImbaBetWeb.Data;
 using ImbaBetWeb.DataAccess;
 using ImbaBetWeb.DataAccess.Interfaces;
-using ImbaBetWeb.Logic;
+using ImbaBetWeb.Business;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Services;
 using Microsoft.AspNetCore.Identity;

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Reflection;
 
-namespace ImbaBetWeb.Logic.Helper
+namespace ImbaBetWeb.Business.Helper
 {
     public static class FileHelpers
     {

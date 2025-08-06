@@ -1,6 +1,6 @@
-﻿using ImbaBetWeb.Logic.Ranking.Details;
+﻿using ImbaBetWeb.Business.Ranking.Details;
 
-namespace ImbaBetWeb.Logic.Ranking.Comparer
+namespace ImbaBetWeb.Business.Ranking.Comparer
 {
     public class TeamRankingComparer : IComparer<RankingItem<TeamDetails>>
     {

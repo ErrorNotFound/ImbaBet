@@ -1,6 +1,6 @@
 ﻿using ImbaBetWeb.Models;
 
-namespace ImbaBetWeb.Logic.Extensions
+namespace ImbaBetWeb.Business.Extensions
 {
     public static class MatchGroupExtensions
     {

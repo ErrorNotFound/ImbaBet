@@ -1,4 +1,4 @@
-﻿using ImbaBetWeb.Logic;
+﻿using ImbaBetWeb.Business;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.ViewModels.GamePlan;
 using Microsoft.AspNetCore.Identity;

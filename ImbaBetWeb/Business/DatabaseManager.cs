@@ -4,7 +4,7 @@ using ImbaBetWeb.Models.Consts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace ImbaBetWeb.Logic
+namespace ImbaBetWeb.Business
 {
     public class DatabaseManager
     {

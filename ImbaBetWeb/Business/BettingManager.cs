@@ -1,15 +1,15 @@
 ﻿using ImbaBetWeb.Data;
-using ImbaBetWeb.Logic.Extensions;
-using ImbaBetWeb.Logic.Ranking;
-using ImbaBetWeb.Logic.Ranking.Comparer;
-using ImbaBetWeb.Logic.Ranking.Details;
+using ImbaBetWeb.Business.Extensions;
+using ImbaBetWeb.Business.Ranking;
+using ImbaBetWeb.Business.Ranking.Comparer;
+using ImbaBetWeb.Business.Ranking.Details;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Models.Consts;
 using ImbaBetWeb.ViewModels.DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace ImbaBetWeb.Logic
+namespace ImbaBetWeb.Business
 {
     public class BettingManager
     {

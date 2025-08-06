@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImbaBetWeb.Logic.Extensions
+namespace ImbaBetWeb.Business.Extensions
 {
     public static class MatchExtensions
     {

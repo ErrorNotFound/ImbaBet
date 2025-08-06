@@ -1,8 +1,6 @@
-﻿using ImbaBetWeb.Models;
-
-namespace ImbaBetWeb.Model
+﻿namespace ImbaBetWeb.Model
 {
-    public class NCommunity
+    public record NCommunity
     {
         public int Id { get; set; }
         public required string Name { get; set; }

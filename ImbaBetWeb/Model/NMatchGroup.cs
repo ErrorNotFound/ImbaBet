@@ -1,6 +1,6 @@
 ﻿namespace ImbaBetWeb.Model
 {
-    public class NMatchGroup
+    public record NMatchGroup
     {
         public int Id { get; set; }
         public required string Name { get; set; }

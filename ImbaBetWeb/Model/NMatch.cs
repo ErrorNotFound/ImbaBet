@@ -1,9 +1,6 @@
-﻿using ImbaBetWeb.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ImbaBetWeb.Model
+﻿namespace ImbaBetWeb.Model
 {
-    public class NMatch
+    public record NMatch
     {
         public int Id { get; set; }
 

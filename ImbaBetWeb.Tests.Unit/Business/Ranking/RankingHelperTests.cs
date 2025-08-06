@@ -2,7 +2,7 @@
 using ImbaBetWeb.Business.Ranking;
 using Moq;
 
-namespace ImbaBetWeb.Tests.Unit.Logic.Ranking
+namespace ImbaBetWeb.Tests.Unit.Business.Ranking
 {
     [AllureNUnit]
     public class RankingHelperTests

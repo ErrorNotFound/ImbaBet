@@ -14,16 +14,13 @@ namespace ImbaBetWeb.Business
     public class BettingManager
     {
         private readonly ApplicationContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SettingsManager _settingsManager;
 
         public BettingManager(
             ApplicationContext context, 
-            UserManager<ApplicationUser> userManager,
             SettingsManager settingsManager)
         {
             _context = context;
-            _userManager = userManager;
             _settingsManager = settingsManager;
         }
 

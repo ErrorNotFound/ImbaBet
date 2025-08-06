@@ -7,5 +7,5 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to @(await SettingsManager.GetCachedSettingAsync<string>(SettingNames.BETTING_GAME_NAME))</h1>
+    <h1 class="display-4">Welcome to @(await SettingsManager.GetCachedSettingValueAsync<string>(SettingNames.BETTING_GAME_NAME))</h1>
 </div>

@@ -131,7 +131,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
                 if(validationResult.IsValid)
                 {
                     var user = CreateUser(Input.Username);
-                    user.RemainingRenames = await _settingsManager.GetSettingAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
+                    user.RemainingRenames = await _settingsManager.GetSettingValueAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
 
                     await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                     await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

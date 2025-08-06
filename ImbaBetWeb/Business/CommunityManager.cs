@@ -35,7 +35,7 @@ namespace ImbaBetWeb.Business
 
         public async Task CreateCommunityAsync(ApplicationUser owner, string name)
         {
-            if(false == await _settingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_CREATE))
+            if(false == await _settingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_CREATE))
             {
                 return;
             }
@@ -77,7 +77,7 @@ namespace ImbaBetWeb.Business
 
         public async Task<bool> JoinCommunityAsync(ApplicationUser user, int communityId)
         {
-            if (false == await _settingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_JOIN))
+            if (false == await _settingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_JOIN))
             {
                 return false;
             }
@@ -98,7 +98,7 @@ namespace ImbaBetWeb.Business
 
         public async Task<bool> LeaveCommunityAsync(ApplicationUser user)
         {
-            if (false == await _settingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE))
+            if (false == await _settingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE))
             {
                 return false;
             }
@@ -143,7 +143,7 @@ namespace ImbaBetWeb.Business
 
         public async Task<bool> KickMemberAsync(int communityId, string userId)
         {
-            if (false == await _settingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE))
+            if (false == await _settingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE))
             {
                 return false;
             }

@@ -123,7 +123,7 @@ namespace ImbaBetWeb.Business
         public async Task<IList<RankingItem<CommunityDetails>>> GetCommunityRankingAsync()
         {
             var communities = await _context.Communities.Include(c => c.Members).ToListAsync();
-            var minMemberCount = await _settingsManager.GetSettingAsync<int>(SettingNames.MIN_MEMBER_COUNT_FOR_RANKING);
+            var minMemberCount = await _settingsManager.GetSettingValueAsync<int>(SettingNames.MIN_MEMBER_COUNT_FOR_RANKING);
 
             var list = communities.Where(x => x.Members.Count >= minMemberCount).Select(community =>
             {
@@ -206,7 +206,7 @@ namespace ImbaBetWeb.Business
             // Exact bet
             if (match.GoalsA == bet.GoalsA && match.GoalsB == bet.GoalsB)
             {
-                return await _settingsManager.GetCachedSettingAsync<int>(SettingNames.BETTING_POINTS_EXACT_RESULT);
+                return await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.BETTING_POINTS_EXACT_RESULT);
             }
 
             var result = match.GetMatchResult();
@@ -215,7 +215,7 @@ namespace ImbaBetWeb.Business
 
             if (correctTendency)
             {
-                return correctGoalDiff ? await _settingsManager.GetCachedSettingAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY_AND_DIFFERENCE) : await _settingsManager.GetCachedSettingAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY);
+                return correctGoalDiff ? await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY_AND_DIFFERENCE) : await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY);
             }
 
             return 0;

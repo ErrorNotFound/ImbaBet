@@ -28,7 +28,7 @@ else if (Model.User.MemberOfCommunityId == null)
                 <input name="communityName" class="form-control" placeholder="Name" />
             </div>
             <div class="col">
-                <button type="submit" disabled="@(!await SettingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_CREATE))" class="btn btn-primary btn-block">Create</button>
+                <button type="submit" disabled="@(!await SettingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_CREATE))" class="btn btn-primary btn-block">Create</button>
             </div>
         </div>
     }
@@ -50,7 +50,7 @@ else if (Model.User.MemberOfCommunityId == null)
                     @Html.DropDownList(OrgaConsts.Dropdown_CommunitySelection, selectionItemList, null, new { @class = "form-select" })
                 </div>
                 <div class="col">
-                    <button type="submit" disabled="@(!await SettingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_JOIN))" class="btn btn-primary btn-block">Join</button>
+                    <button type="submit" disabled="@(!await SettingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_JOIN))" class="btn btn-primary btn-block">Join</button>
                 </div>
             </div>
         }
@@ -83,7 +83,7 @@ else
                                  "LeaveCommunity",                      // controller action
                                  "Orga",                           // controller
                                  new { },          // action parameters aka route values
-                             new { onclick = "return confirm('Are you sure you want to leave this community?')", @class = "btn btn-danger " + (!await SettingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
+                             new { onclick = "return confirm('Are you sure you want to leave this community?')", @class = "btn btn-danger " + (!await SettingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
                 </td>
                 <td>
                     @if(isOwner)
@@ -142,7 +142,7 @@ else
                                      "KickMember",                      // controller action
                                      "Orga",                           // controller
                                      new { community.Members[i].Id },          // action parameters aka route values
-                                     new { onclick = $"return confirm('Are you sure you want to kick {community.Members[i].UserName}?')", @class = "btn btn-danger " + (!await SettingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
+                                     new { onclick = $"return confirm('Are you sure you want to kick {community.Members[i].UserName}?')", @class = "btn btn-danger " + (!await SettingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
                             @:&nbsp;
                             @Html.ActionLink(
                                      "Promote",                          // Button Text

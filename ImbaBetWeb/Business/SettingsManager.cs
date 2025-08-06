@@ -33,17 +33,17 @@ namespace ImbaBetWeb.Business
             return settings;
         }
 
-        public async Task<T> GetCachedSettingAsync<T>(string key) where T : IConvertible
+        public async Task<T> GetCachedSettingValueAsync<T>(string key) where T : IConvertible
         {
             if(_cachedSettings.TryGetValue(key, out var setting))
             {
                 return (T)Convert.ChangeType(setting.Value, typeof(T));
             }
             
-            return await GetSettingAsync<T>(key);
+            return await GetSettingValueAsync<T>(key);
         }
 
-        public async Task<T> GetSettingAsync<T>(string key) where T : IConvertible
+        public async Task<T> GetSettingValueAsync<T>(string key) where T : IConvertible
         {
             var setting = await GetSettingInternal(key);
 
@@ -53,7 +53,7 @@ namespace ImbaBetWeb.Business
             return (T)Convert.ChangeType(setting.Value, typeof(T));
         }
 
-        public async Task SetSettingAsync<T>(string key, T value) where T : IConvertible
+        public async Task SetSettingValueAsync<T>(string key, T value) where T : IConvertible
         {
             var setting = await GetSettingInternal(key);
             setting.Value = (string)Convert.ChangeType(value, typeof(string));

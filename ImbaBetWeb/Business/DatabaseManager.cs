@@ -136,7 +136,7 @@ namespace ImbaBetWeb.Business
                     user.Email = newUser.Email;
                     user.UserName = newUser.Username;
                     user.EmailConfirmed = true;
-                    user.RemainingRenames = await _settingsManager.GetSettingAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
+                    user.RemainingRenames = await _settingsManager.GetSettingValueAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
 
                     await _userManager.CreateAsync(user, newUser.Password);
                     foreach (var role in newUser.Roles)
@@ -208,7 +208,7 @@ namespace ImbaBetWeb.Business
             user.Email = _configuration.GetSection("InitialSetup")["AdminAccountEMail"];
             user.UserName = _configuration.GetSection("InitialSetup")["AdminAccountUsername"];
             user.EmailConfirmed = true;
-            user.RemainingRenames = await _settingsManager.GetSettingAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
+            user.RemainingRenames = await _settingsManager.GetSettingValueAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
 
             if (user.Email != null && await _userManager.FindByEmailAsync(user.Email) == null)
             {

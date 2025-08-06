@@ -109,7 +109,7 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> SaveSetting(string key, string value)
         {
-            await _settingsManager.SetSettingAsync(key, value);
+            await _settingsManager.SetSettingValueAsync(key, value);
 
             //todo: rework
             /*

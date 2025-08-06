@@ -95,8 +95,8 @@ namespace ImbaBetWeb.Business
                     }
                 };
 
-                item.Points =   item.Details.Wins * await _settingsManager.GetCachedSettingAsync<int>(SettingNames.MATCH_POINTS_PER_WIN) 
-                                + item.Details.Draws * await _settingsManager.GetCachedSettingAsync<int>(SettingNames.MATCH_POINTS_PER_DRAW);
+                item.Points =   item.Details.Wins * await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_WIN) 
+                                + item.Details.Draws * await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_DRAW);
 
                 list.Add(item);
             }

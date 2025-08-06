@@ -18,6 +18,8 @@ namespace ImbaBetWeb.DataAccess
         private readonly string colName_GoalsB = "GoalsB";
         private readonly string colName_Points = "Points";
 
+        private readonly int field_length = 128;
+
         public async Task<int> CreateAsync(NBet bet)
         {
             using var connection = new SqlConnection(connectionString);
@@ -66,7 +68,7 @@ namespace ImbaBetWeb.DataAccess
             using var connection = new SqlConnection(connectionString);
             using var tableExistsCommand = connection.CreateCommand();
             tableExistsCommand.CommandText = $"SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @{TableName}";
-            tableExistsCommand.Parameters.Add($"@{TableName}", SqlDbType.NVarChar, 128).Value = TableName;
+            tableExistsCommand.Parameters.Add($"@{TableName}", SqlDbType.NVarChar, field_length).Value = TableName;
 
             await connection.OpenAsync();
             await tableExistsCommand.PrepareAsync();

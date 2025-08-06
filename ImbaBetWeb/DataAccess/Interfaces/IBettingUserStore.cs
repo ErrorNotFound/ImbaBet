@@ -2,7 +2,7 @@
 
 namespace ImbaBetWeb.DataAccess.Interfaces
 {
-    public interface IBettingUserStore : ICrud<NBettingUser>
+    public interface IBettingUserStore
     {
 
     }

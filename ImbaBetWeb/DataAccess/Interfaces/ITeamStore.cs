@@ -2,7 +2,7 @@
 
 namespace ImbaBetWeb.DataAccess.Interfaces
 {
-    public interface ITeamStore : ICrud<NTeam>
+    public interface ITeamStore
     {
     }
 }

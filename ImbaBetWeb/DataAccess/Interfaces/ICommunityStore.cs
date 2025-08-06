@@ -2,7 +2,7 @@
 
 namespace ImbaBetWeb.DataAccess.Interfaces
 {
-    public interface ICommunityStore : ICrud<NCommunity>
+    public interface ICommunityStore
     {
     }
 }

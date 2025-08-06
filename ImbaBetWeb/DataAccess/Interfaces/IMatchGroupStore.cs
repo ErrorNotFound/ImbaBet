@@ -2,7 +2,7 @@
 
 namespace ImbaBetWeb.DataAccess.Interfaces
 {
-    public interface IMatchGroupStore : ICrud<NMatchGroup>
+    public interface IMatchGroupStore
     {
     }
 }

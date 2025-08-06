@@ -6,13 +6,13 @@ using ImbaBetWeb.Tests.Int.DataAccess.TestHelper;
 namespace ImbaBetWeb.Tests.Int.DataAccess
 {
     [AllureNUnit]
-    public class BetStoreTests : DataAccessTestsBase
+    public class SettingStoreTests : DataAccessTestsBase
     {
         [Test]
         public async Task EnsureInitializedAsync_NoTableAvailable_TableIsAdded()
         {
             // Arrange
-            var store = new BetStore(TestDatabase.ConnectionString);
+            var store = new SettingStore(TestDatabase.ConnectionString);
 
             // Act and Assert
             Assert.That(await TestDatabase.TableExistsAsync(store.TableName), Is.False);
@@ -24,31 +24,30 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
         public async Task CreateGetUpdateDelete_TestWorkflow_NoUnexpectedError()
         {
             // Arrange
-            var store = new BetStore(TestDatabase.ConnectionString);
+            var store = new SettingStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var bet = new NBet()
+            var setting = new NSetting()
             {
-                UserId = 1,
-                MatchId = 2,
-                GoalsA = 3,
-                GoalsB = 4,
-                Points = 5
+                Key = "key",
+                Value = "value",
+                Default = "default",
+                Description = "description"
             };
 
             // Test Create and Retrieve
-            bet.Id = await store.CreateAsync(bet);
-            var retrieved = await store.GetAsync(bet.Id);
-            Assert.That(retrieved, Is.EqualTo(bet));
+            await store.CreateAsync(setting);
+            var retrieved = await store.GetAsync(setting.Key);
+            Assert.That(retrieved, Is.EqualTo(setting));
 
             // Test Update
-            bet.Points = 1337;
-            await store.UpdateAsync(bet);
+            setting.Description = "updated description";
+            await store.UpdateAsync(setting);
             retrieved = (await store.GetAllAsync()).Single();
-            Assert.That(retrieved, Is.EqualTo(bet));
+            Assert.That(retrieved, Is.EqualTo(setting));
 
             // Test Delete
-            await store.DeleteAsync(bet);
-            Assert.ThrowsAsync<InvalidOperationException>(() => store.GetAsync(bet.Id));
+            await store.DeleteAsync(setting);
+            Assert.ThrowsAsync<InvalidOperationException>(() => store.GetAsync(setting.Key));
             var items = await store.GetAllAsync();
             Assert.That(items, Is.Empty);
         }

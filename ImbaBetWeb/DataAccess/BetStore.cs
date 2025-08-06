@@ -87,12 +87,12 @@ namespace ImbaBetWeb.DataAccess
             command.CommandText =
                 $"CREATE TABLE {TableName} " +
                 $"(" +
-                    $"{colName_Id} int NOT NULL IDENTITY(1,1) PRIMARY KEY, " +
-                    $"{colName_MatchId} int NOT NULL, " +
-                    $"{colName_UserId} int NOT NULL, " +
-                    $"{colName_GoalsA} int NOT NULL, " +
-                    $"{colName_GoalsB} int NOT NULL, " +
-                    $"{colName_Points} int NOT NULL " +
+                    $"[{colName_Id}] int NOT NULL IDENTITY(1,1) PRIMARY KEY, " +
+                    $"[{colName_MatchId}] int NOT NULL, " +
+                    $"[{colName_UserId}] int NOT NULL, " +
+                    $"[{colName_GoalsA}] int NOT NULL, " +
+                    $"[{colName_GoalsB}] int NOT NULL, " +
+                    $"[{colName_Points}] int NOT NULL " +
                 ")";
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -185,7 +185,5 @@ namespace ImbaBetWeb.DataAccess
             await command.ExecuteNonQueryAsync();
             await connection.CloseAsync();
         }
-
-        
     }
 }

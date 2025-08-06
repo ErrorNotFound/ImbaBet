@@ -6,13 +6,13 @@ using ImbaBetWeb.Tests.Int.DataAccess.TestHelper;
 namespace ImbaBetWeb.Tests.Int.DataAccess
 {
     [AllureNUnit]
-    public class BetStoreTests : DataAccessTestsBase
+    public class MatchGroupStoreTests : DataAccessTestsBase
     {
         [Test]
         public async Task EnsureInitializedAsync_NoTableAvailable_TableIsAdded()
         {
             // Arrange
-            var store = new BetStore(TestDatabase.ConnectionString);
+            var store = new MatchGroupStore(TestDatabase.ConnectionString);
 
             // Act and Assert
             Assert.That(await TestDatabase.TableExistsAsync(store.TableName), Is.False);
@@ -24,35 +24,31 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
         public async Task CreateGetUpdateDelete_TestWorkflow_NoUnexpectedError()
         {
             // Arrange
-            var store = new BetStore(TestDatabase.ConnectionString);
+            var store = new MatchGroupStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var bet = new NBet()
+            var matchGroup = new NMatchGroup()
             {
-                UserId = 1,
-                MatchId = 2,
-                GoalsA = 3,
-                GoalsB = 4,
-                Points = 5
+                Name = "Match Group Name",
+                HasGroupRanking = true,
+                StackRank = 1337
             };
 
             // Test Create and Retrieve
-            bet.Id = await store.CreateAsync(bet);
-            var retrieved = await store.GetAsync(bet.Id);
-            Assert.That(retrieved, Is.EqualTo(bet));
+            matchGroup.Id = await store.CreateAsync(matchGroup);
+            var retrieved = await store.GetAsync(matchGroup.Id);
+            Assert.That(retrieved, Is.EqualTo(matchGroup));
 
             // Test Update
-            bet.UserId = 11;
-            bet.MatchId = 12;
-            bet.GoalsA = 13;
-            bet.GoalsB = 14;
-            bet.Points = 15;
-            await store.UpdateAsync(bet);
+            matchGroup.Name = "new name";
+            matchGroup.HasGroupRanking = false;
+            matchGroup.StackRank = 1;
+            await store.UpdateAsync(matchGroup);
             retrieved = (await store.GetAllAsync()).Single();
-            Assert.That(retrieved, Is.EqualTo(bet));
+            Assert.That(retrieved, Is.EqualTo(matchGroup));
 
             // Test Delete
-            await store.DeleteAsync(bet);
-            Assert.ThrowsAsync<InvalidOperationException>(() => store.GetAsync(bet.Id));
+            await store.DeleteAsync(matchGroup);
+            Assert.ThrowsAsync<InvalidOperationException>(() => store.GetAsync(matchGroup.Id));
             var items = await store.GetAllAsync();
             Assert.That(items, Is.Empty);
         }

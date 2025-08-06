@@ -9,7 +9,7 @@ namespace ImbaBetWeb.DataAccess
     {
         private readonly string connectionString = connectionString;
 
-        public readonly string TableName = "NCommunity";
+        public readonly string TableName = "Communities";
 
         private readonly string colName_Id = "Id";
         private readonly string colName_Name = "Name";
@@ -29,7 +29,7 @@ namespace ImbaBetWeb.DataAccess
                 $"SELECT CONVERT(int,SCOPE_IDENTITY());";
 
             command.Parameters.Add($"@{colName_Name}", SqlDbType.NVarChar, field_length).Value = community.Name;
-            command.Parameters.Add($"@{colName_OwnerId}", SqlDbType.NVarChar, field_length).Value = community.OwnerId;
+            command.Parameters.Add($"@{colName_OwnerId}", SqlDbType.Int).Value = community.OwnerId;
 
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -62,7 +62,7 @@ namespace ImbaBetWeb.DataAccess
             using var connection = new SqlConnection(connectionString);
             using var tableExistsCommand = connection.CreateCommand();
             tableExistsCommand.CommandText = $"SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @{TableName}";
-            tableExistsCommand.Parameters.Add($"@{TableName}", SqlDbType.NVarChar, 128).Value = TableName;
+            tableExistsCommand.Parameters.Add($"@{TableName}", SqlDbType.NVarChar, field_length).Value = TableName;
 
             await connection.OpenAsync();
             await tableExistsCommand.PrepareAsync();
@@ -83,9 +83,9 @@ namespace ImbaBetWeb.DataAccess
             command.CommandText =
                 $"CREATE TABLE {TableName} " +
                 $"(" +
-                    $"[{colName_Id}] int NOT NULL IDENTITY(1,1) PRIMARY KEY, " +
+                    $"[{colName_Id}] INT NOT NULL IDENTITY(1,1) PRIMARY KEY, " +
                     $"[{colName_Name}] NVARCHAR({field_length}) NOT NULL, " +
-                    $"[{colName_OwnerId}] NVARCHAR({field_length}) NOT NULL " +
+                    $"[{colName_OwnerId}] INT NOT NULL " +
                 ")";
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -143,7 +143,7 @@ namespace ImbaBetWeb.DataAccess
                 {
                     Id = reader.GetInt32(oId),
                     Name = reader.GetString(oName),
-                    OwnerId = reader.GetString(oOwnerId)
+                    OwnerId = reader.GetInt32(oOwnerId)
                 });
             }
 
@@ -161,7 +161,7 @@ namespace ImbaBetWeb.DataAccess
                 $"WHERE [{colName_Id}]=@{colName_Id}";
 
             command.Parameters.Add($"@{colName_Name}", SqlDbType.NVarChar, field_length).Value = community.Name;
-            command.Parameters.Add($"@{colName_OwnerId}", SqlDbType.NVarChar, field_length).Value = community.OwnerId;
+            command.Parameters.Add($"@{colName_OwnerId}", SqlDbType.Int).Value = community.OwnerId;
             command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = community.Id;
 
             await connection.OpenAsync();

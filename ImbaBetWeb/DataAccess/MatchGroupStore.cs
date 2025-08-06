@@ -5,35 +5,34 @@ using System.Data;
 
 namespace ImbaBetWeb.DataAccess
 {
-    public class BetStore(string connectionString) : IBetStore
+    public class MatchGroupStore(string connectionString) : IMatchGroupStore
     {
         private readonly string connectionString = connectionString;
         
-        public readonly string TableName = "Bets";
+        public readonly string TableName = "MatchGroups";
 
         private readonly string colName_Id = "Id";
-        private readonly string colName_MatchId = "MatchId";
-        private readonly string colName_UserId = "UserId";
-        private readonly string colName_GoalsA = "GoalsA";
-        private readonly string colName_GoalsB = "GoalsB";
-        private readonly string colName_Points = "Points";
+        private readonly string colName_Name = "Name";
+        private readonly string colName_HasGroupRanking = "HasGroupRanking";
+        private readonly string colName_StackRank = "StackRank";
 
-        public async Task<int> CreateAsync(NBet bet)
+        private readonly int field_length = 128;
+
+        public async Task<int> CreateAsync(NMatchGroup mg)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
 
             command.CommandText = $"INSERT INTO {TableName} " +
-                $"([{colName_MatchId}],[{colName_UserId}],[{colName_GoalsA}],[{colName_GoalsB}],[{colName_Points}]) " +
+                $"([{colName_Name}],[{colName_HasGroupRanking}],[{colName_StackRank}]) " +
                 "VALUES " +
-                $"(@{colName_MatchId},@{colName_UserId},@{colName_GoalsA},@{colName_GoalsB},@{colName_Points});" +
+                $"(@{colName_Name},@{colName_HasGroupRanking},@{colName_StackRank});" +
                 $"SELECT CONVERT(int,SCOPE_IDENTITY());";
 
-            command.Parameters.Add($"@{colName_MatchId}", SqlDbType.Int).Value = bet.MatchId;
-            command.Parameters.Add($"@{colName_UserId}", SqlDbType.Int).Value = bet.UserId;
-            command.Parameters.Add($"@{colName_GoalsA}", SqlDbType.Int).Value = bet.GoalsA;
-            command.Parameters.Add($"@{colName_GoalsB}", SqlDbType.Int).Value = bet.GoalsB;
-            command.Parameters.Add($"@{colName_Points}", SqlDbType.Int).Value = bet.Points;
+            command.Parameters.Add($"@{colName_Name}", SqlDbType.NVarChar, field_length).Value = mg.Name;
+            command.Parameters.Add($"@{colName_HasGroupRanking}", SqlDbType.Bit).Value = mg.HasGroupRanking;
+            command.Parameters.Add($"@{colName_StackRank}", SqlDbType.Int).Value = mg.StackRank;
+
 
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -44,7 +43,7 @@ namespace ImbaBetWeb.DataAccess
             return (int)result;
         }
 
-        public async Task DeleteAsync(NBet bet)
+        public async Task DeleteAsync(NMatchGroup mg)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -53,7 +52,7 @@ namespace ImbaBetWeb.DataAccess
                 $"DELETE FROM {TableName} " +
                 $"WHERE [{colName_Id}]=@{colName_Id}";
 
-            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = bet.Id;
+            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = mg.Id;
 
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -66,7 +65,7 @@ namespace ImbaBetWeb.DataAccess
             using var connection = new SqlConnection(connectionString);
             using var tableExistsCommand = connection.CreateCommand();
             tableExistsCommand.CommandText = $"SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @{TableName}";
-            tableExistsCommand.Parameters.Add($"@{TableName}", SqlDbType.NVarChar, 128).Value = TableName;
+            tableExistsCommand.Parameters.Add($"@{TableName}", SqlDbType.NVarChar, field_length).Value = TableName;
 
             await connection.OpenAsync();
             await tableExistsCommand.PrepareAsync();
@@ -87,12 +86,10 @@ namespace ImbaBetWeb.DataAccess
             command.CommandText =
                 $"CREATE TABLE {TableName} " +
                 $"(" +
-                    $"[{colName_Id}] int NOT NULL IDENTITY(1,1) PRIMARY KEY, " +
-                    $"[{colName_MatchId}] int NOT NULL, " +
-                    $"[{colName_UserId}] int NOT NULL, " +
-                    $"[{colName_GoalsA}] int NOT NULL, " +
-                    $"[{colName_GoalsB}] int NOT NULL, " +
-                    $"[{colName_Points}] int NOT NULL " +
+                    $"[{colName_Id}] INT NOT NULL IDENTITY(1,1) PRIMARY KEY, " +
+                    $"[{colName_Name}] NVARCHAR({field_length}) NOT NULL, " +
+                    $"[{colName_HasGroupRanking}] BIT NOT NULL, " +
+                    $"[{colName_StackRank}] INT NOT NULL " +
                 ")";
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -100,7 +97,7 @@ namespace ImbaBetWeb.DataAccess
             await connection.CloseAsync();
         }
 
-        public async Task<NBet> GetAsync(int id)
+        public async Task<NMatchGroup> GetAsync(int id)
         {
             var itemList = await InternalGetAsync(id);
             var count = itemList.Count();
@@ -114,12 +111,12 @@ namespace ImbaBetWeb.DataAccess
             return itemList.Single();
         }
 
-        public async Task<IEnumerable<NBet>> GetAllAsync()
+        public async Task<IEnumerable<NMatchGroup>> GetAllAsync()
         {
             return await InternalGetAsync(null);
         }
 
-        private async Task<IEnumerable<NBet>> InternalGetAsync(int? id)
+        private async Task<IEnumerable<NMatchGroup>> InternalGetAsync(int? id)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -139,24 +136,20 @@ namespace ImbaBetWeb.DataAccess
             var reader = await command.ExecuteReaderAsync();
 
             int oId = reader.GetOrdinal(colName_Id);
-            int oMatchId = reader.GetOrdinal(colName_MatchId);
-            int oUserId = reader.GetOrdinal(colName_UserId);
-            int oGoalA = reader.GetOrdinal(colName_GoalsA);
-            int oGoalB = reader.GetOrdinal(colName_GoalsB);
-            int oPoints = reader.GetOrdinal(colName_Points);
+            int oName = reader.GetOrdinal(colName_Name);
+            int oHasGroupRanking = reader.GetOrdinal(colName_HasGroupRanking);
+            int oStackRank = reader.GetOrdinal(colName_StackRank);
 
-            var list = new List<NBet>();
+            var list = new List<NMatchGroup>();
 
             while (await reader.ReadAsync())
             {
-                list.Add(new NBet
+                list.Add(new NMatchGroup
                 {
                     Id = reader.GetInt32(oId),
-                    MatchId = reader.GetInt32(oMatchId),
-                    UserId = reader.GetInt32(oUserId),
-                    GoalsA = reader.GetInt32(oGoalA),
-                    GoalsB = reader.GetInt32(oGoalB),
-                    Points = reader.GetInt32(oPoints)
+                    Name = reader.GetString(oName),
+                    HasGroupRanking = reader.GetBoolean(oHasGroupRanking),
+                    StackRank = reader.GetInt32(oStackRank)
                 });
             }
 
@@ -164,21 +157,19 @@ namespace ImbaBetWeb.DataAccess
             return list;
         }
 
-        public async Task UpdateAsync(NBet bet)
+        public async Task UpdateAsync(NMatchGroup mg)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
 
             command.CommandText = $"UPDATE {TableName} " +
-                $"SET [{colName_MatchId}]=@{colName_MatchId},[{colName_UserId}]=@{colName_UserId},[{colName_GoalsA}]=@{colName_GoalsA},[{colName_GoalsB}]=@{colName_GoalsB},[{colName_Points}]=@{colName_Points} " +
+                $"SET [{colName_Name}]=@{colName_Name},[{colName_HasGroupRanking}]=@{colName_HasGroupRanking},[{colName_StackRank}]=@{colName_StackRank} " +
                 $"WHERE [{colName_Id}]=@{colName_Id}";
 
-            command.Parameters.Add($"@{colName_MatchId}", SqlDbType.Int).Value = bet.MatchId;
-            command.Parameters.Add($"@{colName_UserId}", SqlDbType.Int).Value = bet.UserId;
-            command.Parameters.Add($"@{colName_GoalsA}", SqlDbType.Int).Value = bet.GoalsA;
-            command.Parameters.Add($"@{colName_GoalsB}", SqlDbType.Int).Value = bet.GoalsB;
-            command.Parameters.Add($"@{colName_Points}", SqlDbType.Int).Value = bet.Points;
-            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = bet.Id;
+            command.Parameters.Add($"@{colName_Name}", SqlDbType.NVarChar, field_length).Value = mg.Name;
+            command.Parameters.Add($"@{colName_HasGroupRanking}", SqlDbType.Bit).Value = mg.HasGroupRanking;
+            command.Parameters.Add($"@{colName_StackRank}", SqlDbType.Int).Value = mg.StackRank;
+            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = mg.Id;
             
             await connection.OpenAsync();
             await command.PrepareAsync();

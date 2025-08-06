@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public required string Name { get; set; }
 
-        public required string OwnerId { get; set; }
+        public required int OwnerId { get; set; }
 
         public override string ToString()
         {

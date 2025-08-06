@@ -29,7 +29,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             var community = new NCommunity()
             {
                 Name = "Test Community",
-                OwnerId = "2"
+                OwnerId = 1
             };
 
             // Test Create and Retrieve
@@ -39,6 +39,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
 
             // Test Update
             community.Name = "A new name";
+            community.OwnerId = 2;
             await store.UpdateAsync(community);
             retrieved = (await store.GetAllAsync()).Single();
             Assert.That(retrieved, Is.EqualTo(community));

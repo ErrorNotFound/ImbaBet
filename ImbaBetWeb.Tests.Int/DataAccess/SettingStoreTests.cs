@@ -40,6 +40,8 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             Assert.That(retrieved, Is.EqualTo(setting));
 
             // Test Update
+            setting.Value = "updated value";
+            setting.Default = "updated default";
             setting.Description = "updated description";
             await store.UpdateAsync(setting);
             retrieved = (await store.GetAllAsync()).Single();

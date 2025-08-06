@@ -26,7 +26,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             // Arrange
             var store = new SettingStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var setting = new NSetting()
+            var setting = new Setting()
             {
                 Key = "key",
                 Value = "value",

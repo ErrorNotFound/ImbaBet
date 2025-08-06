@@ -1,9 +1,6 @@
-﻿using ImbaBetWeb.Data;
-using ImbaBetWeb.Models;
+﻿using ImbaBetWeb.DataAccess.Interfaces;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Models.Consts;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -11,20 +8,26 @@ namespace ImbaBetWeb.Logic
 {
     public class SettingsManager
     {
-        private readonly ApplicationContext _context;
-
+        private readonly ISettingStore settingStore;
         private Dictionary<string, Setting> _cachedSettings;
 
-        public SettingsManager(ApplicationContext context)
+        public SettingsManager(ISettingStore store)
         {
-            _context = context;
-            _cachedSettings = context.Settings.ToDictionary(k => k.Key, v => v);
+            settingStore = store;
+
+            var task = settingStore.EnsureInitializedAsync();
+            task.Wait();
+
+            var task2 = store.GetAllAsync();
+            task2.Wait();
+
+            _cachedSettings = task2.Result.ToDictionary(k => k.Key, v => v);
         }
 
 
-        public async Task<List<Setting>> GetAllSettingsAsync()
+        public async Task<IEnumerable<Setting>> GetAllSettingsAsync()
         {
-            var settings = await _context.Settings.ToListAsync();
+            var settings = await settingStore.GetAllAsync();
             _cachedSettings = settings.ToDictionary(k => k.Key, v => v);
 
             return settings;
@@ -50,33 +53,31 @@ namespace ImbaBetWeb.Logic
             return (T)Convert.ChangeType(setting.Value, typeof(T));
         }
 
-        public async Task<bool> SetSettingAsync<T>(string key, T value) where T : IConvertible
+        public async Task SetSettingAsync<T>(string key, T value) where T : IConvertible
         {
             var setting = await GetSettingInternal(key);
             setting.Value = (string)Convert.ChangeType(value, typeof(string));
-            var changes  = await _context.SaveChangesAsync();
+            
+            await settingStore.UpdateAsync(setting);
 
             // update cache
             _cachedSettings[setting.Key] = setting;
-
-            return changes == 1;
         }
 
-        public async Task<bool> ResetSettingAsync(string key)
+        public async Task ResetSettingAsync(string key)
         {
             var setting = await GetSettingInternal(key);
             setting.Value = setting.Default;
-            var changes = await _context.SaveChangesAsync();
+
+            await settingStore.UpdateAsync(setting);
 
             // update cache
             _cachedSettings[setting.Key] = setting;
-
-            return changes == 1;
         }
 
         private async Task<Setting> GetSettingInternal(string key)
         {
-            return await _context.Settings.SingleOrDefaultAsync(x => x.Key == key) ?? throw new Exception($"Setting not found: {key}");
+            return await settingStore.GetAsync(key) ?? throw new Exception($"Setting not found: {key}");
         }
 
 		public async Task SeedSettingsAsync()
@@ -105,11 +106,13 @@ namespace ImbaBetWeb.Logic
 			}).ToList();
 
             // only add settings which are not null and don't exist already in db
-            var settingsToBeAdded = settings.Where(x => x != null).Select(x => x!).Where(s => !_context.Settings.Any(x => x.Key == s.Key));
+            var availableSettings = await settingStore.GetAllAsync();
+            var settingsToBeAdded = settings.Where(x => x != null).Select(x => x!).Where(s => !availableSettings.Any(x => x.Key == s.Key));
 
-			await _context.Settings.AddRangeAsync(settingsToBeAdded);
-			await _context.SaveChangesAsync();
-
+            foreach( var setting in settingsToBeAdded )
+            {
+                await settingStore.CreateAsync(setting);
+            }
 		}
 
 	}

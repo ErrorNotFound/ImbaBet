@@ -9,7 +9,7 @@ namespace ImbaBetWeb.DataAccess
     {
         private readonly string connectionString = connectionString;
 
-        public readonly string TableName = "NSettings";
+        public readonly string TableName = "Settings";
 
         private readonly string colName_Key = "Key";
         private readonly string colName_Value = "Value";
@@ -18,7 +18,7 @@ namespace ImbaBetWeb.DataAccess
 
         private readonly int field_length = 128;
 
-        public async Task CreateAsync(NSetting setting)
+        public async Task CreateAsync(Setting setting)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -40,7 +40,7 @@ namespace ImbaBetWeb.DataAccess
             await connection.CloseAsync();
         }
 
-        public async Task DeleteAsync(NSetting setting)
+        public async Task DeleteAsync(Setting setting)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -94,7 +94,7 @@ namespace ImbaBetWeb.DataAccess
             await connection.CloseAsync();
         }
 
-        public async Task<NSetting> GetAsync(string key)
+        public async Task<Setting> GetAsync(string key)
         {
             var itemList = await InternalGetAsync(key);
             var count = itemList.Count();
@@ -108,12 +108,12 @@ namespace ImbaBetWeb.DataAccess
             return itemList.Single();
         }
 
-        public async Task<IEnumerable<NSetting>> GetAllAsync()
+        public async Task<IEnumerable<Setting>> GetAllAsync()
         {
             return await InternalGetAsync(null);
         }
 
-        private async Task<IEnumerable<NSetting>> InternalGetAsync(string? key)
+        private async Task<IEnumerable<Setting>> InternalGetAsync(string? key)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -137,11 +137,11 @@ namespace ImbaBetWeb.DataAccess
             int oDefault = reader.GetOrdinal(colName_Default);
             int oDescription = reader.GetOrdinal(colName_Description);
 
-            var list = new List<NSetting>();
+            var list = new List<Setting>();
 
             while (await reader.ReadAsync())
             {
-                list.Add(new NSetting
+                list.Add(new Setting
                 {
                     Key = reader.GetString(oKey),
                     Value = reader.GetString(oValue),
@@ -154,7 +154,7 @@ namespace ImbaBetWeb.DataAccess
             return list;
         }
 
-        public async Task UpdateAsync(NSetting setting)
+        public async Task UpdateAsync(Setting setting)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();

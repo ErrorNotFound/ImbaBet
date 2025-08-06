@@ -109,7 +109,10 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> SaveSetting(string key, string value)
         {
-            var success = await _settingsManager.SetSettingAsync(key, value);
+            await _settingsManager.SetSettingAsync(key, value);
+
+            //todo: rework
+            /*
             if(success)
             {
                 this.SetSuccessAlert($"Setting {key} has been saved.");
@@ -117,7 +120,7 @@ namespace ImbaBetWeb.Controllers
             else
             {
                 this.SetErrorAlert($"Setting {key} has not been saved.");
-            }
+            }*/
             
             return RedirectToAction(nameof(Settings));
         }
@@ -126,7 +129,9 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> ResetSetting(string key)
         {
-            var success = await _settingsManager.ResetSettingAsync(key);
+            await _settingsManager.ResetSettingAsync(key);
+            //todo: rework
+            /*
             if (success)
             {
                 this.SetSuccessAlert($"Setting {key} has been resetted.");
@@ -135,6 +140,7 @@ namespace ImbaBetWeb.Controllers
             {
                 this.SetErrorAlert($"Setting {key} has not been resetted.");
             }
+            */
 
             return RedirectToAction(nameof(Settings));
         }

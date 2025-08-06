@@ -1,5 +1,4 @@
 ﻿using ImbaBetWeb.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,8 +21,6 @@ public class ApplicationContext : IdentityDbContext<ApplicationUser>
     public DbSet<Community> Communities { get; set; }
 
     public DbSet<Bet> Bets { get; set; }
-
-    public DbSet<Setting> Settings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

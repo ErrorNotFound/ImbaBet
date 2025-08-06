@@ -4,11 +4,11 @@ namespace ImbaBetWeb.DataAccess.Interfaces
 {
     public interface ISettingStore
     {
-        Task CreateAsync(NSetting obj);
-        Task<NSetting> GetAsync(string key);
-        Task<IEnumerable<NSetting>> GetAllAsync();
-        Task UpdateAsync(NSetting obj);
-        Task DeleteAsync(NSetting key);
+        Task CreateAsync(Setting obj);
+        Task<Setting> GetAsync(string key);
+        Task<IEnumerable<Setting>> GetAllAsync();
+        Task UpdateAsync(Setting obj);
+        Task DeleteAsync(Setting key);
 
         Task EnsureInitializedAsync();
     }

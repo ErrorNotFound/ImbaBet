@@ -1,7 +1,7 @@
 ﻿using Allure.NUnit;
-using ImbaBetWeb.Test.DataAccess.TestHelper;
+using ImbaBetWeb.Tests.Int.DataAccess.TestHelper;
 
-namespace ImbaBetWeb.Test.DataAccess
+namespace ImbaBetWeb.Tests.Int.DataAccess
 {
     [AllureNUnit]
     public class DataAccessTestsBase

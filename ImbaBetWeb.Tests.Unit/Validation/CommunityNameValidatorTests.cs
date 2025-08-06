@@ -1,12 +1,12 @@
 ﻿using Allure.NUnit;
 using ImbaBetWeb.Validation;
 
-namespace ImbaBetWeb.Test.Validation
+namespace ImbaBetWeb.Tests.Unit.Validation
 {
     [AllureNUnit]
-    public class UsernameValidatorTests
+    public class CommunityNameValidatorTests
     {
-        private UsernameValidator validator;
+        private CommunityNameValidator validator;
         private readonly List<string> existingNames =
             [
                 "NameA",
@@ -18,11 +18,11 @@ namespace ImbaBetWeb.Test.Validation
         [SetUp]
         public void Setup()
         {
-            validator = new UsernameValidator(existingNames);
+            validator = new CommunityNameValidator(existingNames);
         }
 
         [TestCase("abc")]
-        public void UsernameValidator_ShouldPass_WhenGivenNameReasonable(string nameUnderTest)
+        public void CommunityNameValidator_ShouldPass_WhenGivenNameReasonable(string nameUnderTest)
         {
             // Act
             var result = validator.Validate(nameUnderTest);
@@ -31,11 +31,11 @@ namespace ImbaBetWeb.Test.Validation
             Assert.That(result.IsValid, Is.True, string.Join(";", result.Errors.Select(x => x.ErrorMessage)));
         }
 
-        [TestCase(null)]
+        [TestCase(null)] // empty
         [TestCase("")] // empty
         [TestCase("ab")] // length under 3
         [TestCase("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")] // length over 30
-        public void UsernameValidator_ShouldFail_WhenGivenNameUnreasonable(string? nameUnderTest)
+        public void CommunityNameValidator_ShouldFail_WhenGivenNameUnreasonable(string? nameUnderTest)
         {
             // Act
             #pragma warning disable CS8604 // Possible null reference argument.
@@ -47,7 +47,7 @@ namespace ImbaBetWeb.Test.Validation
         }
 
         [Test]
-        public void UsernameValidator_ShouldFail_WhenGivenNameIsAlreadyUsed()
+        public void CommunityNameValidator_ShouldFail_WhenGivenNameIsAlreadyUsed()
         {
             // Act
             var result = validator.Validate(existingNames.First());

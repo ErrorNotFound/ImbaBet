@@ -1,7 +1,7 @@
 ﻿using Allure.NUnit;
 using ImbaBetWeb.Validation;
 
-namespace ImbaBetWeb.Test.Validation
+namespace ImbaBetWeb.Tests.Unit.Validation
 {
     [AllureNUnit]
     public class GoalValidatorTests

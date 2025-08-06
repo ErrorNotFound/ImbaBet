@@ -3,7 +3,7 @@ using ImbaBetWeb.Logic.Ranking;
 using ImbaBetWeb.Logic.Ranking.Comparer;
 using ImbaBetWeb.Logic.Ranking.Details;
 
-namespace ImbaBetWeb.Test.Logic.Ranking.Comparer
+namespace ImbaBetWeb.Tests.Unit.Logic.Ranking.Comparer
 {
     [AllureNUnit]
     public class CommunityComparerTests

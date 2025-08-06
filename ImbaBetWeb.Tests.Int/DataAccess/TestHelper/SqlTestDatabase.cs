@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace ImbaBetWeb.Test.DataAccess.TestHelper
+namespace ImbaBetWeb.Tests.Int.DataAccess.TestHelper
 {
     public class SqlTestDatabase
     {

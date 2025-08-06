@@ -3,7 +3,7 @@ using FluentValidation.TestHelper;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Validation;
 
-namespace ImbaBetWeb.Test.Validation
+namespace ImbaBetWeb.Tests.Unit.Validation
 {
     [AllureNUnit]
     public class MatchValidatorTests

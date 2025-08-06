@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="ImbaBetWeb.Test" />
+    <InternalsVisibleTo Include="ImbaBetWeb.Tests.Unit" />
+    <InternalsVisibleTo Include="ImbaBetWeb.Tests.Int" />
   </ItemGroup>
 
   <ItemGroup>

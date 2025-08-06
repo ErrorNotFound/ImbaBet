@@ -4,7 +4,7 @@ using ImbaBetWeb.Logic.Ranking.Comparer;
 using ImbaBetWeb.Logic.Ranking.Details;
 using ImbaBetWeb.Models;
 
-namespace ImbaBetWeb.Test.Logic.Ranking.Comparer
+namespace ImbaBetWeb.Tests.Unit.Logic.Ranking.Comparer
 {
     [AllureNUnit]
     public class GroupRankingComparerTests

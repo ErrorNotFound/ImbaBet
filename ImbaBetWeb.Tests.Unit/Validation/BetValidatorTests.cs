@@ -1,10 +1,8 @@
 ﻿using Allure.NUnit;
 using FluentValidation.TestHelper;
-using ImbaBetWeb.Models;
 using ImbaBetWeb.Validation;
-using System.ComponentModel.DataAnnotations;
 
-namespace ImbaBetWeb.Test.Validation
+namespace ImbaBetWeb.Tests.Unit.Validation
 {
     [AllureNUnit]
     public class BetValidatorTests

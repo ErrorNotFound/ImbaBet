@@ -1,12 +1,10 @@
-﻿using ImbaBetWeb.Data;
-using ImbaBetWeb.Business.Extensions;
+﻿using ImbaBetWeb.Business.Extensions;
 using ImbaBetWeb.Business.Ranking;
 using ImbaBetWeb.Business.Ranking.Comparer;
 using ImbaBetWeb.Business.Ranking.Details;
+using ImbaBetWeb.Data;
 using ImbaBetWeb.Models;
 using ImbaBetWeb.Models.Consts;
-using ImbaBetWeb.ViewModels.DTO;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImbaBetWeb.Business
@@ -24,7 +22,7 @@ namespace ImbaBetWeb.Business
             _settingsManager = settingsManager;
         }
 
-        public async Task<IList<Bet>> GetOpenBetsForUserAsync(ApplicationUser user)
+        public async Task<IList<Bet>> GetOpenBetsForUserAsync(BettingUser user)
         {
             var betableMatches = await GetMatchesInternalAsync((match) => { return match.CanBet(); });
             var activeBetsByUser = await GetBetsInternalAsync((bet) => { return bet.User == user && bet.Match.CanBet(); });
@@ -40,13 +38,13 @@ namespace ImbaBetWeb.Business
             return activeBetsByUser.Concat(missingBetObjects).OrderBy(x => x.Match.DateTime).ToList();
         }
 
-        public async Task<IList<Bet>> GetActiveBetsForUserAsync(ApplicationUser user)
+        public async Task<IList<Bet>> GetActiveBetsForUserAsync(BettingUser user)
         {
             Func<Bet, bool> predicate = (bet) => { return bet.User == user && !bet.Match.IsOver && DateTime.UtcNow >= bet.Match.DateTime; };
             return await GetBetsInternalAsync(predicate);
         }
 
-        public async Task<IList<Bet>> GetClosedBetsForUserAsync(ApplicationUser user)
+        public async Task<IList<Bet>> GetClosedBetsForUserAsync(BettingUser user)
         {
             Func<Bet, bool> predicate = (bet) => { return bet.User == user && bet.Match.IsOver; };
             return await GetBetsInternalAsync(predicate);
@@ -168,7 +166,7 @@ namespace ImbaBetWeb.Business
             return matchedMatches;
         }
 
-        private async Task<IList<ApplicationUser>> GetUsersInternalAsync(Func<ApplicationUser, bool> predicate)
+        private async Task<IList<BettingUser>> GetUsersInternalAsync(Func<BettingUser, bool> predicate)
         {
             var allUsers = await _context.Users.ToListAsync();
             var matchedUsers = allUsers.Where(predicate).OrderBy(u => u.UserName).ToList();
@@ -176,7 +174,7 @@ namespace ImbaBetWeb.Business
             return matchedUsers;
         }
 
-        private IList<RankingItem<UserDetails>> GetRankingOfUsersInternal(IList<ApplicationUser> users)
+        private IList<RankingItem<UserDetails>> GetRankingOfUsersInternal(IList<BettingUser> users)
         {
             var rankingList = new List<RankingItem<UserDetails>>();
 

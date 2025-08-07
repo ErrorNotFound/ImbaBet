@@ -14,12 +14,12 @@ namespace ImbaBetWeb.Controllers
     public class OrgaController : Controller
     {
         private readonly BettingManager _bettingManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<BettingUser> _userManager;
         private readonly CommunityManager _communityManager;
 
         public OrgaController(
             BettingManager bettingManager, 
-            UserManager<ApplicationUser> userManager,
+            UserManager<BettingUser> userManager,
             CommunityManager communityManager)
         {
             _bettingManager = bettingManager;

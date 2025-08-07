@@ -9,12 +9,12 @@ namespace ImbaBetWeb.Business
     public class CommunityManager
     {
         private readonly ApplicationContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<BettingUser> _userManager;
         private readonly SettingsManager _settingsManager;
 
         public CommunityManager(
             ApplicationContext context, 
-            UserManager<ApplicationUser> userManager,
+            UserManager<BettingUser> userManager,
             SettingsManager settingsManager)
         {
             _context = context;
@@ -33,7 +33,7 @@ namespace ImbaBetWeb.Business
         }
 
 
-        public async Task CreateCommunityAsync(ApplicationUser owner, string name)
+        public async Task CreateCommunityAsync(BettingUser owner, string name)
         {
             if(false == await _settingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_CREATE))
             {
@@ -50,7 +50,7 @@ namespace ImbaBetWeb.Business
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteCommunityOfUserAsync(ApplicationUser user)
+        public async Task<bool> DeleteCommunityOfUserAsync(BettingUser user)
         {
             var community = await Communities.FirstOrDefaultAsync(x => x.OwnerId == user.Id);
             if (community != null)
@@ -75,7 +75,7 @@ namespace ImbaBetWeb.Business
             return false;
         }
 
-        public async Task<bool> JoinCommunityAsync(ApplicationUser user, int communityId)
+        public async Task<bool> JoinCommunityAsync(BettingUser user, int communityId)
         {
             if (false == await _settingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_JOIN))
             {
@@ -96,7 +96,7 @@ namespace ImbaBetWeb.Business
             return false;
         }
 
-        public async Task<bool> LeaveCommunityAsync(ApplicationUser user)
+        public async Task<bool> LeaveCommunityAsync(BettingUser user)
         {
             if (false == await _settingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE))
             {

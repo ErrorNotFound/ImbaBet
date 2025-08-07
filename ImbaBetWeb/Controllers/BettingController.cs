@@ -13,12 +13,12 @@ namespace ImbaBetWeb.Controllers
 {
     public class BettingController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<BettingUser> _userManager;
         private readonly BettingManager _bettingManager;
         private readonly CommunityManager _communityManager;
 
         public BettingController(
-            UserManager<ApplicationUser> userManager, 
+            UserManager<BettingUser> userManager, 
             BettingManager bettingManager,
             CommunityManager communityManager)
         {

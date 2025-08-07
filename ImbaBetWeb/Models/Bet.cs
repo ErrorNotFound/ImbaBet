@@ -22,7 +22,7 @@ namespace ImbaBetWeb.Models
         [Required]
         [ForeignKey("User")]
         public required string UserId { get; set; }
-        public virtual ApplicationUser User { get; set; } = null!;
+        public virtual BettingUser User { get; set; } = null!;
 
         public int GoalsA { get; set; }
 

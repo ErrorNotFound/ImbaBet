@@ -17,7 +17,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<BettingUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
 
 // forces session validation every minute

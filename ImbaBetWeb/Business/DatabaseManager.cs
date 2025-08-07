@@ -10,7 +10,7 @@ namespace ImbaBetWeb.Business
     {
         private ApplicationContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<BettingUser> _userManager;
         private readonly CommunityManager _communityManager;
         private readonly SettingsManager _settingsManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -19,7 +19,7 @@ namespace ImbaBetWeb.Business
         public DatabaseManager(
             ApplicationContext context, 
             RoleManager<IdentityRole> roleManager, 
-            UserManager<ApplicationUser> userManager,
+            UserManager<BettingUser> userManager,
             CommunityManager communityManager,
             SettingsManager settingsManager,
             IWebHostEnvironment webHostEnvironment,
@@ -132,7 +132,7 @@ namespace ImbaBetWeb.Business
             {
                 if (await _userManager.FindByEmailAsync(newUser.Email) == null)
                 {
-                    var user = new ApplicationUser();
+                    var user = new BettingUser();
                     user.Email = newUser.Email;
                     user.UserName = newUser.Username;
                     user.EmailConfirmed = true;
@@ -204,7 +204,7 @@ namespace ImbaBetWeb.Business
                 return;
             }
 
-            var user = new ApplicationUser();
+            var user = new BettingUser();
             user.Email = _configuration.GetSection("InitialSetup")["AdminAccountEMail"];
             user.UserName = _configuration.GetSection("InitialSetup")["AdminAccountUsername"];
             user.EmailConfirmed = true;

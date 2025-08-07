@@ -18,7 +18,7 @@ namespace ImbaBetWeb.Controllers
     public class AdminController(
         BettingManager bettingManager,
         GameManager gameManager,
-        UserManager<ApplicationUser> userManager,
+        UserManager<BettingUser> userManager,
         RoleManager<IdentityRole> roleManager,
         DatabaseManager databaseManager,
         CommunityManager communityManager,
@@ -28,7 +28,7 @@ namespace ImbaBetWeb.Controllers
     {
         private readonly BettingManager _bettingManager = bettingManager;
         private readonly GameManager _gameManager = gameManager;
-        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly UserManager<BettingUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly DatabaseManager _databaseManager = databaseManager;
         private readonly CommunityManager _communityManager = communityManager;

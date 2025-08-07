@@ -23,19 +23,19 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUserStore<ApplicationUser> _userStore;
-        private readonly IUserEmailStore<ApplicationUser> _emailStore;
+        private readonly SignInManager<BettingUser> _signInManager;
+        private readonly UserManager<BettingUser> _userManager;
+        private readonly IUserStore<BettingUser> _userStore;
+        private readonly IUserEmailStore<BettingUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationContext _applicationContext;
         private readonly SettingsManager _settingsManager;
 
         public RegisterModel(
-            UserManager<ApplicationUser> userManager,
-            IUserStore<ApplicationUser> userStore,
-            SignInManager<ApplicationUser> signInManager,
+            UserManager<BettingUser> userManager,
+            IUserStore<BettingUser> userStore,
+            SignInManager<BettingUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             ApplicationContext context,
@@ -185,29 +185,29 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private ApplicationUser CreateUser(string username)
+        private BettingUser CreateUser(string username)
         {
             try
             {
-                var user = Activator.CreateInstance<ApplicationUser>();
+                var user = Activator.CreateInstance<BettingUser>();
                 
                 return user; 
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(BettingUser)}'. " +
+                    $"Ensure that '{nameof(BettingUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
-        private IUserEmailStore<ApplicationUser> GetEmailStore()
+        private IUserEmailStore<BettingUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<ApplicationUser>)_userStore;
+            return (IUserEmailStore<BettingUser>)_userStore;
         }
     }
 }

@@ -6,6 +6,6 @@ namespace ImbaBetWeb.ViewModels.Orga
     {
         public required List<Community> Communities { get; set; }
 
-        public required ApplicationUser User { get; set; }
+        public required BettingUser User { get; set; }
     }
 }

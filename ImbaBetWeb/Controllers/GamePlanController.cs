@@ -10,12 +10,12 @@ namespace ImbaBetWeb.Controllers
     {
         private readonly GameManager _gameManager;
         private readonly BettingManager _bettingManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<BettingUser> _userManager;
 
         public GamePlanController(
             GameManager gameManager, 
             BettingManager bettingManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<BettingUser> userManager)
         {
             _gameManager = gameManager;
             _bettingManager = bettingManager;

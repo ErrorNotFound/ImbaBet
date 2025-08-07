@@ -12,9 +12,9 @@ namespace ImbaBetWeb.Models
 
         public required string OwnerId { get; set; }
         
-        public virtual ApplicationUser Owner { get; set; } = null!;
+        public virtual BettingUser Owner { get; set; } = null!;
 
-        public virtual IList<ApplicationUser> Members { get; set; } = null!;
+        public virtual IList<BettingUser> Members { get; set; } = null!;
 
         public override string ToString()
         {

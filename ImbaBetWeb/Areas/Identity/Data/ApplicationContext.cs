@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImbaBetWeb.Data;
 
-public class ApplicationContext : IdentityDbContext<ApplicationUser>
+public class ApplicationContext : IdentityDbContext<BettingUser>
 {
     public ApplicationContext(DbContextOptions<ApplicationContext> options)
         : base(options)
@@ -28,11 +28,11 @@ public class ApplicationContext : IdentityDbContext<ApplicationUser>
 
         
         builder.Entity<Community>()
-                .HasMany<ApplicationUser>(c => c.Members)
+                .HasMany<BettingUser>(c => c.Members)
                 .WithOne(u => u.MemberOfCommunity)
                 .HasForeignKey(u => u.MemberOfCommunityId);
         
-        builder.Entity<ApplicationUser>()
+        builder.Entity<BettingUser>()
             .HasOne<Community>(u => u.OwnerOfCommunity)
             .WithOne(c => c.Owner)
             .HasForeignKey<Community>(c => c.OwnerId);

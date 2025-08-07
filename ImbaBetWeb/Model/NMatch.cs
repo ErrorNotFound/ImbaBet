@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
 
-        public DateTime DateTime { get; set; }
+        public required DateTime DateTime { get; set; }
 
         public int? TeamATeamId { get; set; }
 

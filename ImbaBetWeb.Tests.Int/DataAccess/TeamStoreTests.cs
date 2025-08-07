@@ -52,5 +52,29 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             var items = await store.GetAllAsync();
             Assert.That(items, Is.Empty);
         }
+
+        [Test]
+        public async Task CreateGetUpdate_WithNullables_NoError()
+        {
+            // Arrange
+            var store = new TeamStore(TestDatabase.ConnectionString);
+            await store.EnsureInitializedAsync();
+            var team = new NTeam()
+            {
+                Name = "name",
+                FlagCountryCode = null
+            };
+
+            // Test Create and Retrieve
+            team.Id = await store.CreateAsync(team);
+            var retrieved = await store.GetAsync(team.Id);
+            Assert.That(retrieved, Is.EqualTo(team));
+
+            // Test Update
+            team.FlagCountryCode = null;
+            await store.UpdateAsync(team);
+            retrieved = (await store.GetAllAsync()).Single();
+            Assert.That(retrieved, Is.EqualTo(team));
+        }
     }
 }

@@ -36,10 +36,10 @@ namespace ImbaBetWeb.DataAccess
                 $"SELECT CONVERT(int,SCOPE_IDENTITY());";
 
             command.Parameters.Add($"@{colName_DateTime}", SqlDbType.DateTime2, field_length).Value = match.DateTime; // DateTime2 requires a length, but has no impact
-            command.Parameters.Add($"@{colName_TeamATeamId}", SqlDbType.Int).Value = match.TeamATeamId;
-            command.Parameters.Add($"@{colName_TeamBTeamId}", SqlDbType.Int).Value = match.TeamBTeamId;
-            command.Parameters.Add($"@{colName_AlternativeTeamAText}", SqlDbType.NVarChar, field_length).Value = match.AlternativeTeamAText;
-            command.Parameters.Add($"@{colName_AlternativeTeamBText}", SqlDbType.NVarChar, field_length).Value = match.AlternativeTeamBText;
+            command.Parameters.Add($"@{colName_TeamATeamId}", SqlDbType.Int).Value = match.TeamATeamId ?? (object)DBNull.Value;
+            command.Parameters.Add($"@{colName_TeamBTeamId}", SqlDbType.Int).Value = match.TeamBTeamId ?? (object)DBNull.Value;
+            command.Parameters.Add($"@{colName_AlternativeTeamAText}", SqlDbType.NVarChar, field_length).Value = match.AlternativeTeamAText ?? (object)DBNull.Value;
+            command.Parameters.Add($"@{colName_AlternativeTeamBText}", SqlDbType.NVarChar, field_length).Value = match.AlternativeTeamBText ?? (object)DBNull.Value;
             command.Parameters.Add($"@{colName_GoalsA}", SqlDbType.Int).Value = match.GoalsA;
             command.Parameters.Add($"@{colName_GoalsB}", SqlDbType.Int).Value = match.GoalsB;
             command.Parameters.Add($"@{colName_IsOver}", SqlDbType.Bit).Value = match.IsOver;
@@ -171,10 +171,10 @@ namespace ImbaBetWeb.DataAccess
                 {
                     Id = reader.GetInt32(oId),
                     DateTime = reader.GetDateTime(oDateTime),
-                    TeamATeamId = reader.GetInt32(oTeamATeamId),
-                    TeamBTeamId = reader.GetInt32(oTeamBTeamId),
-                    AlternativeTeamAText = reader.GetString(oAlternativeTeamAText),
-                    AlternativeTeamBText = reader.GetString(oAlternativeTeamBText),
+                    TeamATeamId = reader.IsDBNull(oTeamATeamId) ? null : reader.GetInt32(oTeamATeamId),
+                    TeamBTeamId = reader.IsDBNull(oTeamBTeamId) ? null : reader.GetInt32(oTeamBTeamId),
+                    AlternativeTeamAText = reader.IsDBNull(oAlternativeTeamAText) ? null : reader.GetString(oAlternativeTeamAText),
+                    AlternativeTeamBText = reader.IsDBNull(oAlternativeTeamBText) ? null : reader.GetString(oAlternativeTeamBText),
                     GoalsA = reader.GetInt32(oGoalsA),
                     GoalsB = reader.GetInt32(oGoalsB),
                     IsOver = reader.GetBoolean(oIsOver),
@@ -196,10 +196,10 @@ namespace ImbaBetWeb.DataAccess
                 $"WHERE [{colName_Id}]=@{colName_Id}";
 
             command.Parameters.Add($"@{colName_DateTime}", SqlDbType.DateTime2, field_length).Value = match.DateTime; // DateTime2 requires a length, but has no impact
-            command.Parameters.Add($"@{colName_TeamATeamId}", SqlDbType.Int).Value = match.TeamATeamId;
-            command.Parameters.Add($"@{colName_TeamBTeamId}", SqlDbType.Int).Value = match.TeamBTeamId;
-            command.Parameters.Add($"@{colName_AlternativeTeamAText}", SqlDbType.NVarChar, field_length).Value = match.AlternativeTeamAText;
-            command.Parameters.Add($"@{colName_AlternativeTeamBText}", SqlDbType.NVarChar, field_length).Value = match.AlternativeTeamBText;
+            command.Parameters.Add($"@{colName_TeamATeamId}", SqlDbType.Int).Value = match.TeamATeamId ?? (object)DBNull.Value;
+            command.Parameters.Add($"@{colName_TeamBTeamId}", SqlDbType.Int).Value = match.TeamBTeamId ?? (object)DBNull.Value;
+            command.Parameters.Add($"@{colName_AlternativeTeamAText}", SqlDbType.NVarChar, field_length).Value = match.AlternativeTeamAText ?? (object)DBNull.Value;
+            command.Parameters.Add($"@{colName_AlternativeTeamBText}", SqlDbType.NVarChar, field_length).Value = match.AlternativeTeamBText ?? (object)DBNull.Value;
             command.Parameters.Add($"@{colName_GoalsA}", SqlDbType.Int).Value = match.GoalsA;
             command.Parameters.Add($"@{colName_GoalsB}", SqlDbType.Int).Value = match.GoalsB;
             command.Parameters.Add($"@{colName_IsOver}", SqlDbType.Bit).Value = match.IsOver;

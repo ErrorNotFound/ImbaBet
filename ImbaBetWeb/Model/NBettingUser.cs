@@ -1,6 +1,4 @@
-﻿using ImbaBetWeb.Models;
-
-namespace ImbaBetWeb.Model
+﻿namespace ImbaBetWeb.Model
 {
     public record NBettingUser
     {

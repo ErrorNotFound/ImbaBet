@@ -1,6 +1,6 @@
 ﻿using ImbaBetWeb.DataAccess.Interfaces;
 using ImbaBetWeb.Model;
-using ImbaBetWeb.Models.Consts;
+using ImbaBetWeb.Model.Consts;
 using System.ComponentModel;
 using System.Reflection;
 

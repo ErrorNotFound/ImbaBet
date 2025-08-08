@@ -5,7 +5,6 @@
 using ImbaBetWeb.Data;
 using ImbaBetWeb.Business;
 using ImbaBetWeb.Models;
-using ImbaBetWeb.Models.Consts;
 using ImbaBetWeb.Validation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +17,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using ImbaBetWeb.Model.Consts;
 
 namespace ImbaBetWeb.Areas.Identity.Pages.Account
 {

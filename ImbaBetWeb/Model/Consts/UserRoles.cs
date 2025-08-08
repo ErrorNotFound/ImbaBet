@@ -1,4 +1,4 @@
-﻿namespace ImbaBetWeb.Models.Consts
+﻿namespace ImbaBetWeb.Model.Consts
 {
     public static class UserRoles
     {

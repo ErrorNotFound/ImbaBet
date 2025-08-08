@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace ImbaBetWeb.Models.Consts
+namespace ImbaBetWeb.Model.Consts
 {
     public class SettingNames
     {

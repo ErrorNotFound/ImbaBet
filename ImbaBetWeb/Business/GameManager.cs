@@ -4,8 +4,8 @@ using ImbaBetWeb.Business.Ranking;
 using ImbaBetWeb.Business.Ranking.Comparer;
 using ImbaBetWeb.Business.Ranking.Details;
 using ImbaBetWeb.Models;
-using ImbaBetWeb.Models.Consts;
 using Microsoft.EntityFrameworkCore;
+using ImbaBetWeb.Model.Consts;
 
 namespace ImbaBetWeb.Business
 {

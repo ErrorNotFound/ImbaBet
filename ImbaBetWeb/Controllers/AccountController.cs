@@ -1,10 +1,6 @@
 ﻿using ImbaBetWeb.Business;
-using ImbaBetWeb.Business.Extensions;
 using ImbaBetWeb.Models;
-using ImbaBetWeb.Models.Consts;
 using ImbaBetWeb.ViewModels.Account;
-using ImbaBetWeb.ViewModels.DTO;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

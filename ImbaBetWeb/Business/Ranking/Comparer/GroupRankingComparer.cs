@@ -1,6 +1,6 @@
 ﻿using ImbaBetWeb.Business.Extensions;
 using ImbaBetWeb.Business.Ranking.Details;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 
 namespace ImbaBetWeb.Business.Ranking.Comparer
 {

@@ -26,7 +26,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             // Arrange
             var store = new MatchStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var match = new NMatch()
+            var match = new Match()
             {
                 Id = 1,
                 DateTime = DateTime.Now,
@@ -72,7 +72,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             // Arrange
             var store = new MatchStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var team = new NMatch()
+            var team = new Match()
             {
                 DateTime = DateTime.Today,
                 TeamATeamId = null,

@@ -4,11 +4,11 @@ namespace ImbaBetWeb.DataAccess.Interfaces
 {
     public interface IMatchGroupStore
     {
-        Task<int> CreateAsync(NMatchGroup obj);
-        Task<NMatchGroup> GetAsync(int id);
-        Task<IEnumerable<NMatchGroup>> GetAllAsync();
-        Task UpdateAsync(NMatchGroup obj);
-        Task DeleteAsync(NMatchGroup key);
+        Task<int> CreateAsync(MatchGroup obj);
+        Task<MatchGroup> GetAsync(int id);
+        Task<IEnumerable<MatchGroup>> GetAllAsync();
+        Task UpdateAsync(MatchGroup obj);
+        Task DeleteAsync(MatchGroup key);
 
         Task EnsureInitializedAsync();
     }

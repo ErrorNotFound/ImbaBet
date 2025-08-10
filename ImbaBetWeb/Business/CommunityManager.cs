@@ -1,6 +1,6 @@
 ﻿using ImbaBetWeb.Data;
 using ImbaBetWeb.Model.Consts;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

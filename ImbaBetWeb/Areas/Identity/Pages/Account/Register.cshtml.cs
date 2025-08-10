@@ -4,7 +4,7 @@
 
 using ImbaBetWeb.Data;
 using ImbaBetWeb.Business;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Validation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;

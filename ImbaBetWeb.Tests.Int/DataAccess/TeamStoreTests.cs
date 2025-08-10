@@ -26,7 +26,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             // Arrange
             var store = new TeamStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var team = new NTeam()
+            var team = new Team()
             {
                 Name = "name",
                 FlagCountryCode = null,
@@ -59,7 +59,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             // Arrange
             var store = new TeamStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var team = new NTeam()
+            var team = new Team()
             {
                 Name = "name",
                 FlagCountryCode = null

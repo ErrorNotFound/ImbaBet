@@ -15,13 +15,10 @@ namespace ImbaBetWeb.Business
         {
             settingStore = store;
 
-            var task = settingStore.EnsureInitializedAsync();
+            var task = settingStore.GetAllAsync();
             task.Wait();
 
-            var task2 = store.GetAllAsync();
-            task2.Wait();
-
-            _cachedSettings = task2.Result.ToDictionary(k => k.Key, v => v);
+            _cachedSettings = task.Result.ToDictionary(k => k.Key, v => v);
         }
 
 

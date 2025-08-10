@@ -2,106 +2,117 @@
 using ImbaBetWeb.Business.Ranking;
 using ImbaBetWeb.Business.Ranking.Comparer;
 using ImbaBetWeb.Business.Ranking.Details;
-using ImbaBetWeb.Data;
+using ImbaBetWeb.DataAccess.Interfaces;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Model.Consts;
-using ImbaBetWeb.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace ImbaBetWeb.Business
 {
     public class BettingManager
     {
-        private readonly ApplicationContext _context;
         private readonly SettingsManager _settingsManager;
+        private readonly IDataStoreManager _dataStoreManager;
 
         public BettingManager(
-            ApplicationContext context, 
+            IDataStoreManager dataStoreManager, 
             SettingsManager settingsManager)
         {
-            _context = context;
+            _dataStoreManager = dataStoreManager;
             _settingsManager = settingsManager;
         }
 
-        public async Task<IList<Bet>> GetOpenBetsForUserAsync(BettingUser user)
+        /// <summary>
+        /// Returns a list of bets that the user has not betted on yet
+        /// </summary>
+        public async Task<IEnumerable<Bet>> GetOpenBetsForUserAsync(BettingUser user)
         {
-            var betableMatches = await GetMatchesInternalAsync((match) => { return match.CanBet(); });
-            var activeBetsByUser = await GetBetsInternalAsync((bet) => { return bet.User == user && bet.Match.CanBet(); });
+            var gameplan = await _dataStoreManager.GetGameplanAsync();
+            var bets = await _dataStoreManager.GetBetsAsync();
 
-            var missingBetObjects = betableMatches.Where(match => !activeBetsByUser.Any(bet => bet.Match == match)).Select(bet => new Bet()
+            var betableMatches = gameplan.Matches.Where(match => match.CanBet());
+            var betsByUser = bets.Where(bet => bet.UserId == user.Id);
+
+            var matchesNotBetOnByUser = betableMatches.Where(m => !betsByUser.Any(b => b.MatchId == m.Id));
+
+            var openBets = matchesNotBetOnByUser.Select(m => new Bet()
             {
-                Match = bet,
-                MatchId = bet.Id,
-                User = user,
-                UserId = user.Id
-            }).ToList();
+                Match = m,
+                MatchId = m.Id,
+                UserId = user.Id,
+                User = user
+            });
 
-            return activeBetsByUser.Concat(missingBetObjects).OrderBy(x => x.Match.DateTime).ToList();
+            return openBets.ToList();
         }
 
-        public async Task<IList<Bet>> GetActiveBetsForUserAsync(BettingUser user)
+        /// <summary>
+        /// Returns a list of bets that the user has betted on but can still be modified
+        /// </summary>
+        public async Task<IEnumerable<Bet>> GetActiveBetsForUserAsync(BettingUser user)
         {
-            Func<Bet, bool> predicate = (bet) => { return bet.User == user && !bet.Match.IsOver && DateTime.UtcNow >= bet.Match.DateTime; };
-            return await GetBetsInternalAsync(predicate);
+            var bets = await _dataStoreManager.GetBetsAsync();
+            return bets.Where(bet => bet.User == user && bet.IsActiveBet());
         }
 
-        public async Task<IList<Bet>> GetClosedBetsForUserAsync(BettingUser user)
+        /// <summary>
+        /// Returns a list of bets that the user has betted on and can't be modified anymore
+        /// </summary>
+        public async Task<IEnumerable<Bet>> GetClosedBetsForUserAsync(BettingUser user)
         {
-            Func<Bet, bool> predicate = (bet) => { return bet.User == user && bet.Match.IsOver; };
-            return await GetBetsInternalAsync(predicate);
+            var bets = await _dataStoreManager.GetBetsAsync();
+            return bets.Where(bet => bet.User == user && bet.IsClosedBet());
         }
 
-        public async Task<IList<Bet>> GetActiveBetsForMatchAsync(int matchId)
+        public async Task<IEnumerable<Bet>> GetActiveBetsForMatchAsync(int matchId)
         {
-            Func<Bet, bool> predicate = (bet) => { return bet.MatchId == matchId && !bet.Match.IsOver && DateTime.UtcNow >= bet.Match.DateTime; };
-            return await GetBetsInternalAsync(predicate);
+            var bets = await _dataStoreManager.GetBetsAsync();
+            return bets.Where(bet => bet.MatchId == matchId && bet.IsActiveBet());
         }
 
-        public async Task<IList<Bet>> GetClosedBetsForMatchAsync(int matchId)
+        public async Task<IEnumerable<Bet>> GetClosedBetsForMatchAsync(int matchId)
         {
-            Func<Bet, bool> predicate = (bet) => { return bet.MatchId == matchId && bet.Match.IsOver; };
-            return await GetBetsInternalAsync(predicate);
+            var bets = await _dataStoreManager.GetBetsAsync();
+            return bets.Where(bet => bet.MatchId == matchId && bet.IsClosedBet());
         }
 
-        public async Task<bool> UpdateBetsAsync(IList<Bet> bets)
+        public async Task<bool> UpdateBetsAsync(IEnumerable<Bet> bets)
         {
             if(bets == null)
             {  
                 return false; 
             }
 
-            var allMatches = await GetMatchesInternalAsync((match) => true);
-            var allowedBets = bets.Where((bet) => { return allMatches.SingleOrDefault(match => match.Id == bet.MatchId)?.CanBet() ?? false; });
+            var gameplan = await _dataStoreManager.GetGameplanAsync();
+            var allowedBets = bets.Where((bet) => { return gameplan.Matches.SingleOrDefault(match => match.Id == bet.MatchId)?.CanBet() ?? false; });
 
-            _context.Bets.UpdateRange(allowedBets);
-            await _context.SaveChangesAsync();
+            await _dataStoreManager.UpdateBetsAsync(allowedBets);
 
-            return bets.Count == allowedBets.Count();
+            return bets.Count() == allowedBets.Count();
         }
 
         public async Task UpdatePointsAsync()
         {    
             // Update Bets
-            var allBets = await GetBetsInternalAsync((bet) => true);
+            var allBets = await _dataStoreManager.GetBetsAsync();
             foreach (var bet in allBets)
             {
                 bet.Points = await GetPointsForBet(bet);
             }
-            _context.Bets.UpdateRange(allBets);
-            await _context.SaveChangesAsync();
+            await _dataStoreManager.UpdateBetsAsync(allBets);
 
             // Update Users
-            var allUsers = await GetUsersInternalAsync((user) => true);
-            foreach (var user in allUsers)
+            var users = await _dataStoreManager.GetUsersAsync();
+            foreach (var user in users)
             {
-                user.Points = user.Bets.Sum(b => b.Points);
+                var userBets = allBets.Where(bet => bet.UserId == user.Id);
+                user.Points = userBets.Sum(b => b.Points);
             }
-            _context.Users.UpdateRange(allUsers);
-            await _context.SaveChangesAsync();
+            await _dataStoreManager.UpdateUsersAsync(users);
         }
 
         public async Task<IList<RankingItem<UserDetails>>> GetUserRankingAsync()
         {
-            var users = await GetUsersInternalAsync((user) => true);
+            var users = await _dataStoreManager.GetUsersAsync();
             var list = GetRankingOfUsersInternal(users);
 
             return list;
@@ -109,21 +120,22 @@ namespace ImbaBetWeb.Business
 
         public async Task<IList<RankingItem<UserDetails>>> GetUserRankingOfCommunityAsync(int communityId)
         {
-            var users = await GetUsersInternalAsync((user) => { return user.MemberOfCommunityId == communityId; });
-            var list = GetRankingOfUsersInternal(users);
+            var users = await _dataStoreManager.GetUsersAsync();
+            var communityUsers = users.Where(user => user.MemberOfCommunityId == communityId);
+            var list = GetRankingOfUsersInternal(communityUsers);
 
             return list;
         }
 
         public async Task<IList<RankingItem<CommunityDetails>>> GetCommunityRankingAsync()
         {
-            var communities = await _context.Communities.Include(c => c.Members).ToListAsync();
+            var communities = await _dataStoreManager.GetCommunitiesAsync();
             var minMemberCount = await _settingsManager.GetSettingValueAsync<int>(SettingNames.MIN_MEMBER_COUNT_FOR_RANKING);
 
-            var list = communities.Where(x => x.Members.Count >= minMemberCount).Select(community =>
+            var list = communities.Where(x => x.Members.Count() >= minMemberCount).Select(community =>
             {
                 var totalPoints = community.Members.Sum(member => member.Points);
-                var memberCount = community.Members.Count;
+                var memberCount = community.Members.Count();
 
                 var item = new RankingItem<CommunityDetails>
                 {
@@ -144,37 +156,7 @@ namespace ImbaBetWeb.Business
             return list;
         }
 
-        private async Task<IList<Bet>> GetBetsInternalAsync(Func<Bet, bool> predicate)
-        {
-            var allBets = await _context.Bets
-                .Include(b => b.User)
-                .Include(b => b.Match)
-                .ThenInclude(m => m.TeamA)
-                .Include(b => b.Match)
-                .ThenInclude(m => m.TeamB).ToListAsync();
-
-            var matchedBets = allBets.Where(predicate).OrderBy(b => b.Match.DateTime).ToList();
-
-            return matchedBets;
-        }
-
-        private async Task<IList<Match>> GetMatchesInternalAsync(Func<Match, bool> predicate)
-        {
-            var allMatches = await _context.Matches.ToListAsync();
-            var matchedMatches = allMatches.Where(predicate).OrderBy(m => m.DateTime).ToList();
-
-            return matchedMatches;
-        }
-
-        private async Task<IList<BettingUser>> GetUsersInternalAsync(Func<BettingUser, bool> predicate)
-        {
-            var allUsers = await _context.Users.ToListAsync();
-            var matchedUsers = allUsers.Where(predicate).OrderBy(u => u.UserName).ToList();
-
-            return matchedUsers;
-        }
-
-        private IList<RankingItem<UserDetails>> GetRankingOfUsersInternal(IList<BettingUser> users)
+        private IList<RankingItem<UserDetails>> GetRankingOfUsersInternal(IEnumerable<BettingUser> users)
         {
             var rankingList = new List<RankingItem<UserDetails>>();
 
@@ -194,7 +176,7 @@ namespace ImbaBetWeb.Business
 
         private async Task<int> GetPointsForBet(Bet bet)
         {
-            var match = bet.Match;
+            var match = bet.Match!;
             if (!match.IsOver)
                 return 0;
 

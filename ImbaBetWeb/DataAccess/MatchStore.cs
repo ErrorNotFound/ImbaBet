@@ -24,7 +24,7 @@ namespace ImbaBetWeb.DataAccess
 
         private readonly int field_length = 128;
 
-        public async Task<int> CreateAsync(NMatch match)
+        public async Task<int> CreateAsync(Match match)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -54,7 +54,7 @@ namespace ImbaBetWeb.DataAccess
             return (int)result;
         }
 
-        public async Task DeleteAsync(NMatch match)
+        public async Task DeleteAsync(Match match)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -114,7 +114,7 @@ namespace ImbaBetWeb.DataAccess
             await connection.CloseAsync();
         }
 
-        public async Task<NMatch> GetAsync(int id)
+        public async Task<Match> GetAsync(int id)
         {
             var itemList = await InternalGetAsync(id);
             var count = itemList.Count();
@@ -128,12 +128,12 @@ namespace ImbaBetWeb.DataAccess
             return itemList.Single();
         }
 
-        public async Task<IEnumerable<NMatch>> GetAllAsync()
+        public async Task<IEnumerable<Match>> GetAllAsync()
         {
             return await InternalGetAsync(null);
         }
 
-        private async Task<IEnumerable<NMatch>> InternalGetAsync(int? id)
+        private async Task<IEnumerable<Match>> InternalGetAsync(int? id)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -163,11 +163,11 @@ namespace ImbaBetWeb.DataAccess
             int oIsOver = reader.GetOrdinal(colName_IsOver);
             int oMatchGroupId = reader.GetOrdinal(colName_MatchGroupId);
 
-            var list = new List<NMatch>();
+            var list = new List<Match>();
 
             while (await reader.ReadAsync())
             {
-                list.Add(new NMatch
+                list.Add(new Match
                 {
                     Id = reader.GetInt32(oId),
                     DateTime = reader.GetDateTime(oDateTime),
@@ -186,7 +186,7 @@ namespace ImbaBetWeb.DataAccess
             return list;
         }
 
-        public async Task UpdateAsync(NMatch match)
+        public async Task UpdateAsync(Match match)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();

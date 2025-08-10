@@ -26,7 +26,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             // Arrange
             var store = new BetStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var bet = new NBet()
+            var bet = new Bet()
             {
                 UserId = 1,
                 MatchId = 2,

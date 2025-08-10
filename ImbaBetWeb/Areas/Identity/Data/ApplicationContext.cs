@@ -1,4 +1,4 @@
-﻿using ImbaBetWeb.Models;
+﻿using ImbaBetWeb.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,31 +12,9 @@ public class ApplicationContext : IdentityDbContext<BettingUser>
                 
     }
 
-    public DbSet<Team> Teams { get; set; }
-
-    public DbSet<MatchGroup> MatchGroups { get; set; }
-
-    public DbSet<Match> Matches { get; set; }
-
-    public DbSet<Community> Communities { get; set; }
-
-    public DbSet<Bet> Bets { get; set; }
-
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
-        
-        builder.Entity<Community>()
-                .HasMany<BettingUser>(c => c.Members)
-                .WithOne(u => u.MemberOfCommunity)
-                .HasForeignKey(u => u.MemberOfCommunityId);
-        
-        builder.Entity<BettingUser>()
-            .HasOne<Community>(u => u.OwnerOfCommunity)
-            .WithOne(c => c.Owner)
-            .HasForeignKey<Community>(c => c.OwnerId);
-        
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -1566,6 +1566,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Design\" />
     <Folder Include="wwwroot\Resources\Flags\Large\" />
     <Folder Include="wwwroot\Resources\Images\" />
   </ItemGroup>

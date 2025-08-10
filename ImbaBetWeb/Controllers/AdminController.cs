@@ -1,7 +1,7 @@
 ﻿using ImbaBetWeb.Business;
 using ImbaBetWeb.Business.Extensions;
 using ImbaBetWeb.Model.Consts;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Services;
 using ImbaBetWeb.Validation;
 using ImbaBetWeb.ViewModels.Admin;

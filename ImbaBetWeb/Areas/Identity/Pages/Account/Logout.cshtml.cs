@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 
 namespace ImbaBetWeb.Areas.Identity.Pages.Account
 {

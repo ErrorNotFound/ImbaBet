@@ -18,7 +18,7 @@ namespace ImbaBetWeb.DataAccess
 
         private readonly int field_length = 128;
 
-        public async Task<int> CreateAsync(NMatchGroup mg)
+        public async Task<int> CreateAsync(MatchGroup mg)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -43,7 +43,7 @@ namespace ImbaBetWeb.DataAccess
             return (int)result;
         }
 
-        public async Task DeleteAsync(NMatchGroup mg)
+        public async Task DeleteAsync(MatchGroup mg)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -97,7 +97,7 @@ namespace ImbaBetWeb.DataAccess
             await connection.CloseAsync();
         }
 
-        public async Task<NMatchGroup> GetAsync(int id)
+        public async Task<MatchGroup> GetAsync(int id)
         {
             var itemList = await InternalGetAsync(id);
             var count = itemList.Count();
@@ -111,12 +111,12 @@ namespace ImbaBetWeb.DataAccess
             return itemList.Single();
         }
 
-        public async Task<IEnumerable<NMatchGroup>> GetAllAsync()
+        public async Task<IEnumerable<MatchGroup>> GetAllAsync()
         {
             return await InternalGetAsync(null);
         }
 
-        private async Task<IEnumerable<NMatchGroup>> InternalGetAsync(int? id)
+        private async Task<IEnumerable<MatchGroup>> InternalGetAsync(int? id)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -140,11 +140,11 @@ namespace ImbaBetWeb.DataAccess
             int oHasGroupRanking = reader.GetOrdinal(colName_HasGroupRanking);
             int oStackRank = reader.GetOrdinal(colName_StackRank);
 
-            var list = new List<NMatchGroup>();
+            var list = new List<MatchGroup>();
 
             while (await reader.ReadAsync())
             {
-                list.Add(new NMatchGroup
+                list.Add(new MatchGroup
                 {
                     Id = reader.GetInt32(oId),
                     Name = reader.GetString(oName),
@@ -157,7 +157,7 @@ namespace ImbaBetWeb.DataAccess
             return list;
         }
 
-        public async Task UpdateAsync(NMatchGroup mg)
+        public async Task UpdateAsync(MatchGroup mg)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();

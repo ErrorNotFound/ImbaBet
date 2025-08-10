@@ -1,11 +1,13 @@
 ﻿namespace ImbaBetWeb.Model
 {
-    public record NBet
+    public record Bet
     {
         public int Id { get; set; }
 
+        public Match? Match { get; set; } = null!;
         public int MatchId { get; set; }
 
+        public BettingUser? User { get; set; } = null!;
         public int UserId { get; set; }
 
         public int GoalsA { get; set; }

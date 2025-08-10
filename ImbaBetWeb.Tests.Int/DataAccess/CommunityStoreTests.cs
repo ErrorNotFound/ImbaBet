@@ -26,7 +26,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             // Arrange
             var store = new CommunityStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var community = new NCommunity()
+            var community = new Community()
             {
                 Name = "Test Community",
                 OwnerId = 1

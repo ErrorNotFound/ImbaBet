@@ -1,6 +1,6 @@
 using ImbaBetWeb.Business;
 using ImbaBetWeb.Business.Extensions;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Validation;
 using ImbaBetWeb.ViewModels.Orga;
 using Microsoft.AspNetCore.Authorization;

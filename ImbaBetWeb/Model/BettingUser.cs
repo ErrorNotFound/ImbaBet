@@ -1,8 +1,9 @@
-﻿namespace ImbaBetWeb.Model
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace ImbaBetWeb.Model
 {
-    public record NBettingUser
+    public class BettingUser : IdentityUser<int>
     {
-        public int Id { get; set; }
         public int? MemberOfCommunityId { get; set; }
 
         public int Points { get; set; }

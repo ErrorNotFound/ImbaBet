@@ -26,7 +26,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             // Arrange
             var store = new BettingUserStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var user = new NBettingUser()
+            var user = new BettingUser()
             {
                 MemberOfCommunityId = 1,
                 Points = 2,
@@ -61,7 +61,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             // Arrange
             var store = new BettingUserStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var user = new NBettingUser()
+            var user = new BettingUser()
             {
                 MemberOfCommunityId = null,
                 ProfilePicturePath = null

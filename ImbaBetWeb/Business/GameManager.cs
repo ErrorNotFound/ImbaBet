@@ -1,50 +1,50 @@
-﻿using ImbaBetWeb.Data;
-using ImbaBetWeb.Business.Extensions;
+﻿using ImbaBetWeb.Business.Extensions;
 using ImbaBetWeb.Business.Ranking;
 using ImbaBetWeb.Business.Ranking.Comparer;
 using ImbaBetWeb.Business.Ranking.Details;
-using ImbaBetWeb.Models;
-using Microsoft.EntityFrameworkCore;
+using ImbaBetWeb.DataAccess.Interfaces;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Model.Consts;
 
 namespace ImbaBetWeb.Business
 {
     public class GameManager
     {
-        private readonly ApplicationContext _context;
-        private readonly SettingsManager _settingsManager;
+        private readonly IDataStoreManager dataStore;
+        private readonly SettingsManager settingsManager;
 
-        public GameManager(ApplicationContext context, SettingsManager settingsManager)
+        public GameManager(IDataStoreManager dataStore, SettingsManager settingsManager)
         {
-            _context = context;
-            _settingsManager = settingsManager;
+            this.dataStore = dataStore;
+            this.settingsManager = settingsManager;
         }
 
-        public async Task<IList<Match>> GetMatchesAsync()
+        public async Task<IEnumerable<Match>> GetMatchesAsync()
         {
-            return await _context.Matches.ToListAsync();
+            return await _matchStore.GetAllAsync();
         }
 
-        public async Task<IList<MatchGroup>> GetMatchGroupsAsync()
+        public async Task<IEnumerable<MatchGroup>> GetMatchGroupsAsync()
         {
-            return await _context.MatchGroups.ToListAsync();
+            return await _matchGroupStore.GetAllAsync();
         }
 
-        public async Task<IList<Team>> GetTeamsAsync()
+        public async Task<IEnumerable<Team>> GetTeamsAsync()
         {
-            return await _context.Teams.ToListAsync();
+            return await _teamStore.GetAllAsync();
         }
 
         public async Task UpdateMatchesAsync(IList<Match> matches)
         {
-            _context.Matches.UpdateRange(matches);
-            await _context.SaveChangesAsync();
+            foreach (var match in matches)
+            {
+                await _matchStore.UpdateAsync(match);
+            }
         }
 
         public async Task<Match?> GetMatchByIdAsync(int matchId)
         {
-            var match = await _context.Matches.FirstOrDefaultAsync(m => m.Id == matchId);
-            return match;
+            return await _matchStore.GetAsync(matchId);
         }
 
 
@@ -66,6 +66,8 @@ namespace ImbaBetWeb.Business
             var result = new Dictionary<MatchGroup, IList<RankingItem<TeamDetails>>>();
             foreach (var matchGroup in matchGroupsWithGroupRanking)
             {
+   
+
                 var rankingForGroup = await GetRankingInternalAsync(matchGroup.Matches, matchGroup.GetTeamList(), new GroupRankingComparer(matchGroup));
                 result.Add(matchGroup, rankingForGroup);
             }
@@ -74,7 +76,7 @@ namespace ImbaBetWeb.Business
         }
 
 
-        private async Task<IList<RankingItem<TeamDetails>>> GetRankingInternalAsync(IList<Match> matches, IList<Team> teams, IComparer<RankingItem<TeamDetails>> comparer)
+        private async Task<IList<RankingItem<TeamDetails>>> GetRankingInternalAsync(IEnumerable<Match> matches, IEnumerable<Team> teams, IComparer<RankingItem<TeamDetails>> comparer)
         {
             var list = new List<RankingItem<TeamDetails>>();
 
@@ -95,8 +97,8 @@ namespace ImbaBetWeb.Business
                     }
                 };
 
-                item.Points =   item.Details.Wins * await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_WIN) 
-                                + item.Details.Draws * await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_DRAW);
+                item.Points =   item.Details.Wins * await settingsManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_WIN) 
+                                + item.Details.Draws * await settingsManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_DRAW);
 
                 list.Add(item);
             }

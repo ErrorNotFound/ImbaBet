@@ -19,7 +19,7 @@ namespace ImbaBetWeb.DataAccess
 
         private readonly int field_length = 128;
 
-        public async Task<int> CreateAsync(NTeam team)
+        public async Task<int> CreateAsync(Team team)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -43,7 +43,7 @@ namespace ImbaBetWeb.DataAccess
             return (int)result;
         }
 
-        public async Task DeleteAsync(NTeam team)
+        public async Task DeleteAsync(Team team)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -97,7 +97,7 @@ namespace ImbaBetWeb.DataAccess
             await connection.CloseAsync();
         }
 
-        public async Task<NTeam> GetAsync(int id)
+        public async Task<Team> GetAsync(int id)
         {
             var itemList = await InternalGetAsync(id);
             var count = itemList.Count();
@@ -111,12 +111,12 @@ namespace ImbaBetWeb.DataAccess
             return itemList.Single();
         }
 
-        public async Task<IEnumerable<NTeam>> GetAllAsync()
+        public async Task<IEnumerable<Team>> GetAllAsync()
         {
             return await InternalGetAsync(null);
         }
 
-        private async Task<IEnumerable<NTeam>> InternalGetAsync(int? id)
+        private async Task<IEnumerable<Team>> InternalGetAsync(int? id)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -140,11 +140,11 @@ namespace ImbaBetWeb.DataAccess
             int oFlagCountryCode = reader.GetOrdinal(colName_FlagCountryCode);
             int oStackRank = reader.GetOrdinal(colName_StackRank);
 
-            var list = new List<NTeam>();
+            var list = new List<Team>();
 
             while (await reader.ReadAsync())
             {
-                list.Add(new NTeam
+                list.Add(new Team
                 {
                     Id = reader.GetInt32(oId),
                     Name = reader.GetString(oName),
@@ -157,7 +157,7 @@ namespace ImbaBetWeb.DataAccess
             return list;
         }
 
-        public async Task UpdateAsync(NTeam team)
+        public async Task UpdateAsync(Team team)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();

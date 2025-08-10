@@ -1,5 +1,5 @@
 ﻿using ImbaBetWeb.Business;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.ViewModels.GamePlan;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

@@ -1,14 +1,12 @@
+using ImbaBetWeb.Business;
 using ImbaBetWeb.Data;
 using ImbaBetWeb.DataAccess;
 using ImbaBetWeb.DataAccess.Interfaces;
-using ImbaBetWeb.Business;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Configuration;
-using System.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,7 +37,8 @@ builder.Services.AddScoped<CommunityManager>();
 builder.Services.AddScoped<DatabaseManager>();
 builder.Services.AddScoped<SettingsManager>();
 builder.Services.AddScoped<MatchPlanImportService>();
-builder.Services.AddScoped<ISettingStore>((provider) => { return new SettingStore(connectionString); });
+builder.Services.AddScoped<IDataStoreManager>((provider) => { return new DataStoreManager(connectionString); });
+
 
 builder.Services.AddTransient<IEmailSender, EmailService>(i =>
                 new EmailService(
@@ -85,6 +84,8 @@ using (var scope = app.Services.CreateScope())
     {
         context.Database.Migrate();
     }
+
+    await services.GetRequiredService<IDataStoreManager>().Initialize();
 
     // make sure database is seeded with required data
     var databaseManager = services.GetRequiredService<DatabaseManager>();

@@ -26,7 +26,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             // Arrange
             var store = new MatchGroupStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var matchGroup = new NMatchGroup()
+            var matchGroup = new MatchGroup()
             {
                 Name = "Match Group Name",
                 HasGroupRanking = true,

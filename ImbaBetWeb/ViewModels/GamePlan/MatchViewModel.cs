@@ -1,4 +1,4 @@
-﻿using ImbaBetWeb.Models;
+﻿using ImbaBetWeb.Model;
 using ImbaBetWeb.ViewModels.DTO;
 
 namespace ImbaBetWeb.ViewModels.GamePlan

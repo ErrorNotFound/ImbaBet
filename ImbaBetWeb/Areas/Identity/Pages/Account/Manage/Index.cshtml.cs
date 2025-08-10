@@ -5,7 +5,7 @@
 using ImbaBetWeb.Business;
 using ImbaBetWeb.Business.Extensions;
 using ImbaBetWeb.Business.Helper;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Validation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

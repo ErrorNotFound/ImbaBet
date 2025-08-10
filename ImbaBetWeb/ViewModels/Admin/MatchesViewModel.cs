@@ -1,5 +1,5 @@
 ﻿
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 
 namespace ImbaBetWeb.ViewModels.Admin
 {

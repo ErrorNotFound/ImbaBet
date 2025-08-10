@@ -1,4 +1,4 @@
-﻿using ImbaBetWeb.Models;
+﻿using ImbaBetWeb.Model;
 
 namespace ImbaBetWeb.Business.Ranking.Details
 {

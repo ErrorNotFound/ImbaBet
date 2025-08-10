@@ -1,6 +1,6 @@
 ﻿using ImbaBetWeb.Business.Ranking.Details;
 using ImbaBetWeb.Business.Ranking;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 
 namespace ImbaBetWeb.ViewModels.Betting
 {

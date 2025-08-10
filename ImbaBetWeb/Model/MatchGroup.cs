@@ -1,12 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ImbaBetWeb.Models
+﻿namespace ImbaBetWeb.Model
 {
-    [Table("MatchGroups")]
-    public class MatchGroup
+    public record MatchGroup
     {
-        [Key]
         public int Id { get; set; }
         public required string Name { get; set; }
 
@@ -14,12 +9,11 @@ namespace ImbaBetWeb.Models
 
         public int StackRank { get; set; }
 
-        public virtual IList<Match> Matches { get; set; } = null!;
+        public IEnumerable<Match> Matches { get; set; } = null!;
 
         public override string ToString()
         {
             return $"{Name} ({Id})";
         }
     }
-
 }

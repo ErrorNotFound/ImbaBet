@@ -20,7 +20,7 @@ namespace ImbaBetWeb.DataAccess
 
         private readonly int field_length = 128;
 
-        public async Task<int> CreateAsync(NBet bet)
+        public async Task<int> CreateAsync(Bet bet)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -46,7 +46,7 @@ namespace ImbaBetWeb.DataAccess
             return (int)result;
         }
 
-        public async Task DeleteAsync(NBet bet)
+        public async Task DeleteAsync(Bet bet)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -102,7 +102,7 @@ namespace ImbaBetWeb.DataAccess
             await connection.CloseAsync();
         }
 
-        public async Task<NBet> GetAsync(int id)
+        public async Task<Bet> GetAsync(int id)
         {
             var itemList = await InternalGetAsync(id);
             var count = itemList.Count();
@@ -116,12 +116,12 @@ namespace ImbaBetWeb.DataAccess
             return itemList.Single();
         }
 
-        public async Task<IEnumerable<NBet>> GetAllAsync()
+        public async Task<IEnumerable<Bet>> GetAllAsync()
         {
             return await InternalGetAsync(null);
         }
 
-        private async Task<IEnumerable<NBet>> InternalGetAsync(int? id)
+        private async Task<IEnumerable<Bet>> InternalGetAsync(int? id)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -147,11 +147,11 @@ namespace ImbaBetWeb.DataAccess
             int oGoalB = reader.GetOrdinal(colName_GoalsB);
             int oPoints = reader.GetOrdinal(colName_Points);
 
-            var list = new List<NBet>();
+            var list = new List<Bet>();
 
             while (await reader.ReadAsync())
             {
-                list.Add(new NBet
+                list.Add(new Bet
                 {
                     Id = reader.GetInt32(oId),
                     MatchId = reader.GetInt32(oMatchId),
@@ -166,7 +166,7 @@ namespace ImbaBetWeb.DataAccess
             return list;
         }
 
-        public async Task UpdateAsync(NBet bet)
+        public async Task UpdateAsync(Bet bet)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();

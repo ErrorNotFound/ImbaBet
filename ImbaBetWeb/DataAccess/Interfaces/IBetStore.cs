@@ -4,11 +4,11 @@ namespace ImbaBetWeb.DataAccess.Interfaces
 {
     public interface IBetStore
     {
-        Task<int> CreateAsync(NBet obj);
-        Task<NBet> GetAsync(int id);
-        Task<IEnumerable<NBet>> GetAllAsync();
-        Task UpdateAsync(NBet obj);
-        Task DeleteAsync(NBet id);
+        Task<int> CreateAsync(Bet obj);
+        Task<Bet> GetAsync(int id);
+        Task<IEnumerable<Bet>> GetAllAsync();
+        Task UpdateAsync(Bet obj);
+        Task DeleteAsync(Bet id);
 
         Task EnsureInitializedAsync();
     }

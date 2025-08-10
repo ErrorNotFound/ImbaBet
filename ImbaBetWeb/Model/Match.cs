@@ -1,13 +1,14 @@
 ﻿namespace ImbaBetWeb.Model
 {
-    public record NMatch
+    public record Match
     {
         public int Id { get; set; }
 
-        public required DateTime DateTime { get; set; }
+        public DateTime DateTime { get; set; }
 
+        public Team? TeamA { get; set; } = null!;
         public int? TeamATeamId { get; set; }
-
+        public Team? TeamB { get; set; } = null!;
         public int? TeamBTeamId { get; set; }
 
         public string? AlternativeTeamAText { get; set; }
@@ -20,6 +21,7 @@
 
         public bool IsOver { get; set; }
 
+        public MatchGroup? MatchGroup { get; set; } = null!;
         public int MatchGroupId { get; set; }
 
         public override string ToString()

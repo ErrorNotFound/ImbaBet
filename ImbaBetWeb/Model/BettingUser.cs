@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace ImbaBetWeb.Model
+﻿namespace ImbaBetWeb.Model
 {
-    public class BettingUser : IdentityUser<int>
+    public record BettingUser
     {
+        public int Id { get; set; }
+
+        public Community? Community { get; set; } = null!;
         public int? MemberOfCommunityId { get; set; }
 
         public int Points { get; set; }
-
-        public int RemainingRenames { get; set; }
-
-        public string? ProfilePicturePath { get; set; }
     }
 }

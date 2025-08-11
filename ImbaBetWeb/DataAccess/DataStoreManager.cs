@@ -78,10 +78,28 @@ namespace ImbaBetWeb.DataAccess
                 await betStore.UpdateAsync(bet);
             }
         }
+        public async Task<int> CreateUserAsync(BettingUser user)
+        {
+            return await bettingUserStore.CreateAsync(user);
+        }
+
+        public async Task<BettingUser> GetUserByIdAsync(int id)
+        {
+            var users = await GetUsersAsync();
+            return users.Single(u => u.Id == id);
+        }
 
         public async Task<IEnumerable<BettingUser>> GetUsersAsync()
         {
-            return await bettingUserStore.GetAllAsync();
+            var users = await bettingUserStore.GetAllAsync();
+            var communities = await GetCommunitiesAsync();
+
+            foreach (var user in users.Where(u => u.MemberOfCommunityId != null))
+            {
+                user.Community = communities.SingleOrDefault(c => c.Id == user.MemberOfCommunityId);
+            }
+
+            return users;
         }
 
         public async Task UpdateUsersAsync(IEnumerable<BettingUser> users)
@@ -104,6 +122,52 @@ namespace ImbaBetWeb.DataAccess
             }
 
             return communities;
+        }
+
+        public async Task AddCommunityAsync(Community community)
+        {
+            await communityStore.CreateAsync(community);
+        }
+
+        public async Task UpdateCommunitiesAsync(IEnumerable<Community> communities)
+        {
+            foreach (var community in communities)
+            {
+                await communityStore.UpdateAsync(community);
+            }
+        }
+
+        public async Task DeleteCommunityAsync(int communityId)
+        {
+            var communities = await communityStore.GetAllAsync();
+            var toBeDeleted = communities.SingleOrDefault(c => c.Id == communityId);
+            if (toBeDeleted != null)
+            {
+                await communityStore.DeleteAsync(toBeDeleted);
+            }
+        }
+
+        public async Task<IEnumerable<Match>> GetMatchesAsync()
+        {
+            return await matchStore.GetAllAsync();
+        }
+
+        public async Task UpdateMatchesAsync(IEnumerable<Match> matches)
+        {
+            foreach (var match in matches)
+            {
+                await matchStore.UpdateAsync(match);
+            }
+        }
+
+        public async Task<IEnumerable<MatchGroup>> GetMatchGroupsAsync()
+        {
+            return await matchGroupStore.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<Team>> GetTeamsAsync()
+        {
+            return await teamStore.GetAllAsync();
         }
     }
 }

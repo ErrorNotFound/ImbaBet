@@ -10,41 +10,39 @@ namespace ImbaBetWeb.Business
 {
     public class GameManager
     {
-        private readonly IDataStoreManager dataStore;
+        private readonly IDataStoreManager dataStoreManager;
         private readonly SettingsManager settingsManager;
 
         public GameManager(IDataStoreManager dataStore, SettingsManager settingsManager)
         {
-            this.dataStore = dataStore;
+            this.dataStoreManager = dataStore;
             this.settingsManager = settingsManager;
         }
 
         public async Task<IEnumerable<Match>> GetMatchesAsync()
         {
-            return await _matchStore.GetAllAsync();
+            return await dataStoreManager.GetMatchesAsync();
         }
 
         public async Task<IEnumerable<MatchGroup>> GetMatchGroupsAsync()
         {
-            return await _matchGroupStore.GetAllAsync();
+            return await dataStoreManager.GetMatchGroupsAsync();
         }
 
         public async Task<IEnumerable<Team>> GetTeamsAsync()
         {
-            return await _teamStore.GetAllAsync();
+            return await dataStoreManager.GetTeamsAsync();
         }
 
-        public async Task UpdateMatchesAsync(IList<Match> matches)
+        public async Task UpdateMatchesAsync(IEnumerable<Match> matches)
         {
-            foreach (var match in matches)
-            {
-                await _matchStore.UpdateAsync(match);
-            }
+            await dataStoreManager.UpdateMatchesAsync(matches);
         }
 
         public async Task<Match?> GetMatchByIdAsync(int matchId)
         {
-            return await _matchStore.GetAsync(matchId);
+            var matches = await dataStoreManager.GetMatchesAsync(); 
+            return matches.SingleOrDefault(m => m.Id == matchId);
         }
 
 

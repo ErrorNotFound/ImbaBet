@@ -1,6 +1,6 @@
 ﻿using Allure.NUnit;
 using FluentValidation.TestHelper;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Validation;
 
 namespace ImbaBetWeb.Tests.Unit.Validation

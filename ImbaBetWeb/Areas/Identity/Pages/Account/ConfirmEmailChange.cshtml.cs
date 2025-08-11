@@ -16,10 +16,10 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
 {
     public class ConfirmEmailChangeModel : PageModel
     {
-        private readonly UserManager<BettingUser> _userManager;
-        private readonly SignInManager<BettingUser> _signInManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
+        private readonly SignInManager<MyIdentityUser> _signInManager;
 
-        public ConfirmEmailChangeModel(UserManager<BettingUser> userManager, SignInManager<BettingUser> signInManager)
+        public ConfirmEmailChangeModel(UserManager<MyIdentityUser> userManager, SignInManager<MyIdentityUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

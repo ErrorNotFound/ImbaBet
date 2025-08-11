@@ -18,7 +18,7 @@ namespace ImbaBetWeb.Controllers
     public class AdminController(
         BettingManager bettingManager,
         GameManager gameManager,
-        UserManager<BettingUser> userManager,
+        UserManager<MyIdentityUser> userManager,
         RoleManager<IdentityRole> roleManager,
         DatabaseManager databaseManager,
         CommunityManager communityManager,
@@ -28,7 +28,7 @@ namespace ImbaBetWeb.Controllers
     {
         private readonly BettingManager _bettingManager = bettingManager;
         private readonly GameManager _gameManager = gameManager;
-        private readonly UserManager<BettingUser> _userManager = userManager;
+        private readonly UserManager<MyIdentityUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly DatabaseManager _databaseManager = databaseManager;
         private readonly CommunityManager _communityManager = communityManager;
@@ -77,7 +77,7 @@ namespace ImbaBetWeb.Controllers
         public async Task<IActionResult> Accounts()
         {
             var users = await _userManager.Users.AsNoTracking().ToListAsync();
-            var communities = await _communityManager.Communities.ToListAsync();
+            var communities = await _communityManager.GetCommunitiesAsync();
 
             var dtos = users.Select(async u => new UserDTO()
             {
@@ -85,7 +85,8 @@ namespace ImbaBetWeb.Controllers
                 Username = u?.UserName ?? "Username not found",
                 Email = u?.Email ?? "Email not found",
                 EmailConfirmed = await _userManager.IsEmailConfirmedAsync(u!),
-                MemberOfCommunityId = u!.MemberOfCommunityId,
+                //todo
+                //MemberOfCommunityId = u!.MemberOfCommunityId, 
                 IsAdmin = await _userManager.IsInRoleAsync(u, UserRoles.Admin),
                 IsEditor = await _userManager.IsInRoleAsync(u, UserRoles.Editor)
             }).Select(x => x.Result).ToList();
@@ -155,7 +156,7 @@ namespace ImbaBetWeb.Controllers
                 var dbUser = await _userManager.FindByIdAsync(user.Id);
                 if(dbUser != null)
                 {
-                    success &= await _communityManager.UpdateCommunityMembershipAsync(user.Id, user.MemberOfCommunityId);
+                    success &= await _communityManager.UpdateCommunityMembershipAsync(dbUser.BettingUserId, user.MemberOfCommunityId);
                     success &= await _databaseManager.UpdateRolesAsync(user.Id, user.IsAdmin, user.IsEditor);
                 }                
             }
@@ -238,14 +239,17 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteCommunity(int communityId)
         {
-            if(await _communityManager.DeleteCommunityAsync(communityId))
+            await _communityManager.DeleteCommunityAsync(communityId);
+            // todo
+            /*
+            if ()
             {
                 this.SetSuccessAlert($"Community with ID {communityId} has been deleted.");
             }
             else
             {
                 this.SetErrorAlert($"Community with ID {communityId} could not be deleted.");
-            }
+            }*/
 
             return RedirectToAction(nameof(Accounts));
         }

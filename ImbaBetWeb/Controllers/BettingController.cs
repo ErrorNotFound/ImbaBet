@@ -3,11 +3,9 @@ using ImbaBetWeb.Business.Extensions;
 using ImbaBetWeb.Model;
 using ImbaBetWeb.Validation;
 using ImbaBetWeb.ViewModels.Betting;
-using ImbaBetWeb.ViewModels.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ImbaBetWeb.Controllers
 {
@@ -47,7 +45,7 @@ namespace ImbaBetWeb.Controllers
 
         public async Task<IActionResult> Communities()
         {
-            var c = await _communityManager.Communities.ToListAsync();
+            var c = await _communityManager.GetCommunitiesAsync();
 
             return View(c);
         }

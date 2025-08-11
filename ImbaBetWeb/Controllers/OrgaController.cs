@@ -6,7 +6,6 @@ using ImbaBetWeb.ViewModels.Orga;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ImbaBetWeb.Controllers
 {
@@ -14,25 +13,34 @@ namespace ImbaBetWeb.Controllers
     public class OrgaController : Controller
     {
         private readonly BettingManager _bettingManager;
-        private readonly UserManager<BettingUser> _userManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
         private readonly CommunityManager _communityManager;
+        private readonly DatabaseManager _databaseManager;
 
         public OrgaController(
             BettingManager bettingManager, 
-            UserManager<BettingUser> userManager,
-            CommunityManager communityManager)
+            UserManager<MyIdentityUser> userManager,
+            CommunityManager communityManager,
+            DatabaseManager databaseManager)
         {
             _bettingManager = bettingManager;
             _userManager = userManager;
             _communityManager = communityManager;
+            _databaseManager = databaseManager;
         }
 
 
         public async Task<IActionResult> MyCommunity()
         {
-            var communities = await _communityManager.Communities.ToListAsync();
-            var user = await _userManager.GetUserAsync(User);
-            if(user == null)
+            var communities = await _communityManager.GetCommunitiesAsync();
+            var idUser = await _userManager.GetUserAsync(User);
+            if(idUser == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            var user = await _databaseManager.GetUserAsync(idUser.BettingUserId);
+            if (user == null)
             {
                 return RedirectToAction("Error", "Home");
             }
@@ -49,13 +57,19 @@ namespace ImbaBetWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCommunity(string communityName)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var idUser = await _userManager.GetUserAsync(User);
+            if (idUser == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            var user = await _databaseManager.GetUserAsync(idUser.BettingUserId);
             if (user == null)
             {
                 return RedirectToAction("Error", "Home");
             }
 
-            var communities = await _communityManager.Communities.ToListAsync();
+            var communities = await _communityManager.GetCommunitiesAsync();
 
             var validator = new CommunityNameValidator(communities.Select(x => x.Name));
             var validationResult = validator.Validate(communityName);
@@ -77,7 +91,13 @@ namespace ImbaBetWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> JoinCommunity()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var idUser = await _userManager.GetUserAsync(User);
+            if (idUser == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            var user = await _databaseManager.GetUserAsync(idUser.BettingUserId);
             if (user == null)
             {
                 return RedirectToAction("Error", "Home");
@@ -102,19 +122,37 @@ namespace ImbaBetWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> LeaveCommunity()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var idUser = await _userManager.GetUserAsync(User);
+            if (idUser == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            var user = await _databaseManager.GetUserAsync(idUser.BettingUserId);
             if (user == null)
             {
                 return RedirectToAction("Error", "Home");
             }
-            var community = user.MemberOfCommunity;
-            var isOwner = user.OwnerOfCommunity == user.MemberOfCommunity;
 
+            var community = user.Community;
+            var isOwner = community.OwnerId == user.Id;
+
+            if (isOwner)
+            {
+                await _communityManager.DeleteCommunityOfUserAsync(user);
+            }
+            else
+            {
+                await _communityManager.LeaveCommunityAsync(user);
+            }
+
+            // todo
+            /*
             var wasSuccessful = isOwner ? await _communityManager.DeleteCommunityOfUserAsync(user) : await _communityManager.LeaveCommunityAsync(user);
             if (wasSuccessful)
             {
                 this.SetSuccessAlert($"Community ({community!.Name}) has been left successfully.");
-            }
+            }*/
 
             return RedirectToAction(nameof(MyCommunity));
         }
@@ -123,17 +161,22 @@ namespace ImbaBetWeb.Controllers
         [Route("Orga/KickMember/{userId}")]
         public async Task<IActionResult> KickMember(string userId)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var idUser = await _userManager.GetUserAsync(User);
+            var user = await _databaseManager.GetUserAsync(idUser.BettingUserId);
+            if (user == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
             var userToBeKicked = await _userManager.FindByIdAsync(userId);
-            var community = user?.OwnerOfCommunity;
+            var community = user.Community;
 
-            if(community == null || user == null || userToBeKicked == null)
+            if(community == null || idUser == null || userToBeKicked == null)
             {
                 this.SetErrorAlert("Error while kicking user");
                 return RedirectToAction(nameof(MyCommunity));
             }
-
-            await _communityManager.KickMemberAsync(community.Id, userToBeKicked.Id);
+            //todo: make sure he is owner
+            await _communityManager.KickMemberAsync(community.Id, userToBeKicked.BettingUserId);
 
             this.SetSuccessAlert($"{userToBeKicked.UserName} has been kicked from Community.");
 
@@ -144,18 +187,23 @@ namespace ImbaBetWeb.Controllers
         [Route("Orga/PromoteToOwner/{userId}")]
         public async Task<IActionResult> PromoteToOwner(string userId)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var newOwner = await _userManager.FindByIdAsync(userId);
-            var community = user?.OwnerOfCommunity;
+            var idUser = await _userManager.GetUserAsync(User);
+            var user = await _databaseManager.GetUserAsync(idUser.BettingUserId);
+            if (user == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            var idNewOwner = await _userManager.FindByIdAsync(userId);
+            var community = user?.Community;
 
-            if (community == null || newOwner == null)
+            if (community == null || idNewOwner == null)
             {
                 return RedirectToAction(nameof(MyCommunity));
             }
+            //todo: make sure he is owner
+            await _communityManager.PromoteToOwnerAsync(user!.Community!.Id, idNewOwner.BettingUserId);
 
-            await _communityManager.PromoteToOwnerAsync(user!.OwnerOfCommunity!.Id, newOwner.Id);
-
-            this.SetSuccessAlert($"{newOwner.UserName} has been promoted to owner.");
+            this.SetSuccessAlert($"{idNewOwner.UserName} has been promoted to owner.");
 
             return RedirectToAction(nameof(MyCommunity));
         }

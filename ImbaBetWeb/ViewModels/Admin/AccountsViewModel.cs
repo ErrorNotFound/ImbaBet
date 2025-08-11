@@ -4,9 +4,9 @@ namespace ImbaBetWeb.ViewModels.Admin
 {
     public class AccountsViewModel
     {
-        public required IList<UserDTO> Users { get; set; }
+        public required IEnumerable<UserDTO> Users { get; set; }
 
-        public required IList<Community> Communities { get; set; }
+        public required IEnumerable<Community> Communities { get; set; }
     }
 
     public class UserDTO

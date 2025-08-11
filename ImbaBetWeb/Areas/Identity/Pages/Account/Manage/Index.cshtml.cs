@@ -16,15 +16,15 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<BettingUser> _userManager;
-        private readonly SignInManager<BettingUser> _signInManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
+        private readonly SignInManager<MyIdentityUser> _signInManager;
         private readonly DatabaseManager _databaseManager;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public IndexModel(
-            UserManager<BettingUser> userManager,
-            SignInManager<BettingUser> signInManager,
+            UserManager<MyIdentityUser> userManager,
+            SignInManager<MyIdentityUser> signInManager,
             DatabaseManager databaseManager,
             IConfiguration configuration,
             IWebHostEnvironment webHostEnvironment)

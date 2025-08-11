@@ -20,11 +20,11 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<BettingUser> _signInManager;
+        private readonly SignInManager<MyIdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-        private readonly UserManager<BettingUser> _userManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
 
-        public LoginModel(SignInManager<BettingUser> signInManager, ILogger<LoginModel> logger, UserManager<BettingUser> userManager)
+        public LoginModel(SignInManager<MyIdentityUser> signInManager, ILogger<LoginModel> logger, UserManager<MyIdentityUser> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;

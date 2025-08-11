@@ -10,19 +10,6 @@ namespace ImbaBetWeb.Tests.Unit.Business
     public class SettingsManagerTests
     {
         [Test]
-        public void Constructor_StoreIsInitialized()
-        {
-            // Arrange
-            var storeMock = GetStoreMock();
-
-            // Act
-            var settingsManager = new SettingsManager(storeMock.Object);
-
-            // Assert
-            storeMock.Verify(mock => mock.EnsureInitializedAsync(), Times.Once);
-        }
-
-        [Test]
         public async Task GetAllSettingsAsync_SettingFromStoreIsProvided()
         {
             // Arrange

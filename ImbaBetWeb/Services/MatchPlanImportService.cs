@@ -168,6 +168,8 @@ namespace ImbaBetWeb.Services
                 matchGroups.Add(matchGroup);
             }
 
+            //todo
+            /*
             foreach(var team in teams)
             {
                 await _dataStore.TeamStore.CreateAsync(team);
@@ -181,7 +183,7 @@ namespace ImbaBetWeb.Services
             foreach (var group in matchGroups)
             {
                 await _dataStore.MatchGroupStore.CreateAsync(group);
-            }
+            }*/
         }
     }
 }

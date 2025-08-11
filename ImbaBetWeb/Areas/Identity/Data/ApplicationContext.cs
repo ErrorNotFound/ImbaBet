@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImbaBetWeb.Data;
 
-public class ApplicationContext : IdentityDbContext<BettingUser>
+public class ApplicationContext : IdentityDbContext<MyIdentityUser>
 {
     public ApplicationContext(DbContextOptions<ApplicationContext> options)
         : base(options)

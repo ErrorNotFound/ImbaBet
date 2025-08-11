@@ -15,10 +15,10 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
 {
     public class LogoutModel : PageModel
     {
-        private readonly SignInManager<BettingUser> _signInManager;
+        private readonly SignInManager<MyIdentityUser> _signInManager;
         private readonly ILogger<LogoutModel> _logger;
 
-        public LogoutModel(SignInManager<BettingUser> signInManager, ILogger<LogoutModel> logger)
+        public LogoutModel(SignInManager<MyIdentityUser> signInManager, ILogger<LogoutModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;

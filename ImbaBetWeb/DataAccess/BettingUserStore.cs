@@ -14,8 +14,6 @@ namespace ImbaBetWeb.DataAccess
         private readonly string colName_Id = "Id";
         private readonly string colName_MemberOfCommunityId = "MemberOfCommunityId";
         private readonly string colName_Points = "Points";
-        private readonly string colName_RemainingRenames = "RemainingRenames";
-        private readonly string colName_ProfilePicturePath = "ProfilePicturePath";
 
         private readonly int field_length = 128;
 
@@ -25,15 +23,13 @@ namespace ImbaBetWeb.DataAccess
             using var command = connection.CreateCommand();
 
             command.CommandText = $"INSERT INTO {TableName} " +
-                $"([{colName_MemberOfCommunityId}],[{colName_Points}],[{colName_RemainingRenames}],[{colName_ProfilePicturePath}]) " +
+                $"([{colName_MemberOfCommunityId}],[{colName_Points}]) " +
                 "VALUES " +
-                $"(@{colName_MemberOfCommunityId},@{colName_Points},@{colName_RemainingRenames},@{colName_ProfilePicturePath});" +
+                $"(@{colName_MemberOfCommunityId},@{colName_Points});" +
                 $"SELECT CONVERT(int,SCOPE_IDENTITY());";
 
             command.Parameters.Add($"@{colName_MemberOfCommunityId}", SqlDbType.Int).Value = user.MemberOfCommunityId ?? (object)DBNull.Value;
             command.Parameters.Add($"@{colName_Points}", SqlDbType.Int).Value = user.Points;
-            command.Parameters.Add($"@{colName_RemainingRenames}", SqlDbType.Int).Value = user.RemainingRenames;
-            command.Parameters.Add($"@{colName_ProfilePicturePath}", SqlDbType.NVarChar, field_length).Value = user.ProfilePicturePath ?? (object)DBNull.Value;
 
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -89,9 +85,7 @@ namespace ImbaBetWeb.DataAccess
                 $"(" +
                     $"[{colName_Id}] int NOT NULL IDENTITY(1,1) PRIMARY KEY, " +
                     $"[{colName_MemberOfCommunityId}] int, " +
-                    $"[{colName_Points}] int NOT NULL, " +
-                    $"[{colName_RemainingRenames}] int NOT NULL, " +
-                    $"[{colName_ProfilePicturePath}] NVARCHAR({field_length}) " +
+                    $"[{colName_Points}] int NOT NULL " +
                 ")";
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -140,8 +134,6 @@ namespace ImbaBetWeb.DataAccess
             int oId = reader.GetOrdinal(colName_Id);
             int oMemberOfCommunityId = reader.GetOrdinal(colName_MemberOfCommunityId);
             int oPoints = reader.GetOrdinal(colName_Points);
-            int oRemainingRenames = reader.GetOrdinal(colName_RemainingRenames);
-            int oProfilePicturePath = reader.GetOrdinal(colName_ProfilePicturePath);
 
             var list = new List<BettingUser>();
 
@@ -151,9 +143,7 @@ namespace ImbaBetWeb.DataAccess
                 {
                     Id = reader.GetInt32(oId),
                     MemberOfCommunityId = reader.IsDBNull(oMemberOfCommunityId) ? null : reader.GetInt32(oMemberOfCommunityId),
-                    Points = reader.GetInt32(oPoints),
-                    RemainingRenames = reader.GetInt32(oRemainingRenames),
-                    ProfilePicturePath = reader.IsDBNull(oProfilePicturePath) ? null : reader.GetString(oProfilePicturePath)
+                    Points = reader.GetInt32(oPoints)
                 });
             }
 
@@ -167,13 +157,11 @@ namespace ImbaBetWeb.DataAccess
             using var command = connection.CreateCommand();
 
             command.CommandText = $"UPDATE {TableName} " +
-                $"SET [{colName_MemberOfCommunityId}]=@{colName_MemberOfCommunityId},[{colName_Points}]=@{colName_Points},[{colName_RemainingRenames}]=@{colName_RemainingRenames},[{colName_ProfilePicturePath}]=@{colName_ProfilePicturePath} " +
+                $"SET [{colName_MemberOfCommunityId}]=@{colName_MemberOfCommunityId},[{colName_Points}]=@{colName_Points} " +
                 $"WHERE [{colName_Id}]=@{colName_Id}";
 
             command.Parameters.Add($"@{colName_MemberOfCommunityId}", SqlDbType.Int).Value = user.MemberOfCommunityId ?? (object)DBNull.Value;
             command.Parameters.Add($"@{colName_Points}", SqlDbType.Int).Value = user.Points;
-            command.Parameters.Add($"@{colName_RemainingRenames}", SqlDbType.Int).Value = user.RemainingRenames;
-            command.Parameters.Add($"@{colName_ProfilePicturePath}", SqlDbType.NVarChar, field_length).Value = user.ProfilePicturePath ?? (object)DBNull.Value;
             command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = user.Id;
             
             await connection.OpenAsync();

@@ -59,7 +59,7 @@ else if (Model.User.MemberOfCommunityId == null)
 else
 {
     var community = Model.Communities.Single(c => c.Id == Model.User.MemberOfCommunityId);
-    var isOwner = Model.User.OwnerOfCommunity == community;
+    var isOwner = Model.User.Id == community.Id;
 
     <h2>@Html.DisplayFor(model => community.Name)</h2>
     <br />
@@ -125,31 +125,33 @@ else
             </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < community.Members.Count; i++)
+            @for (int i = 0; i < community.Members.Count(); i++)
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(model => community.Members[i])
+                        @Html.DisplayFor(model => community.Members.ElementAt(i))
                     </td>
                     <td>
-                        <i>@(community.Owner.Id == community.Members[i].Id ? "Owner" : "Member")</i>
+                        <i>@(community.Owner.Id == community.Members.ElementAt(i).Id ? "Owner" : "Member")</i>
                     </td>
                     <td>
-                        @if (isOwner && community.Members[i].Id != community.Owner.Id)
+                        @if (isOwner && community.Members.ElementAt(i).Id != community.Owner.Id)
                         {
                             @Html.ActionLink(
                                      "Kick",                          // Button Text
                                      "KickMember",                      // controller action
                                      "Orga",                           // controller
-                                     new { community.Members[i].Id },          // action parameters aka route values
-                                     new { onclick = $"return confirm('Are you sure you want to kick {community.Members[i].UserName}?')", @class = "btn btn-danger " + (!await SettingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
+                                new { community.Members.ElementAt(i).Id },          // action parameters aka route values
+                                //todo: replace id with username
+                                new { onclick = $"return confirm('Are you sure you want to kick {community.Members.ElementAt(i).Id}?')", @class = "btn btn-danger " + (!await SettingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
                             @:&nbsp;
                             @Html.ActionLink(
                                      "Promote",                          // Button Text
                                      "PromoteToOwner",                      // controller action
                                      "Orga",                           // controller
-                                     new { community.Members[i].Id },          // action parameters aka route values
-                                     new { onclick = $"return confirm('Are you sure you want to make {community.Members[i].UserName} the owner of this community?')", @class = "btn btn-info " })
+                                new { community.Members.ElementAt(i).Id },          // action parameters aka route values
+                                //todo: replace id with username
+                                new { onclick = $"return confirm('Are you sure you want to make {community.Members.ElementAt(i).Id} the owner of this community?')", @class = "btn btn-info " })
                         }
                     </td>
                 </tr>

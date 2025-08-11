@@ -3,29 +3,30 @@ using ImbaBetWeb.Model.Consts;
 using ImbaBetWeb.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ImbaBetWeb.DataAccess.Interfaces;
 
 namespace ImbaBetWeb.Business
 {
     public class DatabaseManager
     {
-        private ApplicationContext _context;
+        private readonly IDataStoreManager _dataStoreManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<BettingUser> _userManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
         private readonly CommunityManager _communityManager;
         private readonly SettingsManager _settingsManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IConfiguration _configuration;
 
         public DatabaseManager(
-            ApplicationContext context, 
+            IDataStoreManager dataStoreManager, 
             RoleManager<IdentityRole> roleManager, 
-            UserManager<BettingUser> userManager,
+            UserManager<MyIdentityUser> userManager,
             CommunityManager communityManager,
             SettingsManager settingsManager,
             IWebHostEnvironment webHostEnvironment,
             IConfiguration configuration)
         {
-            _context = context;
+            _dataStoreManager = dataStoreManager;
             _roleManager = roleManager;
             _userManager = userManager;
             _communityManager = communityManager;
@@ -36,6 +37,8 @@ namespace ImbaBetWeb.Business
 
         public async Task DeleteAllDataAsync()
         {
+            //todo
+            /*
             var tableNames = _context.Model.GetEntityTypes()
                 .Select(t => t.GetTableName())
                 .Distinct()
@@ -47,10 +50,13 @@ namespace ImbaBetWeb.Business
                 await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {tableName}");
                 #pragma warning restore EF1002
             }
+            */
         }
 
         public async Task DeleteGameDataAsync()
         {
+            //todo
+            /*
             var tablesToBeDeleted = new[] { "Bets", "Matches", "MatchGroups", "Teams" };
 
             foreach (var tableName in tablesToBeDeleted)
@@ -59,6 +65,18 @@ namespace ImbaBetWeb.Business
                 await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {tableName}");
                 #pragma warning restore EF1002
             }
+            */
+        }
+
+        public async Task<BettingUser> GetUserAsync(int userId)
+        {
+            var users = await _dataStoreManager.GetUsersAsync();
+            var user = users.SingleOrDefault(x => x.Id == userId);
+            if (user != null)
+            {
+                return user;
+            }
+            throw new Exception($"User with id ({userId}) not found");
         }
 
         public async Task DeleteUserAsync(string userId)
@@ -66,7 +84,7 @@ namespace ImbaBetWeb.Business
             var user = await _userManager.FindByIdAsync(userId);
             if(user != null)
             {
-                await _communityManager.DeleteCommunityOfUserAsync(user);
+                await _communityManager.DeleteCommunityOfUserAsync(user.BettingUserId);
                 await _userManager.DeleteAsync(user);
             }
         }
@@ -132,7 +150,10 @@ namespace ImbaBetWeb.Business
             {
                 if (await _userManager.FindByEmailAsync(newUser.Email) == null)
                 {
-                    var user = new BettingUser();
+                    var bettingUser = new BettingUser();
+                    bettingUser.Id = await _dataStoreManager.CreateUserAsync(bettingUser);
+
+                    var user = new MyIdentityUser(bettingUser.Id);
                     user.Email = newUser.Email;
                     user.UserName = newUser.Username;
                     user.EmailConfirmed = true;
@@ -147,21 +168,27 @@ namespace ImbaBetWeb.Business
                 }
             }
 
-            if (!_context.Communities.Any())
+            var communities = await _dataStoreManager.GetCommunitiesAsync();
+            if (!communities.Any())
             {
-                var user = await _userManager.FindByEmailAsync(userList.First().Email);
-                if (user != null)
+                var idUser = await _userManager.FindByEmailAsync(userList.First().Email);
+                if (idUser == null)
+                    return;
+
+                var bettingUsers = await _dataStoreManager.GetUsersAsync();
+                var bettingUser = bettingUsers.SingleOrDefault(u => u.Id == idUser.BettingUserId);
+                if (bettingUser == null)
+                    return;
+
+                var community = new Community()
                 {
-                    var community = new Community()
-                    {
-                        OwnerId = user.Id,
-                        Name = "Die wilde Bande"
-                    };
-                    _context.Communities.Add(community);
-                    await _context.SaveChangesAsync();
-                    user.MemberOfCommunityId = community.Id;
-                    await _context.SaveChangesAsync();
-                }
+                    OwnerId = bettingUser.Id,
+                    Name = "Die wilde Bande"
+                };
+                await _dataStoreManager.AddCommunityAsync(community);
+
+                bettingUser.MemberOfCommunityId = community.Id;
+                await _dataStoreManager.UpdateUsersAsync([bettingUser]);
             }
         }
 
@@ -204,7 +231,10 @@ namespace ImbaBetWeb.Business
                 return;
             }
 
-            var user = new BettingUser();
+            var bettingUser = new BettingUser();
+            bettingUser.Id = await _dataStoreManager.CreateUserAsync(bettingUser);
+
+            var user = new MyIdentityUser(bettingUser.Id);
             user.Email = _configuration.GetSection("InitialSetup")["AdminAccountEMail"];
             user.UserName = _configuration.GetSection("InitialSetup")["AdminAccountUsername"];
             user.EmailConfirmed = true;

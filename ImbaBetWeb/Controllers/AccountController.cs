@@ -1,5 +1,5 @@
 ﻿using ImbaBetWeb.Business;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.ViewModels.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,12 +8,12 @@ namespace ImbaBetWeb.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<BettingUser> _userManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
 		private readonly BettingManager _bettingManager;
         private readonly DatabaseManager _databaseManager;
 
         public AccountController(
-            UserManager<BettingUser> userManager, 
+            UserManager<MyIdentityUser> userManager, 
             BettingManager bettingManager,
             DatabaseManager databaseManager)
         {
@@ -24,7 +24,13 @@ namespace ImbaBetWeb.Controllers
 
         public async Task<IActionResult> Profile(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var idUser = await _userManager.FindByIdAsync(userId);
+            if (idUser == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = await _databaseManager.GetUserAsync(idUser.BettingUserId);
             if (user == null)
             {
                 return RedirectToAction("Index", "Home");
@@ -35,7 +41,7 @@ namespace ImbaBetWeb.Controllers
 
             var vm = new ProfileViewModel()
             {
-                User = user,
+                User = idUser,
                 ClosedBets = closedBets,
                 ActiveBets = activeBets
             };

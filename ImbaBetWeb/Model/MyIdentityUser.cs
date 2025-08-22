@@ -9,10 +9,5 @@ namespace ImbaBetWeb.Model
         public int RemainingRenames { get; set; }
 
         public string? ProfilePicturePath { get; set; }
-
-        public MyIdentityUser(int bettingUserId)
-        {
-            BettingUserId = bettingUserId;
-        }
     }
 }

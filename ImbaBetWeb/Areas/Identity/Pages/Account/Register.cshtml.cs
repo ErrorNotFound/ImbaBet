@@ -2,9 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using ImbaBetWeb.Data;
 using ImbaBetWeb.Business;
+using ImbaBetWeb.Data;
+using ImbaBetWeb.DataAccess.Interfaces;
 using ImbaBetWeb.Model;
+using ImbaBetWeb.Model.Consts;
 using ImbaBetWeb.Validation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -12,12 +14,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using ImbaBetWeb.Model.Consts;
 
 namespace ImbaBetWeb.Areas.Identity.Pages.Account
 {
@@ -31,6 +30,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly ApplicationContext _applicationContext;
         private readonly SettingsManager _settingsManager;
+        private readonly IDataStoreManager _dataStoreManager;
 
         public RegisterModel(
             UserManager<MyIdentityUser> userManager,
@@ -39,7 +39,8 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             ApplicationContext context,
-            SettingsManager settingsManager)
+            SettingsManager settingsManager,
+            IDataStoreManager dataStoreManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -49,6 +50,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
             _emailSender = emailSender;
             _applicationContext = context;
             _settingsManager = settingsManager;
+            _dataStoreManager = dataStoreManager;
         }
 
         /// <summary>
@@ -135,6 +137,11 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
 
                     await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                     await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                    // Create BettingUser
+                    var bettingUser = new BettingUser();
+                    user.BettingUserId = await _dataStoreManager.CreateUserAsync(bettingUser);
+
                     var result = await _userManager.CreateAsync(user, Input.Password);
 
                     if (result.Succeeded)

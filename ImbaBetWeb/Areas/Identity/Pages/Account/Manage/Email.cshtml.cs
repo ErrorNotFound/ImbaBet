@@ -18,13 +18,13 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
 {
     public class EmailModel : PageModel
     {
-        private readonly UserManager<BettingUser> _userManager;
-        private readonly SignInManager<BettingUser> _signInManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
+        private readonly SignInManager<MyIdentityUser> _signInManager;
         private readonly IEmailSender _emailSender;
 
         public EmailModel(
-            UserManager<BettingUser> userManager,
-            SignInManager<BettingUser> signInManager,
+            UserManager<MyIdentityUser> userManager,
+            SignInManager<MyIdentityUser> signInManager,
             IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -74,7 +74,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
             public string NewEmail { get; set; }
         }
 
-        private async Task LoadAsync(BettingUser user)
+        private async Task LoadAsync(MyIdentityUser user)
         {
             var email = await _userManager.GetEmailAsync(user);
             Email = email;

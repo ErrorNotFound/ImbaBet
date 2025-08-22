@@ -15,7 +15,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDefaultIdentity<BettingUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<MyIdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
 
 // forces session validation every minute
@@ -31,13 +31,14 @@ builder.Services.AddDbContext<ApplicationContext>(
         options.UseSqlServer(connectionString);   
     });
 
+builder.Services.AddScoped<SettingsManager>();
 builder.Services.AddScoped<BettingManager>();
 builder.Services.AddScoped<GameManager>();
 builder.Services.AddScoped<CommunityManager>();
 builder.Services.AddScoped<DatabaseManager>();
-builder.Services.AddScoped<SettingsManager>();
 builder.Services.AddScoped<MatchPlanImportService>();
 builder.Services.AddScoped<IDataStoreManager>((provider) => { return new DataStoreManager(connectionString); });
+builder.Services.AddScoped<ISettingStore>((provider) => { return new SettingStore(connectionString); });
 
 
 builder.Services.AddTransient<IEmailSender, EmailService>(i =>

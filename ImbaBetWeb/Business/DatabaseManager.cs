@@ -153,7 +153,8 @@ namespace ImbaBetWeb.Business
                     var bettingUser = new BettingUser();
                     bettingUser.Id = await _dataStoreManager.CreateUserAsync(bettingUser);
 
-                    var user = new MyIdentityUser(bettingUser.Id);
+                    var user = new MyIdentityUser();
+                    user.BettingUserId = bettingUser.Id;
                     user.Email = newUser.Email;
                     user.UserName = newUser.Username;
                     user.EmailConfirmed = true;
@@ -234,7 +235,8 @@ namespace ImbaBetWeb.Business
             var bettingUser = new BettingUser();
             bettingUser.Id = await _dataStoreManager.CreateUserAsync(bettingUser);
 
-            var user = new MyIdentityUser(bettingUser.Id);
+            var user = new MyIdentityUser();
+            user.BettingUserId = bettingUser.Id;
             user.Email = _configuration.GetSection("InitialSetup")["AdminAccountEMail"];
             user.UserName = _configuration.GetSection("InitialSetup")["AdminAccountUsername"];
             user.EmailConfirmed = true;

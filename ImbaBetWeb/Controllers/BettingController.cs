@@ -11,27 +11,36 @@ namespace ImbaBetWeb.Controllers
 {
     public class BettingController : Controller
     {
-        private readonly UserManager<BettingUser> _userManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
         private readonly BettingManager _bettingManager;
         private readonly CommunityManager _communityManager;
+        private readonly DatabaseManager _databaseManager;
 
         public BettingController(
-            UserManager<BettingUser> userManager, 
+            UserManager<MyIdentityUser> userManager, 
             BettingManager bettingManager,
-            CommunityManager communityManager)
+            CommunityManager communityManager,
+            DatabaseManager databaseManager)
         {
             _userManager = userManager;
             _bettingManager = bettingManager;
             _communityManager = communityManager;
+            this._databaseManager = databaseManager;
         }
 
         public async Task<IActionResult> Leaderboards()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var identityUser = await _userManager.GetUserAsync(User);
+            BettingUser? bettingUser = null;
+
+            if (identityUser != null)
+            {
+                bettingUser = await _databaseManager.GetUserAsync(identityUser.BettingUserId);
+            }           
 
             var userRanking = await _bettingManager.GetUserRankingAsync();
             var communityRanking = await _bettingManager.GetCommunityRankingAsync();
-            var internalRanking = user?.MemberOfCommunityId.HasValue ?? false ? await _bettingManager.GetUserRankingOfCommunityAsync(user.MemberOfCommunityId.Value) : null;
+            var internalRanking = bettingUser?.MemberOfCommunityId.HasValue ?? false ? await _bettingManager.GetUserRankingOfCommunityAsync(bettingUser.MemberOfCommunityId.Value) : null;
 
             var vm = new LeaderboardsViewModel()
             {
@@ -53,17 +62,19 @@ namespace ImbaBetWeb.Controllers
         [Authorize]
         public async Task<IActionResult> MyBets()
         {
-            var currentApplicationUser = await _userManager.GetUserAsync(User);
-            if (currentApplicationUser == null)
+            var identityUser = await _userManager.GetUserAsync(User);
+            if (identityUser == null)
             {
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
-            
+
+            var bettingUser = await _databaseManager.GetUserAsync(identityUser.BettingUserId);
+
             var vm = new MyBetsViewModel()
             {
-                OpenBets = await _bettingManager.GetOpenBetsForUserAsync(currentApplicationUser),
-                ActiveBets = await _bettingManager.GetActiveBetsForUserAsync(currentApplicationUser),
-                ClosedBets = await _bettingManager.GetClosedBetsForUserAsync(currentApplicationUser)
+                OpenBets = await _bettingManager.GetOpenBetsForUserAsync(bettingUser),
+                ActiveBets = await _bettingManager.GetActiveBetsForUserAsync(bettingUser),
+                ClosedBets = await _bettingManager.GetClosedBetsForUserAsync(bettingUser)
             };
 
             return View(vm);

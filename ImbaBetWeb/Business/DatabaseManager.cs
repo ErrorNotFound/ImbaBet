@@ -10,7 +10,6 @@ namespace ImbaBetWeb.Business
         RoleManager<IdentityRole> roleManager,
         UserManager<MyIdentityUser> userManager,
         CommunityManager communityManager,
-        SettingsManager settingsManager,
         IWebHostEnvironment webHostEnvironment,
         IConfiguration configuration)
     {
@@ -18,7 +17,6 @@ namespace ImbaBetWeb.Business
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly UserManager<MyIdentityUser> _userManager = userManager;
         private readonly CommunityManager _communityManager = communityManager;
-        private readonly SettingsManager _settingsManager = settingsManager;
         private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
         private readonly IConfiguration _configuration = configuration;
 
@@ -121,7 +119,7 @@ namespace ImbaBetWeb.Business
                 }
             }
 
-            await _settingsManager.SeedSettingsAsync();
+            await _dataStoreManager.SeedSettingsAsync();
         }
 
         public async Task SeedTestDataAsync()
@@ -145,7 +143,7 @@ namespace ImbaBetWeb.Business
                     user.Email = newUser.Email;
                     user.UserName = newUser.Username;
                     user.EmailConfirmed = true;
-                    user.RemainingRenames = await _settingsManager.GetSettingValueAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
+                    user.RemainingRenames = await _dataStoreManager.GetSettingValueAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
 
                     await _userManager.CreateAsync(user, newUser.Password);
                     foreach (var role in newUser.Roles)
@@ -227,7 +225,7 @@ namespace ImbaBetWeb.Business
             user.Email = _configuration.GetSection("InitialSetup")["AdminAccountEMail"];
             user.UserName = _configuration.GetSection("InitialSetup")["AdminAccountUsername"];
             user.EmailConfirmed = true;
-            user.RemainingRenames = await _settingsManager.GetSettingValueAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
+            user.RemainingRenames = await _dataStoreManager.GetSettingValueAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
 
             if (user.Email != null && await _userManager.FindByEmailAsync(user.Email) == null)
             {

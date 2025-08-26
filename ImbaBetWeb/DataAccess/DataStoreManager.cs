@@ -1,28 +1,35 @@
 ﻿using ImbaBetWeb.DataAccess.Interfaces;
 using ImbaBetWeb.Model;
+using ImbaBetWeb.Model.Consts;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace ImbaBetWeb.DataAccess
 {
-    public class DataStoreManager : IDataStoreManager
+    public class DataStoreManager(IBetStore betStore, IBettingUserStore bettingUserStore, ICommunityStore communityStore, IMatchGroupStore matchGroupStore, IMatchStore matchStore, ISettingStore settingStore, ITeamStore teamStore) : IDataStoreManager
     {
-        private IBetStore betStore;
-        private IBettingUserStore bettingUserStore;
-        private ICommunityStore communityStore;
-        private IMatchGroupStore matchGroupStore;
-        private IMatchStore matchStore;
-        private ISettingStore settingStore;
-        private ITeamStore teamStore;
+        private IBetStore betStore = betStore;
+        private IBettingUserStore bettingUserStore = bettingUserStore;
+        private ICommunityStore communityStore = communityStore;
+        private IMatchGroupStore matchGroupStore = matchGroupStore;
+        private IMatchStore matchStore = matchStore;
+        private ISettingStore settingStore = settingStore;
+        private ITeamStore teamStore = teamStore;
 
-        public DataStoreManager(string connectionString)
+        private Dictionary<string, Setting> _cachedSettings = [];
+
+        public static DataStoreManager CreateDefault(string connectionString)
         {
-            betStore = new BetStore(connectionString);
-            bettingUserStore = new BettingUserStore(connectionString);
-            communityStore = new CommunityStore(connectionString);
-            matchGroupStore = new MatchGroupStore(connectionString);
-            matchStore = new MatchStore(connectionString);
-            settingStore = new SettingStore(connectionString);
-            teamStore = new TeamStore(connectionString);
+            return new DataStoreManager(
+                new BetStore(connectionString), 
+                new BettingUserStore(connectionString), 
+                new CommunityStore(connectionString), 
+                new MatchGroupStore(connectionString), 
+                new MatchStore(connectionString), 
+                new SettingStore(connectionString), 
+                new TeamStore(connectionString));
         }
+
         public async Task Initialize()
         {
             await Task.WhenAll(
@@ -168,6 +175,96 @@ namespace ImbaBetWeb.DataAccess
         public async Task<IEnumerable<Team>> GetTeamsAsync()
         {
             return await teamStore.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<Setting>> GetSettingsAsync()
+        {
+            var settings = await settingStore.GetAllAsync();
+            _cachedSettings = settings.ToDictionary(k => k.Id, v => v);
+
+            return settings;
+        }
+
+        public async Task<T> GetCachedSettingValueAsync<T>(string key) where T : IConvertible
+        {
+            if (_cachedSettings.TryGetValue(key, out var setting))
+            {
+                return (T)Convert.ChangeType(setting.Value, typeof(T));
+            }
+
+            return await GetSettingValueAsync<T>(key);
+        }
+
+        public async Task<T> GetSettingValueAsync<T>(string key) where T : IConvertible
+        {
+            var setting = await GetSettingInternal(key);
+
+            // update cache
+            _cachedSettings[setting.Id] = setting;
+
+            return (T)Convert.ChangeType(setting.Value, typeof(T));
+        }
+
+        public async Task SetSettingValueAsync<T>(string key, T value) where T : IConvertible
+        {
+            var setting = await GetSettingInternal(key);
+            setting.Value = (string)Convert.ChangeType(value, typeof(string));
+
+            await settingStore.UpdateAsync(setting);
+
+            // update cache
+            _cachedSettings[setting.Id] = setting;
+        }
+
+        public async Task ResetSettingAsync(string key)
+        {
+            var setting = await GetSettingInternal(key);
+            setting.Value = setting.Default;
+
+            await settingStore.UpdateAsync(setting);
+
+            // update cache
+            _cachedSettings[setting.Id] = setting;
+        }
+
+        private async Task<Setting> GetSettingInternal(string key)
+        {
+            return await settingStore.GetAsync(key) ?? throw new Exception($"Setting not found: {key}");
+        }
+
+        public async Task SeedSettingsAsync()
+        {
+            var fieldInfos = typeof(SettingNames)
+                .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                .Where(fi => fi.IsLiteral && !fi.IsInitOnly).ToList();
+
+            var settings = fieldInfos.Select(fi =>
+            {
+                var value = fi.GetRawConstantValue();
+                if (value == null)
+                    return null;
+                var defaultValueAttribute = fi.GetCustomAttribute<DefaultValueAttribute>();
+                var descriptionAttribute = fi.GetCustomAttribute<DescriptionAttribute>();
+
+                var setting = new Setting()
+                {
+                    Id = (string)value,
+                    Default = (string)(defaultValueAttribute?.Value ?? ""),
+                    Value = (string)(defaultValueAttribute?.Value ?? ""),
+                    Description = descriptionAttribute?.Description ?? "",
+                };
+
+                return setting;
+            }).ToList();
+
+            // only add settings which are not null and don't exist already in db
+            var availableSettings = await settingStore.GetAllAsync();
+            var settingsToBeAdded = settings.Where(x => x != null).Select(x => x!).Where(s => !availableSettings.Any(x => x.Id == s.Id));
+
+            foreach (var setting in settingsToBeAdded)
+            {
+                await settingStore.CreateAsync(setting);
+            }
         }
     }
 }

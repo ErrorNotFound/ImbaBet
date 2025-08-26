@@ -31,13 +31,12 @@ builder.Services.AddDbContext<ApplicationContext>(
         options.UseSqlServer(connectionString);   
     });
 
-builder.Services.AddScoped<SettingsManager>();
 builder.Services.AddScoped<BettingManager>();
 builder.Services.AddScoped<GameManager>();
 builder.Services.AddScoped<CommunityManager>();
 builder.Services.AddScoped<DatabaseManager>();
 builder.Services.AddScoped<MatchPlanImportService>();
-builder.Services.AddScoped<IDataStoreManager>((provider) => { return new DataStoreManager(connectionString); });
+builder.Services.AddScoped<IDataStoreManager>((provider) => { return DataStoreManager.CreateDefault(connectionString); });
 builder.Services.AddScoped<ISettingStore>((provider) => { return new SettingStore(connectionString); });
 
 

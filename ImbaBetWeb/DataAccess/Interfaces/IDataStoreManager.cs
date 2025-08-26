@@ -25,6 +25,11 @@ namespace ImbaBetWeb.DataAccess.Interfaces
         public Task<IEnumerable<MatchGroup>> GetMatchGroupsAsync();
         public Task<IEnumerable<Team>> GetTeamsAsync();
 
-
+        public Task<IEnumerable<Setting>> GetSettingsAsync();
+        public Task<T> GetCachedSettingValueAsync<T>(string key) where T : IConvertible;
+        public Task<T> GetSettingValueAsync<T>(string key) where T : IConvertible;
+        public Task ResetSettingAsync(string key);
+        public Task SeedSettingsAsync();
+        public Task SetSettingValueAsync<T>(string key, T value) where T : IConvertible;
     }
 }

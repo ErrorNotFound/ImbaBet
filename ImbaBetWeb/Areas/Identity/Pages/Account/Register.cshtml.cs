@@ -29,7 +29,6 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationContext _applicationContext;
-        private readonly SettingsManager _settingsManager;
         private readonly IDataStoreManager _dataStoreManager;
 
         public RegisterModel(
@@ -39,7 +38,6 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             ApplicationContext context,
-            SettingsManager settingsManager,
             IDataStoreManager dataStoreManager)
         {
             _userManager = userManager;
@@ -49,7 +47,6 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _applicationContext = context;
-            _settingsManager = settingsManager;
             _dataStoreManager = dataStoreManager;
         }
 
@@ -133,7 +130,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
                 if(validationResult.IsValid)
                 {
                     var user = CreateUser(Input.Username);
-                    user.RemainingRenames = await _settingsManager.GetSettingValueAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
+                    user.RemainingRenames = await _dataStoreManager.GetSettingValueAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
 
                     await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                     await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

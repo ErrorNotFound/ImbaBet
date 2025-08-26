@@ -8,10 +8,9 @@ using ImbaBetWeb.Model.Consts;
 
 namespace ImbaBetWeb.Business
 {
-    public class GameManager(IDataStoreManager dataStore, SettingsManager settingsManager)
+    public class GameManager(IDataStoreManager dataStore)
     {
         private readonly IDataStoreManager _dataStoreManager = dataStore;
-        private readonly SettingsManager _settingsManager = settingsManager;
 
         public async Task<IEnumerable<Match>> GetMatchesAsync()
         {
@@ -89,8 +88,8 @@ namespace ImbaBetWeb.Business
                     }
                 };
 
-                item.Points =   item.Details.Wins * await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_WIN) 
-                                + item.Details.Draws * await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_DRAW);
+                item.Points =   item.Details.Wins * await _dataStoreManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_WIN) 
+                                + item.Details.Draws * await _dataStoreManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_DRAW);
 
                 list.Add(item);
             }

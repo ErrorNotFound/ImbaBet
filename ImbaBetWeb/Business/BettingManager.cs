@@ -9,10 +9,8 @@ using ImbaBetWeb.Model.Consts;
 namespace ImbaBetWeb.Business
 {
     public class BettingManager(
-        IDataStoreManager dataStoreManager,
-        SettingsManager settingsManager)
+        IDataStoreManager dataStoreManager)
     {
-        private readonly SettingsManager _settingsManager = settingsManager;
         private readonly IDataStoreManager _dataStoreManager = dataStoreManager;
 
         /// <summary>
@@ -124,7 +122,7 @@ namespace ImbaBetWeb.Business
         public async Task<IList<RankingItem<CommunityDetails>>> GetCommunityRankingAsync()
         {
             var communities = await _dataStoreManager.GetCommunitiesAsync();
-            var minMemberCount = await _settingsManager.GetSettingValueAsync<int>(SettingNames.MIN_MEMBER_COUNT_FOR_RANKING);
+            var minMemberCount = await _dataStoreManager.GetSettingValueAsync<int>(SettingNames.MIN_MEMBER_COUNT_FOR_RANKING);
 
             var list = communities.Where(x => x.Members.Count() >= minMemberCount).Select(community =>
             {
@@ -177,7 +175,7 @@ namespace ImbaBetWeb.Business
             // Exact bet
             if (match.GoalsA == bet.GoalsA && match.GoalsB == bet.GoalsB)
             {
-                return await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.BETTING_POINTS_EXACT_RESULT);
+                return await _dataStoreManager.GetCachedSettingValueAsync<int>(SettingNames.BETTING_POINTS_EXACT_RESULT);
             }
 
             var result = match.GetMatchResult();
@@ -186,7 +184,7 @@ namespace ImbaBetWeb.Business
 
             if (correctTendency)
             {
-                return correctGoalDiff ? await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY_AND_DIFFERENCE) : await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY);
+                return correctGoalDiff ? await _dataStoreManager.GetCachedSettingValueAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY_AND_DIFFERENCE) : await _dataStoreManager.GetCachedSettingValueAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY);
             }
 
             return 0;

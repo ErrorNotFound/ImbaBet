@@ -5,11 +5,9 @@ using ImbaBetWeb.Model.Consts;
 namespace ImbaBetWeb.Business
 {
     public class CommunityManager(
-        IDataStoreManager manager,
-        SettingsManager settingsManager)
+        IDataStoreManager manager)
     {
         private readonly IDataStoreManager _dataStoreManager = manager;
-        private readonly SettingsManager _settingsManager = settingsManager;
 
         public async Task<IEnumerable<Community>> GetCommunitiesAsync()
         {
@@ -18,7 +16,7 @@ namespace ImbaBetWeb.Business
 
         public async Task CreateCommunityAsync(BettingUser owner, string name)
         {
-            if(false == await _settingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_CREATE))
+            if(false == await _dataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_CREATE))
             {
                 return;
             }
@@ -61,7 +59,7 @@ namespace ImbaBetWeb.Business
 
         public async Task<bool> JoinCommunityAsync(BettingUser user, int communityId)
         {
-            if (false == await _settingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_JOIN))
+            if (false == await _dataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_JOIN))
             {
                 return false;
             }
@@ -82,7 +80,7 @@ namespace ImbaBetWeb.Business
 
         public async Task<bool> LeaveCommunityAsync(BettingUser user)
         {
-            if (false == await _settingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE))
+            if (false == await _dataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE))
             {
                 return false;
             }
@@ -132,7 +130,7 @@ namespace ImbaBetWeb.Business
 
         public async Task<bool> KickMemberAsync(int communityId, int userId)
         {
-            if (false == await _settingsManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE))
+            if (false == await _dataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE))
             {
                 return false;
             }

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ImbaBetWeb.DataAccess.Interfaces;
 
 
 namespace ImbaBetWeb.Controllers
@@ -22,7 +23,7 @@ namespace ImbaBetWeb.Controllers
         RoleManager<IdentityRole> roleManager,
         DatabaseManager databaseManager,
         CommunityManager communityManager,
-        SettingsManager settingsManager,
+        IDataStoreManager dataStoreManager,
         MatchPlanImportService matchPlanImportService,
         IEmailSender emailSender) : Controller
     {
@@ -32,7 +33,7 @@ namespace ImbaBetWeb.Controllers
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly DatabaseManager _databaseManager = databaseManager;
         private readonly CommunityManager _communityManager = communityManager;
-        private readonly SettingsManager _settingsManager = settingsManager;
+        private readonly IDataStoreManager _dataStoreManager = dataStoreManager;
         private readonly MatchPlanImportService _matchPlanImportService = matchPlanImportService;
         private readonly IEmailSender _emailSender = emailSender;
 
@@ -101,7 +102,7 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Settings()
         {
-            var settings = await _settingsManager.GetAllSettingsAsync();
+            var settings = await _dataStoreManager.GetSettingsAsync();
 
             return View(settings);
         }
@@ -110,7 +111,7 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> SaveSetting(string key, string value)
         {
-            await _settingsManager.SetSettingValueAsync(key, value);
+            await _dataStoreManager.SetSettingValueAsync(key, value);
 
             //todo: rework
             /*
@@ -130,7 +131,7 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> ResetSetting(string key)
         {
-            await _settingsManager.ResetSettingAsync(key);
+            await _dataStoreManager.ResetSettingAsync(key);
             //todo: rework
             /*
             if (success)

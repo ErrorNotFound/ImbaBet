@@ -1,11 +1,12 @@
 ﻿@using ImbaBetWeb.Business
+@using ImbaBetWeb.DataAccess.Interfaces
 @using ImbaBetWeb.Model.Consts
-@inject SettingsManager SettingsManager
+@inject IDataStoreManager DataStoreManager
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to @(await SettingsManager.GetCachedSettingValueAsync<string>(SettingNames.BETTING_GAME_NAME))</h1>
+    <h1 class="display-4">Welcome to @(await DataStoreManager.GetCachedSettingValueAsync<string>(SettingNames.BETTING_GAME_NAME))</h1>
 </div>

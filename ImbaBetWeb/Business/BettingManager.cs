@@ -8,18 +8,12 @@ using ImbaBetWeb.Model.Consts;
 
 namespace ImbaBetWeb.Business
 {
-    public class BettingManager
+    public class BettingManager(
+        IDataStoreManager dataStoreManager,
+        SettingsManager settingsManager)
     {
-        private readonly SettingsManager _settingsManager;
-        private readonly IDataStoreManager _dataStoreManager;
-
-        public BettingManager(
-            IDataStoreManager dataStoreManager, 
-            SettingsManager settingsManager)
-        {
-            _dataStoreManager = dataStoreManager;
-            _settingsManager = settingsManager;
-        }
+        private readonly SettingsManager _settingsManager = settingsManager;
+        private readonly IDataStoreManager _dataStoreManager = dataStoreManager;
 
         /// <summary>
         /// Returns a list of bets that the user has not betted on yet

@@ -1,22 +1,15 @@
 ﻿using ImbaBetWeb.DataAccess.Interfaces;
 using ImbaBetWeb.Model;
 using ImbaBetWeb.Model.Consts;
-using Microsoft.AspNetCore.Identity;
 
 namespace ImbaBetWeb.Business
 {
-    public class CommunityManager
+    public class CommunityManager(
+        IDataStoreManager manager,
+        SettingsManager settingsManager)
     {
-        private readonly IDataStoreManager _dataStoreManager;
-        private readonly SettingsManager _settingsManager;
-
-        public CommunityManager(
-            IDataStoreManager manager,
-            SettingsManager settingsManager)
-        {
-            _dataStoreManager = manager;
-            _settingsManager = settingsManager;
-        }
+        private readonly IDataStoreManager _dataStoreManager = manager;
+        private readonly SettingsManager _settingsManager = settingsManager;
 
         public async Task<IEnumerable<Community>> GetCommunitiesAsync()
         {

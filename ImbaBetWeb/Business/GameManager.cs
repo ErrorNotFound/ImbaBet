@@ -8,40 +8,34 @@ using ImbaBetWeb.Model.Consts;
 
 namespace ImbaBetWeb.Business
 {
-    public class GameManager
+    public class GameManager(IDataStoreManager dataStore, SettingsManager settingsManager)
     {
-        private readonly IDataStoreManager dataStoreManager;
-        private readonly SettingsManager settingsManager;
-
-        public GameManager(IDataStoreManager dataStore, SettingsManager settingsManager)
-        {
-            this.dataStoreManager = dataStore;
-            this.settingsManager = settingsManager;
-        }
+        private readonly IDataStoreManager _dataStoreManager = dataStore;
+        private readonly SettingsManager _settingsManager = settingsManager;
 
         public async Task<IEnumerable<Match>> GetMatchesAsync()
         {
-            return await dataStoreManager.GetMatchesAsync();
+            return await _dataStoreManager.GetMatchesAsync();
         }
 
         public async Task<IEnumerable<MatchGroup>> GetMatchGroupsAsync()
         {
-            return await dataStoreManager.GetMatchGroupsAsync();
+            return await _dataStoreManager.GetMatchGroupsAsync();
         }
 
         public async Task<IEnumerable<Team>> GetTeamsAsync()
         {
-            return await dataStoreManager.GetTeamsAsync();
+            return await _dataStoreManager.GetTeamsAsync();
         }
 
         public async Task UpdateMatchesAsync(IEnumerable<Match> matches)
         {
-            await dataStoreManager.UpdateMatchesAsync(matches);
+            await _dataStoreManager.UpdateMatchesAsync(matches);
         }
 
         public async Task<Match?> GetMatchByIdAsync(int matchId)
         {
-            var matches = await dataStoreManager.GetMatchesAsync(); 
+            var matches = await _dataStoreManager.GetMatchesAsync(); 
             return matches.SingleOrDefault(m => m.Id == matchId);
         }
 
@@ -95,8 +89,8 @@ namespace ImbaBetWeb.Business
                     }
                 };
 
-                item.Points =   item.Details.Wins * await settingsManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_WIN) 
-                                + item.Details.Draws * await settingsManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_DRAW);
+                item.Points =   item.Details.Wins * await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_WIN) 
+                                + item.Details.Draws * await _settingsManager.GetCachedSettingValueAsync<int>(SettingNames.MATCH_POINTS_PER_DRAW);
 
                 list.Add(item);
             }

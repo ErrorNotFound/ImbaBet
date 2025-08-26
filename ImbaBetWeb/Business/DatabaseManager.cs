@@ -1,39 +1,26 @@
-﻿using ImbaBetWeb.Data;
-using ImbaBetWeb.Model.Consts;
+﻿using ImbaBetWeb.DataAccess.Interfaces;
 using ImbaBetWeb.Model;
+using ImbaBetWeb.Model.Consts;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using ImbaBetWeb.DataAccess.Interfaces;
 
 namespace ImbaBetWeb.Business
 {
-    public class DatabaseManager
+    public class DatabaseManager(
+        IDataStoreManager dataStoreManager,
+        RoleManager<IdentityRole> roleManager,
+        UserManager<MyIdentityUser> userManager,
+        CommunityManager communityManager,
+        SettingsManager settingsManager,
+        IWebHostEnvironment webHostEnvironment,
+        IConfiguration configuration)
     {
-        private readonly IDataStoreManager _dataStoreManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<MyIdentityUser> _userManager;
-        private readonly CommunityManager _communityManager;
-        private readonly SettingsManager _settingsManager;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IConfiguration _configuration;
-
-        public DatabaseManager(
-            IDataStoreManager dataStoreManager, 
-            RoleManager<IdentityRole> roleManager, 
-            UserManager<MyIdentityUser> userManager,
-            CommunityManager communityManager,
-            SettingsManager settingsManager,
-            IWebHostEnvironment webHostEnvironment,
-            IConfiguration configuration)
-        {
-            _dataStoreManager = dataStoreManager;
-            _roleManager = roleManager;
-            _userManager = userManager;
-            _communityManager = communityManager;
-            _settingsManager = settingsManager;
-            _webHostEnvironment = webHostEnvironment;
-            _configuration = configuration;
-        }
+        private readonly IDataStoreManager _dataStoreManager = dataStoreManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly UserManager<MyIdentityUser> _userManager = userManager;
+        private readonly CommunityManager _communityManager = communityManager;
+        private readonly SettingsManager _settingsManager = settingsManager;
+        private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task DeleteAllDataAsync()
         {

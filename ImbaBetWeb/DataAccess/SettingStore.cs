@@ -18,7 +18,7 @@ namespace ImbaBetWeb.DataAccess
 
         private readonly int field_length = 128;
 
-        public async Task CreateAsync(Setting setting)
+        public async Task<string> CreateAsync(Setting setting)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -38,6 +38,8 @@ namespace ImbaBetWeb.DataAccess
             await command.PrepareAsync();
             var result = await command.ExecuteNonQueryAsync();
             await connection.CloseAsync();
+
+            return setting.Key;
         }
 
         public async Task DeleteAsync(Setting setting)

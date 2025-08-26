@@ -11,7 +11,7 @@ namespace ImbaBetWeb.DataAccess
 
         public readonly string TableName = "Settings";
 
-        private readonly string colName_Key = "Key";
+        private readonly string colName_Id = "Id";
         private readonly string colName_Value = "Value";
         private readonly string colName_Default = "Default";
         private readonly string colName_Description = "Description";
@@ -24,12 +24,12 @@ namespace ImbaBetWeb.DataAccess
             using var command = connection.CreateCommand();
 
             command.CommandText = $"INSERT INTO {TableName} " +
-                $"([{colName_Key}],[{colName_Value}],[{colName_Default}],[{colName_Description}]) " +
+                $"([{colName_Id}],[{colName_Value}],[{colName_Default}],[{colName_Description}]) " +
                 "VALUES " +
-                $"(@{colName_Key},@{colName_Value},@{colName_Default},@{colName_Description});" +
+                $"(@{colName_Id},@{colName_Value},@{colName_Default},@{colName_Description});" +
                 $"SELECT CONVERT(int,SCOPE_IDENTITY());";
 
-            command.Parameters.Add($"@{colName_Key}", SqlDbType.NVarChar, field_length).Value = setting.Key;
+            command.Parameters.Add($"@{colName_Id}", SqlDbType.NVarChar, field_length).Value = setting.Id;
             command.Parameters.Add($"@{colName_Value}", SqlDbType.NVarChar, field_length).Value = setting.Value;
             command.Parameters.Add($"@{colName_Default}", SqlDbType.NVarChar, field_length).Value = setting.Default;
             command.Parameters.Add($"@{colName_Description}", SqlDbType.NVarChar, field_length).Value = setting.Description;
@@ -39,7 +39,7 @@ namespace ImbaBetWeb.DataAccess
             var result = await command.ExecuteNonQueryAsync();
             await connection.CloseAsync();
 
-            return setting.Key;
+            return setting.Id;
         }
 
         public async Task DeleteAsync(Setting setting)
@@ -49,9 +49,9 @@ namespace ImbaBetWeb.DataAccess
 
             command.CommandText =
                 $"DELETE FROM {TableName} " +
-                $"WHERE [{colName_Key}]=@{colName_Key}";
+                $"WHERE [{colName_Id}]=@{colName_Id}";
 
-            command.Parameters.Add($"@{colName_Key}", SqlDbType.NVarChar, field_length).Value = setting.Key;
+            command.Parameters.Add($"@{colName_Id}", SqlDbType.NVarChar, field_length).Value = setting.Id;
 
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -85,7 +85,7 @@ namespace ImbaBetWeb.DataAccess
             command.CommandText =
                 $"CREATE TABLE {TableName} " +
                 $"(" +
-                    $"[{colName_Key}] NVARCHAR({field_length}) NOT NULL PRIMARY KEY, " +
+                    $"[{colName_Id}] NVARCHAR({field_length}) NOT NULL PRIMARY KEY, " +
                     $"[{colName_Value}] NVARCHAR({field_length}) NOT NULL, " +
                     $"[{colName_Default}] NVARCHAR({field_length}) NOT NULL, " +
                     $"[{colName_Description}] NVARCHAR({field_length}) NOT NULL " +
@@ -96,9 +96,9 @@ namespace ImbaBetWeb.DataAccess
             await connection.CloseAsync();
         }
 
-        public async Task<Setting> GetAsync(string key)
+        public async Task<Setting> GetAsync(string id)
         {
-            var itemList = await InternalGetAsync(key);
+            var itemList = await InternalGetAsync(id);
             var count = itemList.Count();
 
             if (count == 0)
@@ -115,15 +115,15 @@ namespace ImbaBetWeb.DataAccess
             return await InternalGetAsync(null);
         }
 
-        private async Task<IEnumerable<Setting>> InternalGetAsync(string? key)
+        private async Task<IEnumerable<Setting>> InternalGetAsync(string? id)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
 
-            if (key != null)
+            if (id != null)
             {
-                command.CommandText = $"SELECT * FROM {TableName} WHERE [{colName_Key}]=@{colName_Key}";
-                command.Parameters.Add($"@{colName_Key}", SqlDbType.NVarChar, field_length).Value = key;
+                command.CommandText = $"SELECT * FROM {TableName} WHERE [{colName_Id}]=@{colName_Id}";
+                command.Parameters.Add($"@{colName_Id}", SqlDbType.NVarChar, field_length).Value = id;
             }
             else
             {
@@ -134,7 +134,7 @@ namespace ImbaBetWeb.DataAccess
             await command.PrepareAsync();
             var reader = await command.ExecuteReaderAsync();
 
-            int oKey = reader.GetOrdinal(colName_Key);
+            int oId = reader.GetOrdinal(colName_Id);
             int oValue = reader.GetOrdinal(colName_Value);
             int oDefault = reader.GetOrdinal(colName_Default);
             int oDescription = reader.GetOrdinal(colName_Description);
@@ -145,7 +145,7 @@ namespace ImbaBetWeb.DataAccess
             {
                 list.Add(new Setting
                 {
-                    Key = reader.GetString(oKey),
+                    Id = reader.GetString(oId),
                     Value = reader.GetString(oValue),
                     Default = reader.GetString(oDefault),
                     Description = reader.GetString(oDescription)
@@ -163,12 +163,12 @@ namespace ImbaBetWeb.DataAccess
 
             command.CommandText = $"UPDATE {TableName} " +
                 $"SET [{colName_Value}]=@{colName_Value},[{colName_Default}]=@{colName_Default},[{colName_Description}]=@{colName_Description} " +
-                $"WHERE [{colName_Key}]=@{colName_Key}";
+                $"WHERE [{colName_Id}]=@{colName_Id}";
 
             command.Parameters.Add($"@{colName_Value}", SqlDbType.NVarChar, field_length).Value = setting.Value;
             command.Parameters.Add($"@{colName_Default}", SqlDbType.NVarChar, field_length).Value = setting.Default;
             command.Parameters.Add($"@{colName_Description}", SqlDbType.NVarChar, field_length).Value = setting.Description;
-            command.Parameters.Add($"@{colName_Key}", SqlDbType.NVarChar, field_length).Value = setting.Key;
+            command.Parameters.Add($"@{colName_Id}", SqlDbType.NVarChar, field_length).Value = setting.Id;
 
             await connection.OpenAsync();
             await command.PrepareAsync();

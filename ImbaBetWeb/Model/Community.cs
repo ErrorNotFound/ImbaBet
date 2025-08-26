@@ -1,6 +1,6 @@
 ﻿namespace ImbaBetWeb.Model
 {
-    public record Community
+    public record Community : IIdentifiable<int>
     {
         public int Id { get; set; }
         public required string Name { get; set; }

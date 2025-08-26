@@ -123,10 +123,10 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => setting.Key)
+                    @Html.DisplayFor(modelItem => setting.Id)
                 </td>
                 <td>
-                    <input id="@setting.Key" value="@setting.Value" />
+                    <input id="@setting.Id" value="@setting.Value" />
                 </td>
                 <td>
                     @Html.DisplayFor(model => setting.Default)
@@ -135,9 +135,9 @@
                     @Html.DisplayFor(modelItem => setting.Description)
                 </td>
                 <td>
-                    <button onclick="SaveSetting('@setting.Key')" class="btn btn-primary">Save</button>
+                    <button onclick="SaveSetting('@setting.Id')" class="btn btn-primary">Save</button>
                     &nbsp;
-                    <button onclick="ResetSetting('@setting.Key')" class="btn btn-secondary">Reset</button>
+                    <button onclick="ResetSetting('@setting.Id')" class="btn btn-secondary">Reset</button>
                 </td>
             </tr>
         }

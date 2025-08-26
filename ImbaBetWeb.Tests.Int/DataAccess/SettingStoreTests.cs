@@ -28,7 +28,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             await store.EnsureInitializedAsync();
             var setting = new Setting()
             {
-                Key = "key",
+                Id = "id",
                 Value = "value",
                 Default = "default",
                 Description = "description"
@@ -36,7 +36,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
 
             // Test Create and Retrieve
             await store.CreateAsync(setting);
-            var retrieved = await store.GetAsync(setting.Key);
+            var retrieved = await store.GetAsync(setting.Id);
             Assert.That(retrieved, Is.EqualTo(setting));
 
             // Test Update
@@ -49,7 +49,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
 
             // Test Delete
             await store.DeleteAsync(setting);
-            Assert.ThrowsAsync<InvalidOperationException>(() => store.GetAsync(setting.Key));
+            Assert.ThrowsAsync<InvalidOperationException>(() => store.GetAsync(setting.Id));
             var items = await store.GetAllAsync();
             Assert.That(items, Is.Empty);
         }

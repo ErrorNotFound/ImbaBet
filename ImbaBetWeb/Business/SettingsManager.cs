@@ -18,14 +18,14 @@ namespace ImbaBetWeb.Business
             var task = settingStore.GetAllAsync();
             task.Wait();
 
-            _cachedSettings = task.Result.ToDictionary(k => k.Key, v => v);
+            _cachedSettings = task.Result.ToDictionary(k => k.Id, v => v);
         }
 
 
         public async Task<IEnumerable<Setting>> GetAllSettingsAsync()
         {
             var settings = await settingStore.GetAllAsync();
-            _cachedSettings = settings.ToDictionary(k => k.Key, v => v);
+            _cachedSettings = settings.ToDictionary(k => k.Id, v => v);
 
             return settings;
         }
@@ -45,7 +45,7 @@ namespace ImbaBetWeb.Business
             var setting = await GetSettingInternal(key);
 
             // update cache
-            _cachedSettings[setting.Key] = setting;
+            _cachedSettings[setting.Id] = setting;
 
             return (T)Convert.ChangeType(setting.Value, typeof(T));
         }
@@ -58,7 +58,7 @@ namespace ImbaBetWeb.Business
             await settingStore.UpdateAsync(setting);
 
             // update cache
-            _cachedSettings[setting.Key] = setting;
+            _cachedSettings[setting.Id] = setting;
         }
 
         public async Task ResetSettingAsync(string key)
@@ -69,7 +69,7 @@ namespace ImbaBetWeb.Business
             await settingStore.UpdateAsync(setting);
 
             // update cache
-            _cachedSettings[setting.Key] = setting;
+            _cachedSettings[setting.Id] = setting;
         }
 
         private async Task<Setting> GetSettingInternal(string key)
@@ -93,7 +93,7 @@ namespace ImbaBetWeb.Business
 
 				var setting = new Setting()
 				{
-					Key = (string)value,
+					Id = (string)value,
 					Default = (string)(defaultValueAttribute?.Value ?? ""),
 					Value = (string)(defaultValueAttribute?.Value ?? ""),
 					Description = descriptionAttribute?.Description ?? "",
@@ -104,7 +104,7 @@ namespace ImbaBetWeb.Business
 
             // only add settings which are not null and don't exist already in db
             var availableSettings = await settingStore.GetAllAsync();
-            var settingsToBeAdded = settings.Where(x => x != null).Select(x => x!).Where(s => !availableSettings.Any(x => x.Key == s.Key));
+            var settingsToBeAdded = settings.Where(x => x != null).Select(x => x!).Where(s => !availableSettings.Any(x => x.Id == s.Id));
 
             foreach( var setting in settingsToBeAdded )
             {

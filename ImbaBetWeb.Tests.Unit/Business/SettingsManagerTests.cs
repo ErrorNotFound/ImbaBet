@@ -36,7 +36,7 @@ namespace ImbaBetWeb.Tests.Unit.Business
             var settingsManager = new SettingsManager(storeMock.Object);
 
             // Act
-            var settingValue = await settingsManager.GetCachedSettingValueAsync<string>(setting.Key);
+            var settingValue = await settingsManager.GetCachedSettingValueAsync<string>(setting.Id);
 
             // Assert
             Assert.That(settingValue, Is.EqualTo(setting.Value));
@@ -50,11 +50,11 @@ namespace ImbaBetWeb.Tests.Unit.Business
             var setting = GetDefaultSetting();
             var storeMock = GetStoreMock();
             storeMock.Setup(mock => mock.GetAllAsync()).ReturnsAsync(() => { return []; }); // setting will not be in cache
-            storeMock.Setup(mock => mock.GetAsync(It.Is<string>((arg) => arg == setting.Key))).ReturnsAsync(() => { return setting; });
+            storeMock.Setup(mock => mock.GetAsync(It.Is<string>((arg) => arg == setting.Id))).ReturnsAsync(() => { return setting; });
             var settingsManager = new SettingsManager(storeMock.Object);
 
             // Act
-            var settingValue = await settingsManager.GetCachedSettingValueAsync<string>(setting.Key);
+            var settingValue = await settingsManager.GetCachedSettingValueAsync<string>(setting.Id);
 
             // Assert
             Assert.That(settingValue, Is.EqualTo(setting.Value));
@@ -68,11 +68,11 @@ namespace ImbaBetWeb.Tests.Unit.Business
             var setting = GetDefaultSetting();
             var storeMock = GetStoreMock();
             storeMock.Setup(mock => mock.GetAllAsync()).ReturnsAsync(() => { return [setting]; }); // this will make sure the setting is in cache
-            storeMock.Setup(mock => mock.GetAsync(It.Is<string>((arg) => arg == setting.Key))).ReturnsAsync(() => { return setting; });
+            storeMock.Setup(mock => mock.GetAsync(It.Is<string>((arg) => arg == setting.Id))).ReturnsAsync(() => { return setting; });
             var settingsManager = new SettingsManager(storeMock.Object);
 
             // Act
-            var settingValue = await settingsManager.GetSettingValueAsync<string>(setting.Key);
+            var settingValue = await settingsManager.GetSettingValueAsync<string>(setting.Id);
 
             // Assert
             Assert.That(settingValue, Is.EqualTo(setting.Value));
@@ -86,16 +86,16 @@ namespace ImbaBetWeb.Tests.Unit.Business
             var setting = GetDefaultSetting();
             var storeMock = GetStoreMock();
             storeMock.Setup(mock => mock.GetAllAsync()).ReturnsAsync(() => { return [setting]; }); // this will make sure the setting is in cache
-            storeMock.Setup(mock => mock.GetAsync(It.Is<string>((arg) => arg == setting.Key))).ReturnsAsync(() => { return setting; });
-            storeMock.Setup(mock => mock.UpdateAsync(It.Is<Setting>((set) => set.Key == setting.Key)));
+            storeMock.Setup(mock => mock.GetAsync(It.Is<string>((arg) => arg == setting.Id))).ReturnsAsync(() => { return setting; });
+            storeMock.Setup(mock => mock.UpdateAsync(It.Is<Setting>((set) => set.Id == setting.Id)));
             var settingsManager = new SettingsManager(storeMock.Object);
             var newValue = 1337;
 
             // Act
-            await settingsManager.SetSettingValueAsync(setting.Key, newValue);
+            await settingsManager.SetSettingValueAsync(setting.Id, newValue);
 
             // Assert
-            storeMock.Verify(mock => mock.UpdateAsync(It.Is<Setting>((set) => set.Key == setting.Key && set.Value == newValue.ToString())), Times.Once);
+            storeMock.Verify(mock => mock.UpdateAsync(It.Is<Setting>((set) => set.Id == setting.Id && set.Value == newValue.ToString())), Times.Once);
         }
 
         [Test]
@@ -104,15 +104,15 @@ namespace ImbaBetWeb.Tests.Unit.Business
             // Arrange
             var setting = GetDefaultSetting();
             var storeMock = GetStoreMock();
-            storeMock.Setup(mock => mock.GetAsync(It.Is<string>((arg) => arg == setting.Key))).ReturnsAsync(() => { return setting; });
-            storeMock.Setup(mock => mock.UpdateAsync(It.Is<Setting>((set) => set.Key == setting.Key && set.Value == setting.Default)));
+            storeMock.Setup(mock => mock.GetAsync(It.Is<string>((arg) => arg == setting.Id))).ReturnsAsync(() => { return setting; });
+            storeMock.Setup(mock => mock.UpdateAsync(It.Is<Setting>((set) => set.Id == setting.Id && set.Value == setting.Default)));
             var settingsManager = new SettingsManager(storeMock.Object);
 
             // Act
-            await settingsManager.ResetSettingAsync(setting.Key);
+            await settingsManager.ResetSettingAsync(setting.Id);
 
             // Assert
-            storeMock.Verify(mock => mock.UpdateAsync(It.Is<Setting>((set) => set.Key == setting.Key && set.Value == setting.Default)), Times.Once);
+            storeMock.Verify(mock => mock.UpdateAsync(It.Is<Setting>((set) => set.Id == setting.Id && set.Value == setting.Default)), Times.Once);
         }
 
         private Mock<ISettingStore> GetStoreMock()
@@ -124,7 +124,7 @@ namespace ImbaBetWeb.Tests.Unit.Business
 
         private Setting GetDefaultSetting()
         {
-            return new Setting() { Key = "key", Value = "value", Default = "default", Description = "description" };
+            return new Setting() { Id = "key", Value = "value", Default = "default", Description = "description" };
         }
     }
 }

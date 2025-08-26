@@ -2,7 +2,7 @@
 
 namespace ImbaBetWeb.DataAccess.Interfaces
 {
-    public interface IStoreBase<T,U> where T : class
+    public interface IStoreBase<T,U> where T : IIdentifiable<U>
     {
         Task<U> CreateAsync(T obj);
         Task<T> GetAsync(U id);

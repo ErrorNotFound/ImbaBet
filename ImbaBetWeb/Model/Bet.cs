@@ -1,6 +1,6 @@
 ﻿namespace ImbaBetWeb.Model
 {
-    public record Bet
+    public record Bet : IIdentifiable<int>
     {
         public int Id { get; set; }
 

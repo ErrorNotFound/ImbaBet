@@ -42,7 +42,7 @@ namespace ImbaBetWeb.DataAccess
                 teamStore.EnsureInitializedAsync());
         }
 
-        public async Task<(IEnumerable<MatchGroup> MatchGroups, IEnumerable<Match> Matches, IEnumerable<Team> Teams)> GetGameplanAsync()
+        public async Task<Matchplan> GetMatchplanAsync()
         {
             var matchGroups = await matchGroupStore.GetAllAsync();
             var matches = await matchStore.GetAllAsync();
@@ -60,7 +60,27 @@ namespace ImbaBetWeb.DataAccess
                 matchGroup.Matches = matches.Where(m => matchGroup.Id == m.MatchGroupId).ToList();
             }
 
-            return (matchGroups, matches, teams);
+            return new Matchplan() { Matches = matches, MatchGroups = matchGroups, Teams = teams};
+        }
+        public async Task ImportMatchplanAsync(Matchplan matchplan)
+        {
+            foreach(var team in matchplan.Teams)
+            {
+                team.Id = await teamStore.CreateAsync(team);
+            }
+
+            foreach (var matchGroup in matchplan.MatchGroups)
+            {
+                matchGroup.Id = await matchGroupStore.CreateAsync(matchGroup);
+            }
+
+            foreach(var match in matchplan.Matches)
+            {
+                match.MatchGroupId = match.MatchGroup!.Id; // this should have been set in the lines before
+                match.TeamATeamId = match.TeamA?.Id; // optional
+                match.TeamBTeamId = match.TeamB?.Id; // optional
+                match.Id = await matchStore.CreateAsync(match);
+            }
         }
 
         public async Task<IEnumerable<Bet>> GetBetsAsync()
@@ -154,27 +174,12 @@ namespace ImbaBetWeb.DataAccess
             }
         }
 
-        public async Task<IEnumerable<Match>> GetMatchesAsync()
-        {
-            return await matchStore.GetAllAsync();
-        }
-
         public async Task UpdateMatchesAsync(IEnumerable<Match> matches)
         {
             foreach (var match in matches)
             {
                 await matchStore.UpdateAsync(match);
             }
-        }
-
-        public async Task<IEnumerable<MatchGroup>> GetMatchGroupsAsync()
-        {
-            return await matchGroupStore.GetAllAsync();
-        }
-
-        public async Task<IEnumerable<Team>> GetTeamsAsync()
-        {
-            return await teamStore.GetAllAsync();
         }
 
         public async Task<IEnumerable<Setting>> GetSettingsAsync()
@@ -266,5 +271,6 @@ namespace ImbaBetWeb.DataAccess
                 await settingStore.CreateAsync(setting);
             }
         }
+
     }
 }

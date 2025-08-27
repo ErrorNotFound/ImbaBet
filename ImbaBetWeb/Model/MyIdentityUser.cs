@@ -7,7 +7,5 @@ namespace ImbaBetWeb.Model
         public int BettingUserId { get; set; }
 
         public int RemainingRenames { get; set; }
-
-        public string? ProfilePicturePath { get; set; }
     }
 }

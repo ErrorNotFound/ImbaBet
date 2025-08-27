@@ -29,7 +29,8 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             var user = new BettingUser()
             {
                 MemberOfCommunityId = 1,
-                Points = 2
+                Points = 2,
+                ProfilePicturePath = "path"
             };
 
             // Test Create and Retrieve
@@ -40,6 +41,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             // Test Update
             user.MemberOfCommunityId = 3;
             user.Points = 4;
+            user.ProfilePicturePath = "newPath";
             await store.UpdateAsync(user);
             retrieved = (await store.GetAllAsync()).Single();
             Assert.That(retrieved, Is.EqualTo(user));
@@ -59,7 +61,8 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             await store.EnsureInitializedAsync();
             var user = new BettingUser()
             {
-                MemberOfCommunityId = null
+                MemberOfCommunityId = null,
+                ProfilePicturePath = null
             };
 
             // Test Create and Retrieve
@@ -69,6 +72,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
 
             // Test Update
             user.MemberOfCommunityId = null;
+            user.ProfilePicturePath= null;
             await store.UpdateAsync(user);
             retrieved = (await store.GetAllAsync()).Single();
             Assert.That(retrieved, Is.EqualTo(user));

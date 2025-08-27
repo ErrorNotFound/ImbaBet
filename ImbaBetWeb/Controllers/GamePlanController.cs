@@ -54,9 +54,9 @@ namespace ImbaBetWeb.Controllers
 
         public async Task<IActionResult> Matches()
         {
-            var matchGroups = await _gameManager.GetMatchGroupsAsync();
+            var matchplan = await _gameManager.GetMatchplanAsync();
 
-            return View(matchGroups);
+            return View(matchplan);
         }
 
         public async Task<IActionResult> Groups()

@@ -8,5 +8,7 @@
         public int? MemberOfCommunityId { get; set; }
 
         public int Points { get; set; }
+
+        public string? ProfilePicturePath { get; set; }
     }
 }

@@ -1,13 +1,16 @@
 ﻿@page
+@using ImbaBetWeb.DataAccess.Interfaces
 @model IndexModel
 
 @inject UserManager<MyIdentityUser> UserManager
+@inject IDataStoreManager DataStoreManager
 
 @{
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
 
     var user = await UserManager.GetUserAsync(User);
+    var bettingUser = await DataStoreManager.GetUserByIdAsync(user.BettingUserId);
 }
 
 <h3>@ViewData["Title"]</h3>
@@ -15,7 +18,7 @@
 <br />
 <h4>Profile Picture</h4>
 <div>
-    <img width="200" height="200" src="@(user!.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" style="border-radius: 50%;" />
+    <img width="200" height="200" src="@(bettingUser!.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" style="border-radius: 50%;" />
 </div>
 <div class="row">
     <div class="col-md-6">
@@ -37,7 +40,7 @@
 <div class="row">
     <div class="col-md-6">
         <form method="post">
-            <input asp-page-handler="DeletePicture" class="w-100 btn btn-lg btn-danger" disabled="@(user?.ProfilePicturePath == null)" type="submit" value="Delete" />
+            <input asp-page-handler="DeletePicture" class="w-100 btn btn-lg btn-danger" disabled="@(bettingUser?.ProfilePicturePath == null)" type="submit" value="Delete" />
         </form>
     </div>
 </div>

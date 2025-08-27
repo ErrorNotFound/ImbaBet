@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImbaBetWeb.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20250827125411_InitialCreate")]
+    [Migration("20250827210114_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -72,9 +72,6 @@ namespace ImbaBetWeb.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("ProfilePicturePath")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RemainingRenames")
                         .HasColumnType("int");

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ImbaBetWeb.Model.MatchGroup>
+﻿@model Matchplan
 
 @{
     ViewData["Title"] = "Matches";
@@ -6,7 +6,7 @@
 <h1>@ViewData["Title"]</h1>
 <br />
 
-@foreach (var matchGroup in Model.OrderBy(x => x.StackRank))
+@foreach (var matchGroup in Model.MatchGroups.OrderBy(x => x.StackRank))
 {
     <table class="table table-hover">
         <colgroup>

@@ -80,21 +80,36 @@ namespace ImbaBetWeb.Business
             if (user == null)
                 return false;
 
-            if(user.ProfilePicturePath == null)
+            var bettingUser = await _dataStoreManager.GetUserByIdAsync(user.BettingUserId);
+
+            if(bettingUser.ProfilePicturePath == null)
                 return true;
 
             try
             {
-                var fileToBeDeleted = _webHostEnvironment.WebRootPath + user.ProfilePicturePath;
+                var fileToBeDeleted = _webHostEnvironment.WebRootPath + bettingUser.ProfilePicturePath;
                 File.Delete(fileToBeDeleted);
-                user.ProfilePicturePath = null;
-                await _userManager.UpdateAsync(user);
+                bettingUser.ProfilePicturePath = null;
+                await _dataStoreManager.UpdateUsersAsync([bettingUser]);
                 return true;
             }
             catch 
             {
                 return false;
             }
+        }
+
+        public async Task SetProfilePicture(string userId, string path)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return;
+
+            var bettingUser = await _dataStoreManager.GetUserByIdAsync(user.BettingUserId);
+
+            bettingUser.ProfilePicturePath = path;
+            await _dataStoreManager.UpdateUsersAsync([bettingUser]);
+            return;
         }
 
         public async Task<bool> ConfirmEMail(string userId)

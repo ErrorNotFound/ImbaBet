@@ -12,19 +12,9 @@ namespace ImbaBetWeb.Business
     {
         private readonly IDataStoreManager _dataStoreManager = dataStore;
 
-        public async Task<IEnumerable<Match>> GetMatchesAsync()
+        public async Task<Matchplan> GetMatchplanAsync()
         {
-            return await _dataStoreManager.GetMatchesAsync();
-        }
-
-        public async Task<IEnumerable<MatchGroup>> GetMatchGroupsAsync()
-        {
-            return await _dataStoreManager.GetMatchGroupsAsync();
-        }
-
-        public async Task<IEnumerable<Team>> GetTeamsAsync()
-        {
-            return await _dataStoreManager.GetTeamsAsync();
+            return await _dataStoreManager.GetMatchplanAsync();
         }
 
         public async Task UpdateMatchesAsync(IEnumerable<Match> matches)
@@ -34,25 +24,24 @@ namespace ImbaBetWeb.Business
 
         public async Task<Match?> GetMatchByIdAsync(int matchId)
         {
-            var matches = await _dataStoreManager.GetMatchesAsync(); 
-            return matches.SingleOrDefault(m => m.Id == matchId);
+            var matchPlan = await _dataStoreManager.GetMatchplanAsync(); 
+            return matchPlan.Matches.SingleOrDefault(m => m.Id == matchId);
         }
 
 
         public async Task<IList<RankingItem<TeamDetails>>> GetTeamRankingAsync()
         {
-            var matches = await GetMatchesAsync();
-            var teams = await GetTeamsAsync();
+            var matchPlan = await _dataStoreManager.GetMatchplanAsync();
 
-            var ranking = await GetRankingInternalAsync(matches, teams, new TeamRankingComparer());
+            var ranking = await GetRankingInternalAsync(matchPlan.Matches, matchPlan.Teams, new TeamRankingComparer());
 
             return ranking;
         }
 
         public async Task<Dictionary<MatchGroup, IList<RankingItem<TeamDetails>>>> GetGroupRankingAsync()
         {
-            var matchGroups = await GetMatchGroupsAsync();
-            var matchGroupsWithGroupRanking = matchGroups.Where(mg => mg.HasGroupRanking);
+            var matchPlan = await _dataStoreManager.GetMatchplanAsync();
+            var matchGroupsWithGroupRanking = matchPlan.MatchGroups.Where(mg => mg.HasGroupRanking);
 
             var result = new Dictionary<MatchGroup, IList<RankingItem<TeamDetails>>>();
             foreach (var matchGroup in matchGroupsWithGroupRanking)

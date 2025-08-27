@@ -168,22 +168,9 @@ namespace ImbaBetWeb.Services
                 matchGroups.Add(matchGroup);
             }
 
-            //todo
-            /*
-            foreach(var team in teams)
-            {
-                await _dataStore.TeamStore.CreateAsync(team);
-            }
+            var matchplan = new Matchplan() { Matches = allMatches, MatchGroups = matchGroups, Teams = teams };
 
-            foreach (var match in allMatches)
-            {
-                await _dataStore.MatchStore.CreateAsync(match);
-            }
-
-            foreach (var group in matchGroups)
-            {
-                await _dataStore.MatchGroupStore.CreateAsync(group);
-            }*/
+            await _dataStore.ImportMatchplanAsync(matchplan);
         }
     }
 }

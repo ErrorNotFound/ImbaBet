@@ -30,18 +30,19 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var user = await _databaseManager.GetUserAsync(idUser.BettingUserId);
-            if (user == null)
+            var bettingUser = await _databaseManager.GetUserAsync(idUser.BettingUserId);
+            if (bettingUser == null)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            var activeBets = await _bettingManager.GetActiveBetsForUserAsync(user);
-			var closedBets = await _bettingManager.GetClosedBetsForUserAsync(user);
+            var activeBets = await _bettingManager.GetActiveBetsForUserAsync(bettingUser);
+			var closedBets = await _bettingManager.GetClosedBetsForUserAsync(bettingUser);
 
             var vm = new ProfileViewModel()
             {
                 User = idUser,
+                BettingUser = bettingUser,
                 ClosedBets = closedBets,
                 ActiveBets = activeBets
             };

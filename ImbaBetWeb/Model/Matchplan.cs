@@ -1,14 +1,9 @@
-﻿
-using ImbaBetWeb.Model;
-
-namespace ImbaBetWeb.ViewModels.Admin
+﻿namespace ImbaBetWeb.Model
 {
-    public class MatchesViewModel
+    public class Matchplan
     {
         public required IEnumerable<MatchGroup> MatchGroups { get; set; }
-
         public required IEnumerable<Match> Matches { get; set; }
-
         public required IEnumerable<Team> Teams { get; set; }
     }
 }

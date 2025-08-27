@@ -18,10 +18,10 @@ namespace ImbaBetWeb.Business
         /// </summary>
         public async Task<IEnumerable<Bet>> GetOpenBetsForUserAsync(BettingUser user)
         {
-            var gameplan = await _dataStoreManager.GetGameplanAsync();
+            var matchplan = await _dataStoreManager.GetMatchplanAsync();
             var bets = await _dataStoreManager.GetBetsAsync();
 
-            var betableMatches = gameplan.Matches.Where(match => match.CanBet());
+            var betableMatches = matchplan.Matches.Where(match => match.CanBet());
             var betsByUser = bets.Where(bet => bet.UserId == user.Id);
 
             var matchesNotBetOnByUser = betableMatches.Where(m => !betsByUser.Any(b => b.MatchId == m.Id));
@@ -74,8 +74,8 @@ namespace ImbaBetWeb.Business
                 return false; 
             }
 
-            var gameplan = await _dataStoreManager.GetGameplanAsync();
-            var allowedBets = bets.Where((bet) => { return gameplan.Matches.SingleOrDefault(match => match.Id == bet.MatchId)?.CanBet() ?? false; });
+            var matchplan = await _dataStoreManager.GetMatchplanAsync();
+            var allowedBets = bets.Where((bet) => { return matchplan.Matches.SingleOrDefault(match => match.Id == bet.MatchId)?.CanBet() ?? false; });
 
             await _dataStoreManager.UpdateBetsAsync(allowedBets);
 

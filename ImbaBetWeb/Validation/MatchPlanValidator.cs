@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
-using ImbaBetWeb.ViewModels.Admin;
+using ImbaBetWeb.Model;
 
 namespace ImbaBetWeb.Validation
 {
-    public class MatchesViewModelValidator : AbstractValidator<MatchesViewModel>
+    public class MatchPlanValidator : AbstractValidator<Matchplan>
     {
-        public MatchesViewModelValidator() 
+        public MatchPlanValidator() 
         {
             RuleFor(x => x.Matches).NotEmpty();
             RuleForEach(x => x.Matches).SetValidator(new MatchValidator());

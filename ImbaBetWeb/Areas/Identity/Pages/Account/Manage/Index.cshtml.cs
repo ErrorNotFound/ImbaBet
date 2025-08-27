@@ -170,9 +170,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
             }
 
             await _databaseManager.DeleteProfilePicture(user.Id);
-
-            user.ProfilePicturePath = relativePath;
-            await _userManager.UpdateAsync(user);
+            await _databaseManager.SetProfilePicture(user.Id, relativePath);
 
             return RedirectToPage("./Index");
         }

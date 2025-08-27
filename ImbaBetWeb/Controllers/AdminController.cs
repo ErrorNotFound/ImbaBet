@@ -40,25 +40,20 @@ namespace ImbaBetWeb.Controllers
 
         public async Task<IActionResult> Matches()
         {
-            var vm = new MatchesViewModel()
-            {
-                MatchGroups = await _gameManager.GetMatchGroupsAsync(),
-                Matches = await _gameManager.GetMatchesAsync(),
-                Teams = await _gameManager.GetTeamsAsync()
-            };
+            var matchplan = await _gameManager.GetMatchplanAsync();
 
-            return View(vm);
+            return View(matchplan);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Matches(MatchesViewModel vm)
+        public async Task<IActionResult> Matches(Matchplan matchplan)
         {
-            var validator = new MatchesViewModelValidator();
-            var validationResult = validator.Validate(vm);
+            var validator = new MatchPlanValidator();
+            var validationResult = validator.Validate(matchplan);
 
             if(validationResult.IsValid)
             {
-                await _gameManager.UpdateMatchesAsync(vm.Matches);
+                await _gameManager.UpdateMatchesAsync(matchplan.Matches);
                 await _bettingManager.UpdatePointsAsync();
 
                 this.SetSuccessAlert("Matches have been saved and points updated.");

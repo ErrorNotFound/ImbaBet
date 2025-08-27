@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImbaBetWeb.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240826191058_InitialCreate")]
+    [Migration("20250827125411_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace ImbaBetWeb.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -28,12 +28,15 @@ namespace ImbaBetWeb.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ImbaBetWeb.Models.ApplicationUser", b =>
+            modelBuilder.Entity("ImbaBetWeb.Model.MyIdentityUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BettingUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -53,9 +56,6 @@ namespace ImbaBetWeb.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int?>("MemberOfCommunityId")
-                        .HasColumnType("int");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -72,9 +72,6 @@ namespace ImbaBetWeb.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<int>("Points")
-                        .HasColumnType("int");
 
                     b.Property<string>("ProfilePicturePath")
                         .HasColumnType("nvarchar(max)");
@@ -94,8 +91,6 @@ namespace ImbaBetWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MemberOfCommunityId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -105,177 +100,6 @@ namespace ImbaBetWeb.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("ImbaBetWeb.Models.Bet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GoalsA")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GoalsB")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MatchId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Points")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MatchId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Bets");
-                });
-
-            modelBuilder.Entity("ImbaBetWeb.Models.Community", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OwnerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OwnerId")
-                        .IsUnique();
-
-                    b.ToTable("Communities");
-                });
-
-            modelBuilder.Entity("ImbaBetWeb.Models.Match", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AlternativeTeamAText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AlternativeTeamBText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GoalsA")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GoalsB")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsOver")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MatchGroupId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TeamATeamId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TeamBTeamId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MatchGroupId");
-
-                    b.HasIndex("TeamATeamId");
-
-                    b.HasIndex("TeamBTeamId");
-
-                    b.ToTable("Matches");
-                });
-
-            modelBuilder.Entity("ImbaBetWeb.Models.MatchGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("HasGroupRanking")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StackRank")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MatchGroups");
-                });
-
-            modelBuilder.Entity("ImbaBetWeb.Models.Setting", b =>
-                {
-                    b.Property<string>("Key")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Default")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Key");
-
-                    b.ToTable("Settings");
-                });
-
-            modelBuilder.Entity("ImbaBetWeb.Models.Team", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FlagCountryCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StackRank")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Teams");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -415,68 +239,6 @@ namespace ImbaBetWeb.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ImbaBetWeb.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("ImbaBetWeb.Models.Community", "MemberOfCommunity")
-                        .WithMany("Members")
-                        .HasForeignKey("MemberOfCommunityId");
-
-                    b.Navigation("MemberOfCommunity");
-                });
-
-            modelBuilder.Entity("ImbaBetWeb.Models.Bet", b =>
-                {
-                    b.HasOne("ImbaBetWeb.Models.Match", "Match")
-                        .WithMany()
-                        .HasForeignKey("MatchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ImbaBetWeb.Models.ApplicationUser", "User")
-                        .WithMany("Bets")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Match");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ImbaBetWeb.Models.Community", b =>
-                {
-                    b.HasOne("ImbaBetWeb.Models.ApplicationUser", "Owner")
-                        .WithOne("OwnerOfCommunity")
-                        .HasForeignKey("ImbaBetWeb.Models.Community", "OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("ImbaBetWeb.Models.Match", b =>
-                {
-                    b.HasOne("ImbaBetWeb.Models.MatchGroup", "MatchGroup")
-                        .WithMany("Matches")
-                        .HasForeignKey("MatchGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ImbaBetWeb.Models.Team", "TeamA")
-                        .WithMany()
-                        .HasForeignKey("TeamATeamId");
-
-                    b.HasOne("ImbaBetWeb.Models.Team", "TeamB")
-                        .WithMany()
-                        .HasForeignKey("TeamBTeamId");
-
-                    b.Navigation("MatchGroup");
-
-                    b.Navigation("TeamA");
-
-                    b.Navigation("TeamB");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -488,7 +250,7 @@ namespace ImbaBetWeb.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ImbaBetWeb.Models.ApplicationUser", null)
+                    b.HasOne("ImbaBetWeb.Model.MyIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -497,7 +259,7 @@ namespace ImbaBetWeb.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ImbaBetWeb.Models.ApplicationUser", null)
+                    b.HasOne("ImbaBetWeb.Model.MyIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -512,7 +274,7 @@ namespace ImbaBetWeb.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ImbaBetWeb.Models.ApplicationUser", null)
+                    b.HasOne("ImbaBetWeb.Model.MyIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -521,28 +283,11 @@ namespace ImbaBetWeb.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("ImbaBetWeb.Models.ApplicationUser", null)
+                    b.HasOne("ImbaBetWeb.Model.MyIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ImbaBetWeb.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Bets");
-
-                    b.Navigation("OwnerOfCommunity");
-                });
-
-            modelBuilder.Entity("ImbaBetWeb.Models.Community", b =>
-                {
-                    b.Navigation("Members");
-                });
-
-            modelBuilder.Entity("ImbaBetWeb.Models.MatchGroup", b =>
-                {
-                    b.Navigation("Matches");
                 });
 #pragma warning restore 612, 618
         }

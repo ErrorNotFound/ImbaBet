@@ -1,49 +1,48 @@
 ﻿using ImbaBetWeb.DataAccess.Interfaces;
 using ImbaBetWeb.Model;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Data;
 
 namespace ImbaBetWeb.DataAccess
 {
-    public class TeamStore(string connectionString) : ITeamStore
+    public class SqlSettingStore(string connectionString) : ISettingStore
     {
         private readonly string connectionString = connectionString;
-        
-        public readonly string TableName = "Teams";
+
+        public readonly string TableName = "Settings";
 
         private readonly string colName_Id = "Id";
-        private readonly string colName_Name = "Name";
-        private readonly string colName_FlagCountryCode = "FlagCountryCode";
-        private readonly string colName_StackRank = "StackRank";
+        private readonly string colName_Value = "Value";
+        private readonly string colName_Default = "Default";
+        private readonly string colName_Description = "Description";
 
         private readonly int field_length = 128;
 
-        public async Task<int> CreateAsync(Team team)
+        public async Task<string> CreateAsync(Setting setting)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
 
             command.CommandText = $"INSERT INTO {TableName} " +
-                $"([{colName_Name}],[{colName_FlagCountryCode}],[{colName_StackRank}]) " +
+                $"([{colName_Id}],[{colName_Value}],[{colName_Default}],[{colName_Description}]) " +
                 "VALUES " +
-                $"(@{colName_Name},@{colName_FlagCountryCode},@{colName_StackRank});" +
+                $"(@{colName_Id},@{colName_Value},@{colName_Default},@{colName_Description});" +
                 $"SELECT CONVERT(int,SCOPE_IDENTITY());";
 
-            command.Parameters.Add($"@{colName_Name}", SqlDbType.NVarChar, field_length).Value = team.Name;
-            command.Parameters.Add($"@{colName_FlagCountryCode}", SqlDbType.NVarChar, field_length).Value = team.FlagCountryCode ?? (object)DBNull.Value;
-            command.Parameters.Add($"@{colName_StackRank}", SqlDbType.Int).Value = team.StackRank;
+            command.Parameters.Add($"@{colName_Id}", SqlDbType.NVarChar, field_length).Value = setting.Id;
+            command.Parameters.Add($"@{colName_Value}", SqlDbType.NVarChar, field_length).Value = setting.Value;
+            command.Parameters.Add($"@{colName_Default}", SqlDbType.NVarChar, field_length).Value = setting.Default;
+            command.Parameters.Add($"@{colName_Description}", SqlDbType.NVarChar, field_length).Value = setting.Description;
 
             await connection.OpenAsync();
             await command.PrepareAsync();
-            var result = await command.ExecuteScalarAsync();
+            var result = await command.ExecuteNonQueryAsync();
             await connection.CloseAsync();
-            if (result == null)
-                throw new InvalidOperationException("Error while creating new item. Could not get primary key.");
-            return (int)result;
+
+            return setting.Id;
         }
 
-        public async Task DeleteAsync(Team team)
+        public async Task DeleteAsync(Setting setting)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -52,7 +51,7 @@ namespace ImbaBetWeb.DataAccess
                 $"DELETE FROM {TableName} " +
                 $"WHERE [{colName_Id}]=@{colName_Id}";
 
-            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = team.Id;
+            command.Parameters.Add($"@{colName_Id}", SqlDbType.NVarChar, field_length).Value = setting.Id;
 
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -80,16 +79,16 @@ namespace ImbaBetWeb.DataAccess
                 // table exists
                 return;
             }
-            
+
             using var command = connection.CreateCommand();
 
             command.CommandText =
                 $"CREATE TABLE {TableName} " +
                 $"(" +
-                    $"[{colName_Id}] int NOT NULL IDENTITY(1,1) PRIMARY KEY, " +
-                    $"[{colName_Name}] NVARCHAR({field_length}) NOT NULL, " +
-                    $"[{colName_FlagCountryCode}] NVARCHAR({field_length}), " +
-                    $"[{colName_StackRank}] int NOT NULL " +
+                    $"[{colName_Id}] NVARCHAR({field_length}) NOT NULL PRIMARY KEY, " +
+                    $"[{colName_Value}] NVARCHAR({field_length}) NOT NULL, " +
+                    $"[{colName_Default}] NVARCHAR({field_length}) NOT NULL, " +
+                    $"[{colName_Description}] NVARCHAR({field_length}) NOT NULL " +
                 ")";
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -97,12 +96,12 @@ namespace ImbaBetWeb.DataAccess
             await connection.CloseAsync();
         }
 
-        public async Task<Team> GetAsync(int id)
+        public async Task<Setting> GetAsync(string id)
         {
             var itemList = await InternalGetAsync(id);
             var count = itemList.Count();
 
-            if(count == 0)
+            if (count == 0)
                 throw new InvalidOperationException("No records were returned.");
 
             if (count > 1)
@@ -111,20 +110,20 @@ namespace ImbaBetWeb.DataAccess
             return itemList.Single();
         }
 
-        public async Task<IEnumerable<Team>> GetAllAsync()
+        public async Task<IEnumerable<Setting>> GetAllAsync()
         {
             return await InternalGetAsync(null);
         }
 
-        private async Task<IEnumerable<Team>> InternalGetAsync(int? id)
+        private async Task<IEnumerable<Setting>> InternalGetAsync(string? id)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
 
-            if(id != null)
+            if (id != null)
             {
                 command.CommandText = $"SELECT * FROM {TableName} WHERE [{colName_Id}]=@{colName_Id}";
-                command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = id;  
+                command.Parameters.Add($"@{colName_Id}", SqlDbType.NVarChar, field_length).Value = id;
             }
             else
             {
@@ -136,20 +135,20 @@ namespace ImbaBetWeb.DataAccess
             var reader = await command.ExecuteReaderAsync();
 
             int oId = reader.GetOrdinal(colName_Id);
-            int oName = reader.GetOrdinal(colName_Name);
-            int oFlagCountryCode = reader.GetOrdinal(colName_FlagCountryCode);
-            int oStackRank = reader.GetOrdinal(colName_StackRank);
+            int oValue = reader.GetOrdinal(colName_Value);
+            int oDefault = reader.GetOrdinal(colName_Default);
+            int oDescription = reader.GetOrdinal(colName_Description);
 
-            var list = new List<Team>();
+            var list = new List<Setting>();
 
             while (await reader.ReadAsync())
             {
-                list.Add(new Team
+                list.Add(new Setting
                 {
-                    Id = reader.GetInt32(oId),
-                    Name = reader.GetString(oName),
-                    FlagCountryCode = reader.IsDBNull(oFlagCountryCode) ? null : reader.GetString(oFlagCountryCode),
-                    StackRank = reader.GetInt32(oStackRank)
+                    Id = reader.GetString(oId),
+                    Value = reader.GetString(oValue),
+                    Default = reader.GetString(oDefault),
+                    Description = reader.GetString(oDescription)
                 });
             }
 
@@ -157,20 +156,20 @@ namespace ImbaBetWeb.DataAccess
             return list;
         }
 
-        public async Task UpdateAsync(Team team)
+        public async Task UpdateAsync(Setting setting)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
 
             command.CommandText = $"UPDATE {TableName} " +
-                $"SET [{colName_Name}]=@{colName_Name},[{colName_FlagCountryCode}]=@{colName_FlagCountryCode},[{colName_StackRank}]=@{colName_StackRank} " +
+                $"SET [{colName_Value}]=@{colName_Value},[{colName_Default}]=@{colName_Default},[{colName_Description}]=@{colName_Description} " +
                 $"WHERE [{colName_Id}]=@{colName_Id}";
 
-            command.Parameters.Add($"@{colName_Name}", SqlDbType.NVarChar, field_length).Value = team.Name;
-            command.Parameters.Add($"@{colName_FlagCountryCode}", SqlDbType.NVarChar, field_length).Value = team.FlagCountryCode ?? (object)DBNull.Value;
-            command.Parameters.Add($"@{colName_StackRank}", SqlDbType.Int).Value = team.StackRank;
-            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = team.Id;
-            
+            command.Parameters.Add($"@{colName_Value}", SqlDbType.NVarChar, field_length).Value = setting.Value;
+            command.Parameters.Add($"@{colName_Default}", SqlDbType.NVarChar, field_length).Value = setting.Default;
+            command.Parameters.Add($"@{colName_Description}", SqlDbType.NVarChar, field_length).Value = setting.Description;
+            command.Parameters.Add($"@{colName_Id}", SqlDbType.NVarChar, field_length).Value = setting.Id;
+
             await connection.OpenAsync();
             await command.PrepareAsync();
             await command.ExecuteNonQueryAsync();

@@ -6,13 +6,13 @@ using ImbaBetWeb.Tests.Int.DataAccess.TestHelper;
 namespace ImbaBetWeb.Tests.Int.DataAccess
 {
     [AllureNUnit]
-    public class MatchGroupStoreTests : DataAccessTestsBase
+    public class SqlMatchGroupStoreTests : DataAccessTestsBase
     {
         [Test]
         public async Task EnsureInitializedAsync_NoTableAvailable_TableIsAdded()
         {
             // Arrange
-            var store = new MatchGroupStore(TestDatabase.ConnectionString);
+            var store = new SqlMatchGroupStore(TestDatabase.ConnectionString);
 
             // Act and Assert
             Assert.That(await TestDatabase.TableExistsAsync(store.TableName), Is.False);
@@ -24,7 +24,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
         public async Task CreateGetUpdateDelete_TestWorkflow_NoUnexpectedError()
         {
             // Arrange
-            var store = new MatchGroupStore(TestDatabase.ConnectionString);
+            var store = new SqlMatchGroupStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
             var matchGroup = new MatchGroup()
             {

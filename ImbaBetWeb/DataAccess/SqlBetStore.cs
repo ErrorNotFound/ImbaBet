@@ -5,44 +5,48 @@ using System.Data;
 
 namespace ImbaBetWeb.DataAccess
 {
-    public class SettingStore(string connectionString) : ISettingStore
+    public class SqlBetStore(string connectionString) : IBetStore
     {
         private readonly string connectionString = connectionString;
-
-        public readonly string TableName = "Settings";
+        
+        public readonly string TableName = "Bets";
 
         private readonly string colName_Id = "Id";
-        private readonly string colName_Value = "Value";
-        private readonly string colName_Default = "Default";
-        private readonly string colName_Description = "Description";
+        private readonly string colName_MatchId = "MatchId";
+        private readonly string colName_UserId = "UserId";
+        private readonly string colName_GoalsA = "GoalsA";
+        private readonly string colName_GoalsB = "GoalsB";
+        private readonly string colName_Points = "Points";
 
         private readonly int field_length = 128;
 
-        public async Task<string> CreateAsync(Setting setting)
+        public async Task<int> CreateAsync(Bet bet)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
 
             command.CommandText = $"INSERT INTO {TableName} " +
-                $"([{colName_Id}],[{colName_Value}],[{colName_Default}],[{colName_Description}]) " +
+                $"([{colName_MatchId}],[{colName_UserId}],[{colName_GoalsA}],[{colName_GoalsB}],[{colName_Points}]) " +
                 "VALUES " +
-                $"(@{colName_Id},@{colName_Value},@{colName_Default},@{colName_Description});" +
+                $"(@{colName_MatchId},@{colName_UserId},@{colName_GoalsA},@{colName_GoalsB},@{colName_Points});" +
                 $"SELECT CONVERT(int,SCOPE_IDENTITY());";
 
-            command.Parameters.Add($"@{colName_Id}", SqlDbType.NVarChar, field_length).Value = setting.Id;
-            command.Parameters.Add($"@{colName_Value}", SqlDbType.NVarChar, field_length).Value = setting.Value;
-            command.Parameters.Add($"@{colName_Default}", SqlDbType.NVarChar, field_length).Value = setting.Default;
-            command.Parameters.Add($"@{colName_Description}", SqlDbType.NVarChar, field_length).Value = setting.Description;
+            command.Parameters.Add($"@{colName_MatchId}", SqlDbType.Int).Value = bet.MatchId;
+            command.Parameters.Add($"@{colName_UserId}", SqlDbType.Int).Value = bet.UserId;
+            command.Parameters.Add($"@{colName_GoalsA}", SqlDbType.Int).Value = bet.GoalsA;
+            command.Parameters.Add($"@{colName_GoalsB}", SqlDbType.Int).Value = bet.GoalsB;
+            command.Parameters.Add($"@{colName_Points}", SqlDbType.Int).Value = bet.Points;
 
             await connection.OpenAsync();
             await command.PrepareAsync();
-            var result = await command.ExecuteNonQueryAsync();
+            var result = await command.ExecuteScalarAsync();
             await connection.CloseAsync();
-
-            return setting.Id;
+            if (result == null)
+                throw new InvalidOperationException("Error while creating new item. Could not get primary key.");
+            return (int)result;
         }
 
-        public async Task DeleteAsync(Setting setting)
+        public async Task DeleteAsync(Bet bet)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -51,7 +55,7 @@ namespace ImbaBetWeb.DataAccess
                 $"DELETE FROM {TableName} " +
                 $"WHERE [{colName_Id}]=@{colName_Id}";
 
-            command.Parameters.Add($"@{colName_Id}", SqlDbType.NVarChar, field_length).Value = setting.Id;
+            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = bet.Id;
 
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -79,16 +83,18 @@ namespace ImbaBetWeb.DataAccess
                 // table exists
                 return;
             }
-
+            
             using var command = connection.CreateCommand();
 
             command.CommandText =
                 $"CREATE TABLE {TableName} " +
                 $"(" +
-                    $"[{colName_Id}] NVARCHAR({field_length}) NOT NULL PRIMARY KEY, " +
-                    $"[{colName_Value}] NVARCHAR({field_length}) NOT NULL, " +
-                    $"[{colName_Default}] NVARCHAR({field_length}) NOT NULL, " +
-                    $"[{colName_Description}] NVARCHAR({field_length}) NOT NULL " +
+                    $"[{colName_Id}] int NOT NULL IDENTITY(1,1) PRIMARY KEY, " +
+                    $"[{colName_MatchId}] int NOT NULL, " +
+                    $"[{colName_UserId}] int NOT NULL, " +
+                    $"[{colName_GoalsA}] int NOT NULL, " +
+                    $"[{colName_GoalsB}] int NOT NULL, " +
+                    $"[{colName_Points}] int NOT NULL " +
                 ")";
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -96,12 +102,12 @@ namespace ImbaBetWeb.DataAccess
             await connection.CloseAsync();
         }
 
-        public async Task<Setting> GetAsync(string id)
+        public async Task<Bet> GetAsync(int id)
         {
             var itemList = await InternalGetAsync(id);
             var count = itemList.Count();
 
-            if (count == 0)
+            if(count == 0)
                 throw new InvalidOperationException("No records were returned.");
 
             if (count > 1)
@@ -110,20 +116,20 @@ namespace ImbaBetWeb.DataAccess
             return itemList.Single();
         }
 
-        public async Task<IEnumerable<Setting>> GetAllAsync()
+        public async Task<IEnumerable<Bet>> GetAllAsync()
         {
             return await InternalGetAsync(null);
         }
 
-        private async Task<IEnumerable<Setting>> InternalGetAsync(string? id)
+        private async Task<IEnumerable<Bet>> InternalGetAsync(int? id)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
 
-            if (id != null)
+            if(id != null)
             {
                 command.CommandText = $"SELECT * FROM {TableName} WHERE [{colName_Id}]=@{colName_Id}";
-                command.Parameters.Add($"@{colName_Id}", SqlDbType.NVarChar, field_length).Value = id;
+                command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = id;  
             }
             else
             {
@@ -135,20 +141,24 @@ namespace ImbaBetWeb.DataAccess
             var reader = await command.ExecuteReaderAsync();
 
             int oId = reader.GetOrdinal(colName_Id);
-            int oValue = reader.GetOrdinal(colName_Value);
-            int oDefault = reader.GetOrdinal(colName_Default);
-            int oDescription = reader.GetOrdinal(colName_Description);
+            int oMatchId = reader.GetOrdinal(colName_MatchId);
+            int oUserId = reader.GetOrdinal(colName_UserId);
+            int oGoalA = reader.GetOrdinal(colName_GoalsA);
+            int oGoalB = reader.GetOrdinal(colName_GoalsB);
+            int oPoints = reader.GetOrdinal(colName_Points);
 
-            var list = new List<Setting>();
+            var list = new List<Bet>();
 
             while (await reader.ReadAsync())
             {
-                list.Add(new Setting
+                list.Add(new Bet
                 {
-                    Id = reader.GetString(oId),
-                    Value = reader.GetString(oValue),
-                    Default = reader.GetString(oDefault),
-                    Description = reader.GetString(oDescription)
+                    Id = reader.GetInt32(oId),
+                    MatchId = reader.GetInt32(oMatchId),
+                    UserId = reader.GetInt32(oUserId),
+                    GoalsA = reader.GetInt32(oGoalA),
+                    GoalsB = reader.GetInt32(oGoalB),
+                    Points = reader.GetInt32(oPoints)
                 });
             }
 
@@ -156,20 +166,22 @@ namespace ImbaBetWeb.DataAccess
             return list;
         }
 
-        public async Task UpdateAsync(Setting setting)
+        public async Task UpdateAsync(Bet bet)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
 
             command.CommandText = $"UPDATE {TableName} " +
-                $"SET [{colName_Value}]=@{colName_Value},[{colName_Default}]=@{colName_Default},[{colName_Description}]=@{colName_Description} " +
+                $"SET [{colName_MatchId}]=@{colName_MatchId},[{colName_UserId}]=@{colName_UserId},[{colName_GoalsA}]=@{colName_GoalsA},[{colName_GoalsB}]=@{colName_GoalsB},[{colName_Points}]=@{colName_Points} " +
                 $"WHERE [{colName_Id}]=@{colName_Id}";
 
-            command.Parameters.Add($"@{colName_Value}", SqlDbType.NVarChar, field_length).Value = setting.Value;
-            command.Parameters.Add($"@{colName_Default}", SqlDbType.NVarChar, field_length).Value = setting.Default;
-            command.Parameters.Add($"@{colName_Description}", SqlDbType.NVarChar, field_length).Value = setting.Description;
-            command.Parameters.Add($"@{colName_Id}", SqlDbType.NVarChar, field_length).Value = setting.Id;
-
+            command.Parameters.Add($"@{colName_MatchId}", SqlDbType.Int).Value = bet.MatchId;
+            command.Parameters.Add($"@{colName_UserId}", SqlDbType.Int).Value = bet.UserId;
+            command.Parameters.Add($"@{colName_GoalsA}", SqlDbType.Int).Value = bet.GoalsA;
+            command.Parameters.Add($"@{colName_GoalsB}", SqlDbType.Int).Value = bet.GoalsB;
+            command.Parameters.Add($"@{colName_Points}", SqlDbType.Int).Value = bet.Points;
+            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = bet.Id;
+            
             await connection.OpenAsync();
             await command.PrepareAsync();
             await command.ExecuteNonQueryAsync();

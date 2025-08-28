@@ -5,7 +5,7 @@ using System.Data;
 
 namespace ImbaBetWeb.DataAccess
 {
-    public class MatchGroupStore(string connectionString) : IMatchGroupStore
+    public class SqlMatchGroupStore(string connectionString) : IMatchGroupStore
     {
         private readonly string connectionString = connectionString;
         

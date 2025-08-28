@@ -5,33 +5,33 @@ using System.Data;
 
 namespace ImbaBetWeb.DataAccess
 {
-    public class BettingUserStore(string connectionString) : IBettingUserStore
+    public class SqlTeamStore(string connectionString) : ITeamStore
     {
         private readonly string connectionString = connectionString;
         
-        public readonly string TableName = "BettingUsers";
+        public readonly string TableName = "Teams";
 
         private readonly string colName_Id = "Id";
-        private readonly string colName_MemberOfCommunityId = "MemberOfCommunityId";
-        private readonly string colName_Points = "Points";
-        private readonly string colName_ProfilePicturePath = "ProfilePicturePath";
+        private readonly string colName_Name = "Name";
+        private readonly string colName_FlagCountryCode = "FlagCountryCode";
+        private readonly string colName_StackRank = "StackRank";
 
-        private readonly int field_length = 256;
+        private readonly int field_length = 128;
 
-        public async Task<int> CreateAsync(BettingUser user)
+        public async Task<int> CreateAsync(Team team)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
 
             command.CommandText = $"INSERT INTO {TableName} " +
-                $"([{colName_MemberOfCommunityId}],[{colName_Points}],[{colName_ProfilePicturePath}]) " +
+                $"([{colName_Name}],[{colName_FlagCountryCode}],[{colName_StackRank}]) " +
                 "VALUES " +
-                $"(@{colName_MemberOfCommunityId},@{colName_Points},@{colName_ProfilePicturePath});" +
+                $"(@{colName_Name},@{colName_FlagCountryCode},@{colName_StackRank});" +
                 $"SELECT CONVERT(int,SCOPE_IDENTITY());";
 
-            command.Parameters.Add($"@{colName_MemberOfCommunityId}", SqlDbType.Int).Value = user.MemberOfCommunityId ?? (object)DBNull.Value;
-            command.Parameters.Add($"@{colName_Points}", SqlDbType.Int).Value = user.Points;
-            command.Parameters.Add($"@{colName_ProfilePicturePath}", SqlDbType.NVarChar, field_length).Value = user.ProfilePicturePath ?? (object)DBNull.Value;
+            command.Parameters.Add($"@{colName_Name}", SqlDbType.NVarChar, field_length).Value = team.Name;
+            command.Parameters.Add($"@{colName_FlagCountryCode}", SqlDbType.NVarChar, field_length).Value = team.FlagCountryCode ?? (object)DBNull.Value;
+            command.Parameters.Add($"@{colName_StackRank}", SqlDbType.Int).Value = team.StackRank;
 
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -42,7 +42,7 @@ namespace ImbaBetWeb.DataAccess
             return (int)result;
         }
 
-        public async Task DeleteAsync(BettingUser user)
+        public async Task DeleteAsync(Team team)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -51,7 +51,7 @@ namespace ImbaBetWeb.DataAccess
                 $"DELETE FROM {TableName} " +
                 $"WHERE [{colName_Id}]=@{colName_Id}";
 
-            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = user.Id;
+            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = team.Id;
 
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -86,9 +86,9 @@ namespace ImbaBetWeb.DataAccess
                 $"CREATE TABLE {TableName} " +
                 $"(" +
                     $"[{colName_Id}] int NOT NULL IDENTITY(1,1) PRIMARY KEY, " +
-                    $"[{colName_MemberOfCommunityId}] int, " +
-                    $"[{colName_Points}] int NOT NULL, " +
-                    $"[{colName_ProfilePicturePath}] NVARCHAR({field_length}) " +
+                    $"[{colName_Name}] NVARCHAR({field_length}) NOT NULL, " +
+                    $"[{colName_FlagCountryCode}] NVARCHAR({field_length}), " +
+                    $"[{colName_StackRank}] int NOT NULL " +
                 ")";
             await connection.OpenAsync();
             await command.PrepareAsync();
@@ -96,7 +96,7 @@ namespace ImbaBetWeb.DataAccess
             await connection.CloseAsync();
         }
 
-        public async Task<BettingUser> GetAsync(int id)
+        public async Task<Team> GetAsync(int id)
         {
             var itemList = await InternalGetAsync(id);
             var count = itemList.Count();
@@ -110,12 +110,12 @@ namespace ImbaBetWeb.DataAccess
             return itemList.Single();
         }
 
-        public async Task<IEnumerable<BettingUser>> GetAllAsync()
+        public async Task<IEnumerable<Team>> GetAllAsync()
         {
             return await InternalGetAsync(null);
         }
 
-        private async Task<IEnumerable<BettingUser>> InternalGetAsync(int? id)
+        private async Task<IEnumerable<Team>> InternalGetAsync(int? id)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
@@ -135,20 +135,20 @@ namespace ImbaBetWeb.DataAccess
             var reader = await command.ExecuteReaderAsync();
 
             int oId = reader.GetOrdinal(colName_Id);
-            int oMemberOfCommunityId = reader.GetOrdinal(colName_MemberOfCommunityId);
-            int oPoints = reader.GetOrdinal(colName_Points);
-            int oProfilePicturePath = reader.GetOrdinal(colName_ProfilePicturePath);
+            int oName = reader.GetOrdinal(colName_Name);
+            int oFlagCountryCode = reader.GetOrdinal(colName_FlagCountryCode);
+            int oStackRank = reader.GetOrdinal(colName_StackRank);
 
-            var list = new List<BettingUser>();
+            var list = new List<Team>();
 
             while (await reader.ReadAsync())
             {
-                list.Add(new BettingUser
+                list.Add(new Team
                 {
                     Id = reader.GetInt32(oId),
-                    MemberOfCommunityId = reader.IsDBNull(oMemberOfCommunityId) ? null : reader.GetInt32(oMemberOfCommunityId),
-                    Points = reader.GetInt32(oPoints),
-                    ProfilePicturePath = reader.IsDBNull(oProfilePicturePath) ? null : reader.GetString(oProfilePicturePath)
+                    Name = reader.GetString(oName),
+                    FlagCountryCode = reader.IsDBNull(oFlagCountryCode) ? null : reader.GetString(oFlagCountryCode),
+                    StackRank = reader.GetInt32(oStackRank)
                 });
             }
 
@@ -156,19 +156,19 @@ namespace ImbaBetWeb.DataAccess
             return list;
         }
 
-        public async Task UpdateAsync(BettingUser user)
+        public async Task UpdateAsync(Team team)
         {
             using var connection = new SqlConnection(connectionString);
             using var command = connection.CreateCommand();
 
             command.CommandText = $"UPDATE {TableName} " +
-                $"SET [{colName_MemberOfCommunityId}]=@{colName_MemberOfCommunityId},[{colName_Points}]=@{colName_Points},[{colName_ProfilePicturePath}]=@{colName_ProfilePicturePath} " +
+                $"SET [{colName_Name}]=@{colName_Name},[{colName_FlagCountryCode}]=@{colName_FlagCountryCode},[{colName_StackRank}]=@{colName_StackRank} " +
                 $"WHERE [{colName_Id}]=@{colName_Id}";
 
-            command.Parameters.Add($"@{colName_MemberOfCommunityId}", SqlDbType.Int).Value = user.MemberOfCommunityId ?? (object)DBNull.Value;
-            command.Parameters.Add($"@{colName_Points}", SqlDbType.Int).Value = user.Points;
-            command.Parameters.Add($"@{colName_ProfilePicturePath}", SqlDbType.NVarChar, field_length).Value = user.ProfilePicturePath ?? (object)DBNull.Value;
-            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = user.Id;
+            command.Parameters.Add($"@{colName_Name}", SqlDbType.NVarChar, field_length).Value = team.Name;
+            command.Parameters.Add($"@{colName_FlagCountryCode}", SqlDbType.NVarChar, field_length).Value = team.FlagCountryCode ?? (object)DBNull.Value;
+            command.Parameters.Add($"@{colName_StackRank}", SqlDbType.Int).Value = team.StackRank;
+            command.Parameters.Add($"@{colName_Id}", SqlDbType.Int).Value = team.Id;
             
             await connection.OpenAsync();
             await command.PrepareAsync();

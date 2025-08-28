@@ -6,13 +6,13 @@ using ImbaBetWeb.Tests.Int.DataAccess.TestHelper;
 namespace ImbaBetWeb.Tests.Int.DataAccess
 {
     [AllureNUnit]
-    public class TeamStoreTests : DataAccessTestsBase
+    public class SqlTeamStoreTests : DataAccessTestsBase
     {
         [Test]
         public async Task EnsureInitializedAsync_NoTableAvailable_TableIsAdded()
         {
             // Arrange
-            var store = new TeamStore(TestDatabase.ConnectionString);
+            var store = new SqlTeamStore(TestDatabase.ConnectionString);
 
             // Act and Assert
             Assert.That(await TestDatabase.TableExistsAsync(store.TableName), Is.False);
@@ -24,7 +24,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
         public async Task CreateGetUpdateDelete_TestWorkflow_NoUnexpectedError()
         {
             // Arrange
-            var store = new TeamStore(TestDatabase.ConnectionString);
+            var store = new SqlTeamStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
             var team = new Team()
             {
@@ -57,7 +57,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
         public async Task CreateGetUpdate_WithNullables_NoError()
         {
             // Arrange
-            var store = new TeamStore(TestDatabase.ConnectionString);
+            var store = new SqlTeamStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
             var team = new Team()
             {

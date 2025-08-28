@@ -8,26 +8,26 @@ namespace ImbaBetWeb.DataAccess
 {
     public class DataStoreManager(IBetStore betStore, IBettingUserStore bettingUserStore, ICommunityStore communityStore, IMatchGroupStore matchGroupStore, IMatchStore matchStore, ISettingStore settingStore, ITeamStore teamStore) : IDataStoreManager
     {
-        private IBetStore betStore = betStore;
-        private IBettingUserStore bettingUserStore = bettingUserStore;
-        private ICommunityStore communityStore = communityStore;
-        private IMatchGroupStore matchGroupStore = matchGroupStore;
-        private IMatchStore matchStore = matchStore;
-        private ISettingStore settingStore = settingStore;
-        private ITeamStore teamStore = teamStore;
+        private readonly IBetStore betStore = betStore;
+        private readonly IBettingUserStore bettingUserStore = bettingUserStore;
+        private readonly ICommunityStore communityStore = communityStore;
+        private readonly IMatchGroupStore matchGroupStore = matchGroupStore;
+        private readonly IMatchStore matchStore = matchStore;
+        private readonly ISettingStore settingStore = settingStore;
+        private readonly ITeamStore teamStore = teamStore;
 
         private Dictionary<string, Setting> _cachedSettings = [];
 
         public static DataStoreManager CreateDefault(string connectionString)
         {
             return new DataStoreManager(
-                new BetStore(connectionString), 
-                new BettingUserStore(connectionString), 
-                new CommunityStore(connectionString), 
-                new MatchGroupStore(connectionString), 
-                new MatchStore(connectionString), 
-                new SettingStore(connectionString), 
-                new TeamStore(connectionString));
+                new SqlBetStore(connectionString), 
+                new SqlBettingUserStore(connectionString), 
+                new SqlCommunityStore(connectionString), 
+                new SqlMatchGroupStore(connectionString), 
+                new SqlMatchStore(connectionString), 
+                new SqlSettingStore(connectionString), 
+                new SqlTeamStore(connectionString));
         }
 
         public async Task Initialize()
@@ -86,12 +86,12 @@ namespace ImbaBetWeb.DataAccess
         public async Task<IEnumerable<Bet>> GetBetsAsync()
         {
             var bets = await betStore.GetAllAsync();
-            var matches = await matchStore.GetAllAsync();
+            var matchplan = await GetMatchplanAsync();
             var users = await bettingUserStore.GetAllAsync();
 
             foreach (var bet in bets)
             {
-                bet.Match = matches.Single(m => bet.MatchId == m.Id);
+                bet.Match = matchplan.Matches.Single(m => bet.MatchId == m.Id);
                 bet.User = users.Single(u => bet.UserId == u.Id);
             }
 

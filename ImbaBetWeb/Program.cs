@@ -37,8 +37,6 @@ builder.Services.AddScoped<CommunityManager>();
 builder.Services.AddScoped<DatabaseManager>();
 builder.Services.AddScoped<MatchPlanImportService>();
 builder.Services.AddScoped<IDataStoreManager>((provider) => { return DataStoreManager.CreateDefault(connectionString); });
-builder.Services.AddScoped<ISettingStore>((provider) => { return new SettingStore(connectionString); });
-
 
 builder.Services.AddTransient<IEmailSender, EmailService>(i =>
                 new EmailService(

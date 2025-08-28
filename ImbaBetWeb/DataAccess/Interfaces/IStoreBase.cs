@@ -9,6 +9,7 @@ namespace ImbaBetWeb.DataAccess.Interfaces
         Task<IEnumerable<T>> GetAllAsync();
         Task UpdateAsync(T obj);
         Task DeleteAsync(T id);
+        Task DeleteAllAsync();
 
         Task EnsureInitializedAsync();
     }

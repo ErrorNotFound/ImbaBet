@@ -176,5 +176,17 @@ namespace ImbaBetWeb.DataAccess
             await command.ExecuteNonQueryAsync();
             await connection.CloseAsync();
         }
+
+        public async Task DeleteAllAsync()
+        {
+            using var connection = new SqlConnection(connectionString);
+            using var command = connection.CreateCommand();
+
+            command.CommandText = $"DELETE FROM {TableName}";
+
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
+        }
     }
 }

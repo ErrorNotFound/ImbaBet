@@ -142,6 +142,11 @@ namespace ImbaBetWeb.DataAccess
             var communities = await communityStore.GetAllAsync();
             var users = await bettingUserStore.GetAllAsync();
 
+            foreach(var user in users)
+            {
+                user.Community = communities.SingleOrDefault(c => c.Id == user.MemberOfCommunityId);
+            }
+
             foreach (var community in communities)
             {
                 community.Members = users.Where(u => community.Id == u.MemberOfCommunityId).ToList();

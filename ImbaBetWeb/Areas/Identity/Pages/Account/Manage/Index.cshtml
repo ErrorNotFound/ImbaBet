@@ -10,7 +10,7 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 
     var user = await UserManager.GetUserAsync(User);
-    var bettingUser = await DataStoreManager.GetUserByIdAsync(user.BettingUserId);
+    var bettingUser = await DataStoreManager.GetUserByIdAsync(user!.BettingUserId);
 }
 
 <h3>@ViewData["Title"]</h3>

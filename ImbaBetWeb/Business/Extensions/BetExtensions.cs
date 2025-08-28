@@ -26,6 +26,16 @@ namespace ImbaBetWeb.Business.Extensions
                 return null;
             }
 
+            if(bet.Match == null)
+            {
+                throw new InvalidOperationException("Match property is not loaded.");
+            }
+
+            if(bet.Match.TeamA == null || bet.Match.TeamB == null)
+            {
+                throw new InvalidOperationException("Match teams are not loaded.");
+            }
+
             return bet.GoalsA > bet.GoalsB ? bet.Match.TeamA : bet.Match.TeamB;
         }
     }

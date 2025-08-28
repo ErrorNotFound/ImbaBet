@@ -83,8 +83,8 @@ namespace ImbaBetWeb.Controllers
                 EmailConfirmed = await _userManager.IsEmailConfirmedAsync(u!),
                 //todo
                 //MemberOfCommunityId = u!.MemberOfCommunityId, 
-                IsAdmin = await _userManager.IsInRoleAsync(u, UserRoles.Admin),
-                IsEditor = await _userManager.IsInRoleAsync(u, UserRoles.Editor)
+                IsAdmin = await _userManager.IsInRoleAsync(u!, UserRoles.Admin),
+                IsEditor = await _userManager.IsInRoleAsync(u!, UserRoles.Editor)
             }).Select(x => x.Result).ToList();
 
             return View(new AccountsViewModel()

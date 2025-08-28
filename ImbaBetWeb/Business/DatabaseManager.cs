@@ -20,7 +20,7 @@ namespace ImbaBetWeb.Business
         private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
         private readonly IConfiguration _configuration = configuration;
 
-        public async Task DeleteAllDataAsync()
+        public Task DeleteAllDataAsync()
         {
             //todo
             /*
@@ -36,9 +36,10 @@ namespace ImbaBetWeb.Business
                 #pragma warning restore EF1002
             }
             */
+            return Task.CompletedTask;
         }
 
-        public async Task DeleteGameDataAsync()
+        public Task DeleteGameDataAsync()
         {
             //todo
             /*
@@ -51,6 +52,7 @@ namespace ImbaBetWeb.Business
                 #pragma warning restore EF1002
             }
             */
+            return Task.CompletedTask;
         }
 
         public async Task<BettingUser> GetUserAsync(int userId)

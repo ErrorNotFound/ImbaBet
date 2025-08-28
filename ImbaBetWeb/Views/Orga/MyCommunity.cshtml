@@ -133,10 +133,10 @@ else
                         @Html.DisplayFor(model => community.Members.ElementAt(i))
                     </td>
                     <td>
-                        <i>@(community.Owner.Id == community.Members.ElementAt(i).Id ? "Owner" : "Member")</i>
+                        <i>@(community.OwnerId == community.Members.ElementAt(i).Id ? "Owner" : "Member")</i>
                     </td>
                     <td>
-                        @if (isOwner && community.Members.ElementAt(i).Id != community.Owner.Id)
+                        @if (isOwner && community.Members.ElementAt(i).Id != community.OwnerId)
                         {
                             @Html.ActionLink(
                                      "Kick",                          // Button Text

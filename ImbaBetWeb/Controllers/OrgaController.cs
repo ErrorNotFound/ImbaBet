@@ -135,17 +135,18 @@ namespace ImbaBetWeb.Controllers
             }
 
             var community = user.Community;
-            var isOwner = community.OwnerId == user.Id;
-
-            if (isOwner)
+            if (community != null)
             {
-                await _communityManager.DeleteCommunityOfUserAsync(user);
+                var isOwner = community.OwnerId == user.Id;
+                if (isOwner)
+                {
+                    await _communityManager.DeleteCommunityOfUserAsync(user);
+                }
+                else
+                {
+                    await _communityManager.LeaveCommunityAsync(user);
+                }
             }
-            else
-            {
-                await _communityManager.LeaveCommunityAsync(user);
-            }
-
             // todo
             /*
             var wasSuccessful = isOwner ? await _communityManager.DeleteCommunityOfUserAsync(user) : await _communityManager.LeaveCommunityAsync(user);
@@ -162,6 +163,10 @@ namespace ImbaBetWeb.Controllers
         public async Task<IActionResult> KickMember(string userId)
         {
             var idUser = await _userManager.GetUserAsync(User);
+            if (idUser == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
             var user = await _databaseManager.GetUserAsync(idUser.BettingUserId);
             if (user == null)
             {
@@ -188,6 +193,10 @@ namespace ImbaBetWeb.Controllers
         public async Task<IActionResult> PromoteToOwner(string userId)
         {
             var idUser = await _userManager.GetUserAsync(User);
+            if (idUser == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
             var user = await _databaseManager.GetUserAsync(idUser.BettingUserId);
             if (user == null)
             {

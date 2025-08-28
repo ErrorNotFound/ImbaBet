@@ -9,6 +9,7 @@ namespace ImbaBetWeb.Tests.Unit.DataAccess
     [AllureNUnit]
     public class DataStoreManagerTests
     {
+        #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         [Test]
         public async Task GetAllSettingsAsync_SettingFromStoreIsProvided()
         {
@@ -116,6 +117,8 @@ namespace ImbaBetWeb.Tests.Unit.DataAccess
             // Assert
             settingStoreMock.Verify(mock => mock.UpdateAsync(It.Is<Setting>((set) => set.Id == setting.Id && set.Value == setting.Default)), Times.Once);
         }
+
+        #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
         private Mock<ISettingStore> GetSettingsStoreMock()
         {

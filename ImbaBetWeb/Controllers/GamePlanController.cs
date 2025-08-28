@@ -45,8 +45,8 @@ namespace ImbaBetWeb.Controllers
             var vm = new MatchViewModel()
             {
                 Match = match,
-                ActiveBets = await _bettingManager.GetActiveBetsForMatchAsync(matchId),
-                ClosedBets = await _bettingManager.GetClosedBetsForMatchAsync(matchId)
+                ActiveBets = await _bettingManager.GetActiveBetsOfMatchAsync(matchId),
+                ClosedBets = await _bettingManager.GetClosedBetsOfMatchAsync(matchId)
             };
 
             return View(vm);

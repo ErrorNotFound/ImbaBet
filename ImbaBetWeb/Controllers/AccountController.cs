@@ -36,8 +36,8 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var activeBets = await _bettingManager.GetActiveBetsForUserAsync(bettingUser);
-			var closedBets = await _bettingManager.GetClosedBetsForUserAsync(bettingUser);
+            var activeBets = await _bettingManager.GetActiveBetsOfUserAsync(bettingUser);
+			var closedBets = await _bettingManager.GetClosedBetsOfUserAsync(bettingUser);
 
             var vm = new ProfileViewModel()
             {

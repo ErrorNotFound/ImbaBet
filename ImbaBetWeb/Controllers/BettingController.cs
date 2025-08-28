@@ -72,9 +72,9 @@ namespace ImbaBetWeb.Controllers
 
             var vm = new MyBetsViewModel()
             {
-                OpenBets = await _bettingManager.GetOpenBetsForUserAsync(bettingUser),
-                ActiveBets = await _bettingManager.GetActiveBetsForUserAsync(bettingUser),
-                ClosedBets = await _bettingManager.GetClosedBetsForUserAsync(bettingUser)
+                OpenBets = await _bettingManager.GetOpenBetsOfUserAsync(bettingUser),
+                ActiveBets = await _bettingManager.GetActiveBetsOfUserAsync(bettingUser),
+                ClosedBets = await _bettingManager.GetClosedBetsOfUserAsync(bettingUser)
             };
 
             return View(vm);

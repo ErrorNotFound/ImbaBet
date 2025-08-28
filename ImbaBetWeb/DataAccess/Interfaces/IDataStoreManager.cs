@@ -9,6 +9,8 @@ namespace ImbaBetWeb.DataAccess.Interfaces
         public Task<Matchplan> GetMatchplanAsync();
         public Task ImportMatchplanAsync(Matchplan matchplan);
         public Task<IEnumerable<Bet>> GetBetsAsync();
+        public Task<IEnumerable<Bet>> GetBetsOfUserAsync(BettingUser user);
+        public Task<IEnumerable<Bet>> GetBetsOfMatchAsync(Match match);
         public Task UpdateBetsAsync(IEnumerable<Bet> bets);
 
         public Task<int> CreateUserAsync(BettingUser user);

@@ -19,12 +19,11 @@ namespace ImbaBetWeb.Business
         public async Task<IEnumerable<Bet>> GetOpenBetsOfUserAsync(BettingUser user)
         {
             var matchplan = await _dataStoreManager.GetMatchplanAsync();
-            var bets = await _dataStoreManager.GetBetsAsync();
+            var betsOfUser = await _dataStoreManager.GetBetsOfUserAsync(user);
 
             var betableMatches = matchplan.Matches.Where(match => match.CanBet());
-            var betsByUser = bets.Where(bet => bet.UserId == user.Id);
 
-            var matchesNotBetOnByUser = betableMatches.Where(m => !betsByUser.Any(b => b.MatchId == m.Id));
+            var matchesNotBetOnByUser = betableMatches.Where(m => !betsOfUser.Any(b => b.MatchId == m.Id));
 
             var openBets = matchesNotBetOnByUser.Select(m => new Bet()
             {
@@ -42,8 +41,8 @@ namespace ImbaBetWeb.Business
         /// </summary>
         public async Task<IEnumerable<Bet>> GetActiveBetsOfUserAsync(BettingUser user)
         {
-            var bets = await _dataStoreManager.GetBetsAsync();
-            return bets.Where(bet => bet.User == user && bet.IsActiveBet());
+            var betsOfUser = await _dataStoreManager.GetBetsOfUserAsync(user);
+            return betsOfUser.Where(bet => bet.IsActiveBet());
         }
 
         /// <summary>
@@ -51,20 +50,20 @@ namespace ImbaBetWeb.Business
         /// </summary>
         public async Task<IEnumerable<Bet>> GetClosedBetsOfUserAsync(BettingUser user)
         {
-            var bets = await _dataStoreManager.GetBetsAsync();
-            return bets.Where(bet => bet.User == user && bet.IsClosedBet());
+            var betsOfUser = await _dataStoreManager.GetBetsOfUserAsync(user);
+            return betsOfUser.Where(bet => bet.IsClosedBet());
         }
 
-        public async Task<IEnumerable<Bet>> GetActiveBetsOfMatchAsync(int matchId)
+        public async Task<IEnumerable<Bet>> GetActiveBetsOfMatchAsync(Match match)
         {
-            var bets = await _dataStoreManager.GetBetsAsync();
-            return bets.Where(bet => bet.MatchId == matchId && bet.IsActiveBet());
+            var betsOfMatch = await _dataStoreManager.GetBetsOfMatchAsync(match);
+            return betsOfMatch.Where(bet => bet.IsActiveBet());
         }
 
-        public async Task<IEnumerable<Bet>> GetClosedBetsOfMatchAsync(int matchId)
+        public async Task<IEnumerable<Bet>> GetClosedBetsOfMatchAsync(Match match)
         {
-            var bets = await _dataStoreManager.GetBetsAsync();
-            return bets.Where(bet => bet.MatchId == matchId && bet.IsClosedBet());
+            var betsOfMatch = await _dataStoreManager.GetBetsOfMatchAsync(match);
+            return betsOfMatch.Where(bet => bet.IsClosedBet());
         }
 
         public async Task<bool> UpdateBetsAsync(IEnumerable<Bet> bets)

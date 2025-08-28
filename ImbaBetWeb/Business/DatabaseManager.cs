@@ -39,20 +39,9 @@ namespace ImbaBetWeb.Business
             return Task.CompletedTask;
         }
 
-        public Task DeleteGameDataAsync()
-        {
-            //todo
-            /*
-            var tablesToBeDeleted = new[] { "Bets", "Matches", "MatchGroups", "Teams" };
-
-            foreach (var tableName in tablesToBeDeleted)
-            {
-                #pragma warning disable EF1002
-                await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {tableName}");
-                #pragma warning restore EF1002
-            }
-            */
-            return Task.CompletedTask;
+        public async Task DeleteMatchplanAsync()
+        {      
+            await _dataStoreManager.DeleteMatchplanAsync();
         }
 
         public async Task<BettingUser> GetUserAsync(int userId)

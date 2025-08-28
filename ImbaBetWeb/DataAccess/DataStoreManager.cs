@@ -82,6 +82,13 @@ namespace ImbaBetWeb.DataAccess
                 match.Id = await matchStore.CreateAsync(match);
             }
         }
+        public async Task DeleteMatchplanAsync()
+        {
+            await betStore.DeleteAllAsync();
+            await matchStore.DeleteAllAsync();
+            await matchGroupStore.DeleteAllAsync();
+            await teamStore.DeleteAllAsync();
+        }
 
         public async Task<IEnumerable<Bet>> GetBetsAsync()
         {

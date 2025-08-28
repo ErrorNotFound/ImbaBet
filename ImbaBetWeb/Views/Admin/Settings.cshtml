@@ -27,14 +27,14 @@
     <tbody>
         <tr>
             <td>
-                @Html.ActionLink("Delete Game Data",                      // Button Text
-                         "DeleteGameData",                        // controller action
+                @Html.ActionLink("Delete Match Plan",                      // Button Text
+                         "DeleteMatchPlan",                        // controller action
                          "Admin",                                // controller
                          null,                                   // action parameters aka route values
-                         new { onclick = "return confirm('Are you sure you want to delete Game data?')", @class = "btn btn-danger", @style = "width:180px;" })
+                         new { onclick = "return confirm('Are you sure you want to delete the current match plan?')", @class = "btn btn-danger", @style = "width:180px;" })
             </td>
             <td>
-                <p>Delete all game related data, such as the match plan, teams and bets.</p>
+                <p>Delete the current match plan, including teams, matches and bets.</p>
             </td>
         </tr>
         <tr>

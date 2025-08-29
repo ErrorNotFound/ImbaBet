@@ -41,13 +41,25 @@ namespace ImbaBetWeb.Controllers
         public async Task<IActionResult> Matches()
         {
             var matchplan = await _gameManager.GetMatchplanAsync();
-
-            return View(matchplan);
+            var vm = new MatchesViewModel
+            {
+                Matches = matchplan.Matches.ToList(),
+                MatchGroups = matchplan.MatchGroups.ToList(),
+                Teams = matchplan.Teams.ToList()
+            };
+            return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Matches(Matchplan matchplan)
+        public async Task<IActionResult> Matches(MatchesViewModel viewmodel)
         {
+            var matchplan = new Matchplan
+            {
+                Matches = viewmodel.Matches,
+                MatchGroups = viewmodel.MatchGroups,
+                Teams = viewmodel.Teams
+            };
+
             var validator = new MatchPlanValidator();
             var validationResult = validator.Validate(matchplan);
 

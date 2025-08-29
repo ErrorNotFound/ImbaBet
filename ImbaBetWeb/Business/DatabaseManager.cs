@@ -20,25 +20,6 @@ namespace ImbaBetWeb.Business
         private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
         private readonly IConfiguration _configuration = configuration;
 
-        public Task DeleteAllDataAsync()
-        {
-            //todo
-            /*
-            var tableNames = _context.Model.GetEntityTypes()
-                .Select(t => t.GetTableName())
-                .Distinct()
-                .ToList();
-
-            foreach (var tableName in tableNames)
-            {
-                #pragma warning disable EF1002
-                await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {tableName}");
-                #pragma warning restore EF1002
-            }
-            */
-            return Task.CompletedTask;
-        }
-
         public async Task DeleteMatchplanAsync()
         {      
             await _dataStoreManager.DeleteMatchplanAsync();

@@ -1,4 +1,4 @@
-﻿@model ImbaBetWeb.Model.Matchplan
+﻿@model ImbaBetWeb.ViewModels.Admin.MatchesViewModel
 
 @{
     ViewData["Title"] = "Matches - Administration";
@@ -13,9 +13,9 @@
             <thead>
                 <tr class="table-success">
                     <th>
-                        @Html.DisplayFor(modelItem => Model.MatchGroups.ElementAt(i).Name)
-                        @Html.HiddenFor(modelItem => Model.MatchGroups.ElementAt(i).Name)
-                        @Html.HiddenFor(modelItem => Model.MatchGroups.ElementAt(i).Id)
+                        @Html.DisplayFor(modelItem => Model.MatchGroups[i].Name)
+                        @Html.HiddenFor(modelItem => Model.MatchGroups[i].Name)
+                        @Html.HiddenFor(modelItem => Model.MatchGroups[i].Id)
                     </th>
                 </tr>
                 <tr class="table-secondary">
@@ -46,34 +46,34 @@
             <tbody>
                 @for (int j = 0; j < Model.Matches.Count(); j++)
                 {
-                    if (Model.MatchGroups.ElementAt(i).Id != Model.Matches.ElementAt(j).MatchGroupId)
+                    if (Model.MatchGroups[i].Id != Model.Matches[j].MatchGroupId)
                     {
                         continue;
                     }
 
-                    @Html.HiddenFor(modelItem => Model.Matches.ElementAt(j).Id)
-                    @Html.HiddenFor(modelItem => Model.Matches.ElementAt(j).MatchGroupId)
+                    @Html.HiddenFor(modelItem => Model.Matches[j].Id)
+                    @Html.HiddenFor(modelItem => Model.Matches[j].MatchGroupId)
                     <tr>
                         <td>
-                            @Html.TextBoxFor(model => Model.Matches.ElementAt(j).AlternativeTeamAText)
+                            @Html.TextBoxFor(model => Model.Matches[j].AlternativeTeamAText)
                         </td>
                         <td>
-                            @Html.DropDownListFor(model => Model.Matches.ElementAt(j).TeamATeamId, new SelectList(Model.Teams, "Id", "Name"), "", Model.Matches.ElementAt(j).TeamATeamId)
+                            @Html.DropDownListFor(model => Model.Matches[j].TeamATeamId, new SelectList(Model.Teams, "Id", "Name"), "", Model.Matches[j].TeamATeamId)
                         </td>
                         <td>
-                            @Html.TextBoxFor(model => Model.Matches.ElementAt(j).GoalsA, new { style = "width:40px;text-align:center;", type = "number" }) : @Html.TextBoxFor(model => Model.Matches.ElementAt(j).GoalsB, new { style = "width:40px;text-align:center;", type = "number" })
+                            @Html.TextBoxFor(model => Model.Matches[j].GoalsA, new { style = "width:40px;text-align:center;", type = "number" }) : @Html.TextBoxFor(model => Model.Matches[j].GoalsB, new { style = "width:40px;text-align:center;", type = "number" })
                         </td>
                         <td>
-                            @Html.DropDownListFor(model => Model.Matches.ElementAt(j).TeamBTeamId, new SelectList(Model.Teams, "Id", "Name"), "", Model.Matches.ElementAt(j).TeamBTeamId)
+                            @Html.DropDownListFor(model => Model.Matches[j].TeamBTeamId, new SelectList(Model.Teams, "Id", "Name"), "", Model.Matches[j].TeamBTeamId)
                         </td>
                         <td>
-                            @Html.TextBoxFor(model => Model.Matches.ElementAt(j).AlternativeTeamBText)
+                            @Html.TextBoxFor(model => Model.Matches[j].AlternativeTeamBText)
                         </td>
                         <td style="text-align: center;">
-                            @Html.CheckBoxFor(model => Model.Matches.ElementAt(j).IsOver)
+                            @Html.CheckBoxFor(model => Model.Matches[j].IsOver)
                         </td>
                         <td>
-                            @Html.TextBoxFor(model => Model.Matches.ElementAt(j).DateTime)
+                            @Html.TextBoxFor(model => Model.Matches[j].DateTime)
                         </td>
                     </tr>
                 }

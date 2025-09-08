@@ -13,6 +13,12 @@ namespace ImbaBetWeb.Tests.Unit.TestHelper
             return Task.FromResult(obj.Id);
         }
 
+        public Task DeleteAllAsync()
+        {
+            Items.Clear();
+            return Task.CompletedTask;
+        }
+
         public Task DeleteAsync(T id)
         {
             Items.RemoveAll(i => i.Id.Equals(id.Id));

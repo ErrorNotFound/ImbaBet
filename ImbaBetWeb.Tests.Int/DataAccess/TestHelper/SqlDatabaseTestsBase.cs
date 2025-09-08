@@ -1,8 +1,6 @@
-﻿using Allure.NUnit;
-
-namespace ImbaBetWeb.Tests.Int.DataAccess.TestHelper
+﻿namespace ImbaBetWeb.Tests.Int.DataAccess.TestHelper
 {
-    public class DataAccessTestsBase
+    public class SqlDatabaseTestsBase
     {
         protected readonly SqlTestDatabase TestDatabase = new();
 

@@ -6,7 +6,7 @@ using ImbaBetWeb.Tests.Int.DataAccess.TestHelper;
 namespace ImbaBetWeb.Tests.Int.DataAccess
 {
     [AllureNUnit]
-    public class SqlCommunityStoreTests : DataAccessTestsBase
+    public class SqlCommunityStoreTests : SqlDatabaseTestsBase
     {
         [Test]
         public async Task EnsureInitializedAsync_NoTableAvailable_TableIsAdded()

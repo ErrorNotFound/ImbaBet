@@ -1,6 +1,7 @@
-﻿@using ImbaBetWeb.Logic
-@using ImbaBetWeb.Models.Consts
-@inject SettingsManager SettingsManager
+﻿@using ImbaBetWeb.Business
+@using ImbaBetWeb.DataAccess.Interfaces
+@using ImbaBetWeb.Model.Consts
+@inject IDataStoreManager DataStoreManager
 
 @{
     ViewData["Title"] = "Rules";
@@ -31,7 +32,7 @@
     <tbody>
         <tr>
             <td>
-                @(await SettingsManager.GetSettingAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY))
+                @(await DataStoreManager.GetSettingValueAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY))
             </td>
             <td>
                 Correct tendency
@@ -42,7 +43,7 @@
         </tr>
         <tr>
             <td>
-                @(await SettingsManager.GetSettingAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY_AND_DIFFERENCE))
+                @(await DataStoreManager.GetSettingValueAsync<int>(SettingNames.BETTING_POINTS_CORRECT_TENDENCY_AND_DIFFERENCE))
             </td>
             <td>
                 Correct tendency and goal difference
@@ -53,7 +54,7 @@
         </tr>
         <tr>
             <td>
-                @(await SettingsManager.GetSettingAsync<int>(SettingNames.BETTING_POINTS_EXACT_RESULT))
+                @(await DataStoreManager.GetSettingValueAsync<int>(SettingNames.BETTING_POINTS_EXACT_RESULT))
             </td>
             <td>
                 Exact result
@@ -69,7 +70,7 @@
 <h3>Communities</h3>
 <p>
     Players can join together in a community.<br />
-    However, for a community to appear on the Community Leaderboard, it needs at least @(await SettingsManager.GetSettingAsync<int>(SettingNames.MIN_MEMBER_COUNT_FOR_RANKING)) members.
+    However, for a community to appear on the Community Leaderboard, it needs at least @(await DataStoreManager.GetSettingValueAsync<int>(SettingNames.MIN_MEMBER_COUNT_FOR_RANKING)) members.
 </p>
 
 <h3></h3>

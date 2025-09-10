@@ -1,5 +1,5 @@
-﻿using ImbaBetWeb.Logic;
-using ImbaBetWeb.Models;
+﻿using ImbaBetWeb.Business;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.ViewModels.GamePlan;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,12 +10,12 @@ namespace ImbaBetWeb.Controllers
     {
         private readonly GameManager _gameManager;
         private readonly BettingManager _bettingManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
 
         public GamePlanController(
             GameManager gameManager, 
             BettingManager bettingManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<MyIdentityUser> userManager)
         {
             _gameManager = gameManager;
             _bettingManager = bettingManager;
@@ -45,8 +45,8 @@ namespace ImbaBetWeb.Controllers
             var vm = new MatchViewModel()
             {
                 Match = match,
-                ActiveBets = await _bettingManager.GetActiveBetsForMatchAsync(matchId),
-                ClosedBets = await _bettingManager.GetClosedBetsForMatchAsync(matchId)
+                ActiveBets = await _bettingManager.GetActiveBetsOfMatchAsync(match),
+                ClosedBets = await _bettingManager.GetClosedBetsOfMatchAsync(match)
             };
 
             return View(vm);
@@ -54,9 +54,9 @@ namespace ImbaBetWeb.Controllers
 
         public async Task<IActionResult> Matches()
         {
-            var matchGroups = await _gameManager.GetMatchGroupsAsync();
+            var matchplan = await _gameManager.GetMatchplanAsync();
 
-            return View(matchGroups);
+            return View(matchplan);
         }
 
         public async Task<IActionResult> Groups()

@@ -14,17 +14,17 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 
 namespace ImbaBetWeb.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly SignInManager<MyIdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, UserManager<ApplicationUser> userManager)
+        public LoginModel(SignInManager<MyIdentityUser> signInManager, ILogger<LoginModel> logger, UserManager<MyIdentityUser> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;

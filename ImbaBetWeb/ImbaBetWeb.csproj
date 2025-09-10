@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="ImbaBetWeb.Test" />
+    <InternalsVisibleTo Include="ImbaBetWeb.Tests.Unit" />
+    <InternalsVisibleTo Include="ImbaBetWeb.Tests.Int" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +17,7 @@
     <PackageReference Include="FluentValidation" Version="11.9.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
@@ -1564,6 +1566,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Design\" />
+    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\Resources\Flags\Large\" />
     <Folder Include="wwwroot\Resources\Images\" />
   </ItemGroup>

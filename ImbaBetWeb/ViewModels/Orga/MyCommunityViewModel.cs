@@ -1,11 +1,13 @@
-﻿using ImbaBetWeb.Models;
+﻿using ImbaBetWeb.Model;
 
 namespace ImbaBetWeb.ViewModels.Orga
 {
     public class MyCommunityViewModel
     {
-        public required List<Community> Communities { get; set; }
+        public required IList<Community> Communities { get; set; }
 
-        public required ApplicationUser User { get; set; }
+        public required Player Player { get; set; }
+
+        public required Community? CommunityOfPlayer { get; set; }
     }
 }

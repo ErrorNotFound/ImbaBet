@@ -1,4 +1,4 @@
-using ImbaBetWeb.Logic.Extensions;
+using ImbaBetWeb.Business.Extensions;
 using ImbaBetWeb.Validation;
 using ImbaBetWeb.ViewModels;
 using ImbaBetWeb.ViewModels.Home;

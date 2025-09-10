@@ -2,10 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using ImbaBetWeb.Business;
 using ImbaBetWeb.Data;
-using ImbaBetWeb.Logic;
-using ImbaBetWeb.Models;
-using ImbaBetWeb.Models.Consts;
+using ImbaBetWeb.DataAccess.Interfaces;
+using ImbaBetWeb.Model;
+using ImbaBetWeb.Model.Consts;
 using ImbaBetWeb.Validation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -13,33 +14,31 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ImbaBetWeb.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUserStore<ApplicationUser> _userStore;
-        private readonly IUserEmailStore<ApplicationUser> _emailStore;
+        private readonly SignInManager<MyIdentityUser> _signInManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
+        private readonly IUserStore<MyIdentityUser> _userStore;
+        private readonly IUserEmailStore<MyIdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationContext _applicationContext;
-        private readonly SettingsManager _settingsManager;
+        private readonly IDataStoreManager _dataStoreManager;
 
         public RegisterModel(
-            UserManager<ApplicationUser> userManager,
-            IUserStore<ApplicationUser> userStore,
-            SignInManager<ApplicationUser> signInManager,
+            UserManager<MyIdentityUser> userManager,
+            IUserStore<MyIdentityUser> userStore,
+            SignInManager<MyIdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             ApplicationContext context,
-            SettingsManager settingsManager)
+            IDataStoreManager dataStoreManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -48,7 +47,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _applicationContext = context;
-            _settingsManager = settingsManager;
+            _dataStoreManager = dataStoreManager;
         }
 
         /// <summary>
@@ -126,15 +125,20 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var existingUsernames = _userManager.Users.Select(x => x.UserName).ToList();
-                var validator = new UsernameValidator(existingUsernames);
+                var validator = new PlayerNameValidator(existingUsernames);
                 var validationResult = validator.Validate(Input.Username);
                 if(validationResult.IsValid)
                 {
                     var user = CreateUser(Input.Username);
-                    user.RemainingRenames = await _settingsManager.GetSettingAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
+                    user.RemainingRenames = await _dataStoreManager.GetSettingValueAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
 
                     await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                     await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                    // Create Player
+                    var player = new Player();
+                    user.PlayerId = await _dataStoreManager.CreatePlayerAsync(player);
+
                     var result = await _userManager.CreateAsync(user, Input.Password);
 
                     if (result.Succeeded)
@@ -185,29 +189,29 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private ApplicationUser CreateUser(string username)
+        private MyIdentityUser CreateUser(string username)
         {
             try
             {
-                var user = Activator.CreateInstance<ApplicationUser>();
+                var user = Activator.CreateInstance<MyIdentityUser>();
                 
                 return user; 
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(MyIdentityUser)}'. " +
+                    $"Ensure that '{nameof(MyIdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
-        private IUserEmailStore<ApplicationUser> GetEmailStore()
+        private IUserEmailStore<MyIdentityUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<ApplicationUser>)_userStore;
+            return (IUserEmailStore<MyIdentityUser>)_userStore;
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using ImbaBetWeb.Logic;
-using ImbaBetWeb.Logic.Extensions;
-using ImbaBetWeb.Models;
-using ImbaBetWeb.Models.Consts;
+﻿using ImbaBetWeb.Business;
+using ImbaBetWeb.Business.Extensions;
+using ImbaBetWeb.Model.Consts;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Services;
 using ImbaBetWeb.Validation;
 using ImbaBetWeb.ViewModels.Admin;
@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ImbaBetWeb.DataAccess.Interfaces;
+using ImbaBetWeb.ViewModels.DTO;
 
 
 namespace ImbaBetWeb.Controllers
@@ -18,46 +20,55 @@ namespace ImbaBetWeb.Controllers
     public class AdminController(
         BettingManager bettingManager,
         GameManager gameManager,
-        UserManager<ApplicationUser> userManager,
+        UserManager<MyIdentityUser> userManager,
         RoleManager<IdentityRole> roleManager,
         DatabaseManager databaseManager,
+        PlayerManager playerManager,
         CommunityManager communityManager,
-        SettingsManager settingsManager,
+        IDataStoreManager dataStoreManager,
         MatchPlanImportService matchPlanImportService,
         IEmailSender emailSender) : Controller
     {
         private readonly BettingManager _bettingManager = bettingManager;
         private readonly GameManager _gameManager = gameManager;
-        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly UserManager<MyIdentityUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly DatabaseManager _databaseManager = databaseManager;
+        private readonly PlayerManager _playerManager = playerManager;
         private readonly CommunityManager _communityManager = communityManager;
-        private readonly SettingsManager _settingsManager = settingsManager;
+        private readonly IDataStoreManager _dataStoreManager = dataStoreManager;
         private readonly MatchPlanImportService _matchPlanImportService = matchPlanImportService;
         private readonly IEmailSender _emailSender = emailSender;
 
 
         public async Task<IActionResult> Matches()
         {
-            var vm = new MatchesViewModel()
+            var matchplan = await _gameManager.GetMatchplanAsync();
+            var vm = new MatchesViewModel
             {
-                MatchGroups = await _gameManager.GetMatchGroupsAsync(),
-                Matches = await _gameManager.GetMatchesAsync(),
-                Teams = await _gameManager.GetTeamsAsync()
+                Matches = matchplan.Matches.ToList(),
+                MatchGroups = matchplan.MatchGroups.ToList(),
+                Teams = matchplan.Teams.ToList()
             };
-
             return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Matches(MatchesViewModel vm)
+        public async Task<IActionResult> Matches(MatchesViewModel viewmodel)
         {
-            var validator = new MatchesViewModelValidator();
-            var validationResult = validator.Validate(vm);
+            var matchplan = new Matchplan
+            {
+                Matches = viewmodel.Matches,
+                MatchGroups = viewmodel.MatchGroups,
+                Teams = viewmodel.Teams
+            };
+
+            var validator = new MatchPlanValidator();
+            var validationResult = validator.Validate(matchplan);
 
             if(validationResult.IsValid)
             {
-                await _gameManager.UpdateMatchesAsync(vm.Matches);
+                await _gameManager.UpdateMatchesAsync(matchplan.Matches);
                 await _bettingManager.UpdatePointsAsync();
 
                 this.SetSuccessAlert("Matches have been saved and points updated.");
@@ -77,7 +88,7 @@ namespace ImbaBetWeb.Controllers
         public async Task<IActionResult> Accounts()
         {
             var users = await _userManager.Users.AsNoTracking().ToListAsync();
-            var communities = await _communityManager.Communities.ToListAsync();
+            var communities = await _communityManager.GetCommunitiesAsync();
 
             var dtos = users.Select(async u => new UserDTO()
             {
@@ -85,22 +96,22 @@ namespace ImbaBetWeb.Controllers
                 Username = u?.UserName ?? "Username not found",
                 Email = u?.Email ?? "Email not found",
                 EmailConfirmed = await _userManager.IsEmailConfirmedAsync(u!),
-                MemberOfCommunityId = u!.MemberOfCommunityId,
-                IsAdmin = await _userManager.IsInRoleAsync(u, UserRoles.Admin),
-                IsEditor = await _userManager.IsInRoleAsync(u, UserRoles.Editor)
+                MemberOfCommunityId = (await _playerManager.GetPlayerAsync(u!.PlayerId)).MemberOfCommunityId, 
+                IsAdmin = await _userManager.IsInRoleAsync(u!, UserRoles.Admin),
+                IsEditor = await _userManager.IsInRoleAsync(u!, UserRoles.Editor)
             }).Select(x => x.Result).ToList();
 
             return View(new AccountsViewModel()
             {
                 Users = dtos,
-                Communities = communities
+                Communities = communities.ToList()
             });
         }
 
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Settings()
         {
-            var settings = await _settingsManager.GetAllSettingsAsync();
+            var settings = await _dataStoreManager.GetSettingsAsync();
 
             return View(settings);
         }
@@ -109,7 +120,10 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> SaveSetting(string key, string value)
         {
-            var success = await _settingsManager.SetSettingAsync(key, value);
+            await _dataStoreManager.SetSettingValueAsync(key, value);
+
+            //todo: rework
+            /*
             if(success)
             {
                 this.SetSuccessAlert($"Setting {key} has been saved.");
@@ -117,7 +131,7 @@ namespace ImbaBetWeb.Controllers
             else
             {
                 this.SetErrorAlert($"Setting {key} has not been saved.");
-            }
+            }*/
             
             return RedirectToAction(nameof(Settings));
         }
@@ -126,7 +140,9 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> ResetSetting(string key)
         {
-            var success = await _settingsManager.ResetSettingAsync(key);
+            await _dataStoreManager.ResetSettingAsync(key);
+            //todo: rework
+            /*
             if (success)
             {
                 this.SetSuccessAlert($"Setting {key} has been resetted.");
@@ -135,6 +151,7 @@ namespace ImbaBetWeb.Controllers
             {
                 this.SetErrorAlert($"Setting {key} has not been resetted.");
             }
+            */
 
             return RedirectToAction(nameof(Settings));
         }
@@ -149,7 +166,7 @@ namespace ImbaBetWeb.Controllers
                 var dbUser = await _userManager.FindByIdAsync(user.Id);
                 if(dbUser != null)
                 {
-                    success &= await _communityManager.UpdateCommunityMembershipAsync(user.Id, user.MemberOfCommunityId);
+                    success &= await _communityManager.UpdateCommunityMembershipAsync(dbUser.PlayerId, user.MemberOfCommunityId);
                     success &= await _databaseManager.UpdateRolesAsync(user.Id, user.IsAdmin, user.IsEditor);
                 }                
             }
@@ -198,7 +215,13 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteProfilePicture(string userId)
         {
-            var success = await _databaseManager.DeleteProfilePicture(userId);
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return RedirectToAction(nameof(Accounts));
+            }
+
+            var success = await _playerManager.DeleteProfilePicture(user.PlayerId);
             if(success)
             {
                 this.SetSuccessAlert($"Profile picture of {userId} has been deleted.");
@@ -232,22 +255,25 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteCommunity(int communityId)
         {
-            if(await _communityManager.DeleteCommunityAsync(communityId))
+            await _communityManager.DeleteCommunityAsync(communityId);
+            // todo
+            /*
+            if ()
             {
                 this.SetSuccessAlert($"Community with ID {communityId} has been deleted.");
             }
             else
             {
                 this.SetErrorAlert($"Community with ID {communityId} could not be deleted.");
-            }
+            }*/
 
             return RedirectToAction(nameof(Accounts));
         }
 
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> DeleteGameData()
+        public async Task<IActionResult> DeleteMatchPlan()
         {
-            await _databaseManager.DeleteGameDataAsync();
+            await _dataStoreManager.DeleteMatchplanAsync();
 
             this.SetSuccessAlert("Game data has been deleted.");
 
@@ -316,7 +342,7 @@ namespace ImbaBetWeb.Controllers
             var validationResult = _matchPlanImportService.ValidateMatchPlanXmlAsync(matchplan);
             if (validationResult.isValid)
             {
-                await _databaseManager.DeleteGameDataAsync();
+                await _dataStoreManager.DeleteMatchplanAsync();
                 await _matchPlanImportService.ImportAsync(matchplan);
                 this.SetSuccessAlert("MatchPlan has been imported.");
             }

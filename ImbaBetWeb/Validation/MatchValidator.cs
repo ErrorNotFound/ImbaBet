@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Model;
 
 namespace ImbaBetWeb.Validation
 {

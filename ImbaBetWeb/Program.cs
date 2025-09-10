@@ -1,12 +1,12 @@
-using Microsoft.EntityFrameworkCore;
+using ImbaBetWeb.Business;
 using ImbaBetWeb.Data;
-using Microsoft.AspNetCore.Identity;
-using ImbaBetWeb.Models;
-using ImbaBetWeb.Logic;
-using System.Data;
+using ImbaBetWeb.DataAccess;
+using ImbaBetWeb.DataAccess.Interfaces;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Services;
-using System.Configuration;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +15,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<MyIdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
 
 // forces session validation every minute
@@ -35,8 +35,9 @@ builder.Services.AddScoped<BettingManager>();
 builder.Services.AddScoped<GameManager>();
 builder.Services.AddScoped<CommunityManager>();
 builder.Services.AddScoped<DatabaseManager>();
-builder.Services.AddScoped<SettingsManager>();
+builder.Services.AddScoped<PlayerManager>();
 builder.Services.AddScoped<MatchPlanImportService>();
+builder.Services.AddScoped<IDataStoreManager>((provider) => { return DataStoreManager.CreateDefault(connectionString); });
 
 builder.Services.AddTransient<IEmailSender, EmailService>(i =>
                 new EmailService(
@@ -82,6 +83,8 @@ using (var scope = app.Services.CreateScope())
     {
         context.Database.Migrate();
     }
+
+    await services.GetRequiredService<IDataStoreManager>().Initialize();
 
     // make sure database is seeded with required data
     var databaseManager = services.GetRequiredService<DatabaseManager>();

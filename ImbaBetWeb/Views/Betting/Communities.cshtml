@@ -27,7 +27,7 @@
                         @Html.DisplayFor(modelItem => player)
                     </td>
                     <td>
-                        <i>@(community.Owner.Id == player.Id ? "Owner" : "Member")</i>
+                        <i>@(community.OwnerId == player.Id ? "Owner" : "Member")</i>
                     </td>
                 </tr>
             }

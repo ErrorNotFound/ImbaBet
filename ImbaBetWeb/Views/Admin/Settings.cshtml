@@ -1,4 +1,5 @@
-﻿@model List<Setting>
+﻿@using ImbaBetWeb.Model
+@model List<Setting>
 
 @{
     ViewData["Title"] = "Settings";
@@ -26,14 +27,14 @@
     <tbody>
         <tr>
             <td>
-                @Html.ActionLink("Delete Game Data",                      // Button Text
-                         "DeleteGameData",                        // controller action
+                @Html.ActionLink("Delete Match Plan",                      // Button Text
+                         "DeleteMatchPlan",                        // controller action
                          "Admin",                                // controller
                          null,                                   // action parameters aka route values
-                         new { onclick = "return confirm('Are you sure you want to delete Game data?')", @class = "btn btn-danger", @style = "width:180px;" })
+                         new { onclick = "return confirm('Are you sure you want to delete the current match plan?')", @class = "btn btn-danger", @style = "width:180px;" })
             </td>
             <td>
-                <p>Delete all game related data, such as the match plan, teams and bets.</p>
+                <p>Delete the current match plan, including teams, matches and bets.</p>
             </td>
         </tr>
         <tr>
@@ -122,10 +123,10 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => setting.Key)
+                    @Html.DisplayFor(modelItem => setting.Id)
                 </td>
                 <td>
-                    <input id="@setting.Key" value="@setting.Value" />
+                    <input id="@setting.Id" value="@setting.Value" />
                 </td>
                 <td>
                     @Html.DisplayFor(model => setting.Default)
@@ -134,9 +135,9 @@
                     @Html.DisplayFor(modelItem => setting.Description)
                 </td>
                 <td>
-                    <button onclick="SaveSetting('@setting.Key')" class="btn btn-primary">Save</button>
+                    <button onclick="SaveSetting('@setting.Id')" class="btn btn-primary">Save</button>
                     &nbsp;
-                    <button onclick="ResetSetting('@setting.Key')" class="btn btn-secondary">Reset</button>
+                    <button onclick="ResetSetting('@setting.Id')" class="btn btn-secondary">Reset</button>
                 </td>
             </tr>
         }

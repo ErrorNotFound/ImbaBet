@@ -204,7 +204,7 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteUser(string userId)
         {
-            await _databaseManager.DeletePlayerAsync(userId);
+            await _databaseManager.DeleteUserAsync(userId);
 
             this.SetSuccessAlert($"User with ID {userId} has been deleted.");
 
@@ -273,7 +273,7 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteMatchPlan()
         {
-            await _databaseManager.DeleteMatchplanAsync();
+            await _dataStoreManager.DeleteMatchplanAsync();
 
             this.SetSuccessAlert("Game data has been deleted.");
 
@@ -342,7 +342,7 @@ namespace ImbaBetWeb.Controllers
             var validationResult = _matchPlanImportService.ValidateMatchPlanXmlAsync(matchplan);
             if (validationResult.isValid)
             {
-                await _databaseManager.DeleteMatchplanAsync();
+                await _dataStoreManager.DeleteMatchplanAsync();
                 await _matchPlanImportService.ImportAsync(matchplan);
                 this.SetSuccessAlert("MatchPlan has been imported.");
             }

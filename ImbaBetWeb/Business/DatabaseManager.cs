@@ -6,30 +6,27 @@ using Microsoft.AspNetCore.Identity;
 namespace ImbaBetWeb.Business
 {
     public class DatabaseManager(
-        IDataStoreManager dataStoreManager,
-        RoleManager<IdentityRole> roleManager,
-        UserManager<MyIdentityUser> userManager,
-        CommunityManager communityManager,
+        IDataStoreManager _dataStoreManager,
+        RoleManager<IdentityRole> _roleManager,
+        UserManager<MyIdentityUser> _userManager,
+        CommunityManager _communityManager,
+        PlayerManager _playerManager,
         IConfiguration configuration)
     {
-        private readonly IDataStoreManager _dataStoreManager = dataStoreManager;
-        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
-        private readonly UserManager<MyIdentityUser> _userManager = userManager;
-        private readonly CommunityManager _communityManager = communityManager;
+        private readonly IDataStoreManager _dataStoreManager = _dataStoreManager;
+        private readonly RoleManager<IdentityRole> _roleManager = _roleManager;
+        private readonly UserManager<MyIdentityUser> _userManager = _userManager;
+        private readonly CommunityManager _communityManager = _communityManager;
         
         private readonly IConfiguration _configuration = configuration;
 
-        public async Task DeleteMatchplanAsync()
-        {      
-            await _dataStoreManager.DeleteMatchplanAsync();
-        }
-
-        public async Task DeletePlayerAsync(string userId)
+        public async Task DeleteUserAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
                 await _communityManager.DeleteCommunityOfPlayerAsync(user.PlayerId);
+                await _playerManager.DeletePlayer(user.PlayerId);
                 await _userManager.DeleteAsync(user);
             }
         }

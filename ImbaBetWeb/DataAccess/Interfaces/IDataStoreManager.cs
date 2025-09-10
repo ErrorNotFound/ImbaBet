@@ -11,14 +11,14 @@ namespace ImbaBetWeb.DataAccess.Interfaces
         public Task DeleteMatchplanAsync();
         
         public Task<IEnumerable<Bet>> GetBetsAsync();
-        public Task<IEnumerable<Bet>> GetBetsOfUserAsync(BettingUser user);
+        public Task<IEnumerable<Bet>> GetBetsOfPlayerAsync(Player player);
         public Task<IEnumerable<Bet>> GetBetsOfMatchAsync(Match match);
         public Task UpdateBetsAsync(IEnumerable<Bet> bets);
 
-        public Task<int> CreateUserAsync(BettingUser user);
-        public Task<BettingUser> GetUserByIdAsync(int id);
-        public Task<IEnumerable<BettingUser>> GetUsersAsync();
-        public Task UpdateUsersAsync(IEnumerable<BettingUser> users);
+        public Task<int> CreatePlayerAsync(Player player);
+        public Task<Player> GetPlayerByIdAsync(int id);
+        public Task<IEnumerable<Player>> GetPlayersAsync();
+        public Task UpdatePlayersAsync(IEnumerable<Player> players);
 
         public Task<IEnumerable<Community>> GetCommunitiesAsync();
         public Task AddCommunityAsync(Community community);

@@ -2,9 +2,9 @@
 
 namespace ImbaBetWeb.Business.Ranking.Comparer
 {
-    public class UserComparer : IComparer<RankingItem<UserDetails>>
+    public class PlayerComparer : IComparer<RankingItem<PlayerDetails>>
     {
-        public int Compare(RankingItem<UserDetails>? x, RankingItem<UserDetails>? y)
+        public int Compare(RankingItem<PlayerDetails>? x, RankingItem<PlayerDetails>? y)
         {
             if (x == null && y == null)
                 return 0;

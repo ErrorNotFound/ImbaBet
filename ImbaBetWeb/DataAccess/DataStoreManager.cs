@@ -6,10 +6,10 @@ using System.Reflection;
 
 namespace ImbaBetWeb.DataAccess
 {
-    public class DataStoreManager(IBetStore betStore, IBettingUserStore bettingUserStore, ICommunityStore communityStore, IMatchGroupStore matchGroupStore, IMatchStore matchStore, ISettingStore settingStore, ITeamStore teamStore) : IDataStoreManager
+    public class DataStoreManager(IBetStore betStore, IPlayerStore playerStore, ICommunityStore communityStore, IMatchGroupStore matchGroupStore, IMatchStore matchStore, ISettingStore settingStore, ITeamStore teamStore) : IDataStoreManager
     {
         private readonly IBetStore betStore = betStore;
-        private readonly IBettingUserStore bettingUserStore = bettingUserStore;
+        private readonly IPlayerStore playerStore = playerStore;
         private readonly ICommunityStore communityStore = communityStore;
         private readonly IMatchGroupStore matchGroupStore = matchGroupStore;
         private readonly IMatchStore matchStore = matchStore;
@@ -22,7 +22,7 @@ namespace ImbaBetWeb.DataAccess
         {
             return new DataStoreManager(
                 new SqlBetStore(connectionString), 
-                new SqlBettingUserStore(connectionString), 
+                new SqlPlayerStore(connectionString), 
                 new SqlCommunityStore(connectionString), 
                 new SqlMatchGroupStore(connectionString), 
                 new SqlMatchStore(connectionString), 
@@ -34,7 +34,7 @@ namespace ImbaBetWeb.DataAccess
         {
             await Task.WhenAll(
                 betStore.EnsureInitializedAsync(),
-                bettingUserStore.EnsureInitializedAsync(),
+                playerStore.EnsureInitializedAsync(),
                 communityStore.EnsureInitializedAsync(),
                 matchGroupStore.EnsureInitializedAsync(),
                 matchStore.EnsureInitializedAsync(),
@@ -94,23 +94,23 @@ namespace ImbaBetWeb.DataAccess
         {
             var bets = await betStore.GetAllAsync();
             var matchplan = await GetMatchplanAsync();
-            var users = await bettingUserStore.GetAllAsync();
+            var players = await playerStore.GetAllAsync();
 
             foreach (var bet in bets)
             {
                 bet.Match = matchplan.Matches.Single(m => bet.MatchId == m.Id);
-                bet.User = users.Single(u => bet.UserId == u.Id);
+                bet.Player = players.Single(u => bet.PlayerId == u.Id);
             }
 
             return bets;
         }
 
 
-        public async Task<IEnumerable<Bet>> GetBetsOfUserAsync(BettingUser user)
+        public async Task<IEnumerable<Bet>> GetBetsOfPlayerAsync(Player player)
         {
             var bets = await GetBetsAsync();
 
-            return bets.Where(bet => bet.UserId == user.Id);
+            return bets.Where(bet => bet.PlayerId == player.Id);
         }
 
         public async Task<IEnumerable<Bet>> GetBetsOfMatchAsync(Match match)
@@ -127,52 +127,52 @@ namespace ImbaBetWeb.DataAccess
                 await betStore.UpdateAsync(bet);
             }
         }
-        public async Task<int> CreateUserAsync(BettingUser user)
+        public async Task<int> CreatePlayerAsync(Player player)
         {
-            return await bettingUserStore.CreateAsync(user);
+            return await playerStore.CreateAsync(player);
         }
 
-        public async Task<BettingUser> GetUserByIdAsync(int id)
+        public async Task<Player> GetPlayerByIdAsync(int id)
         {
-            var users = await GetUsersAsync();
-            return users.Single(u => u.Id == id);
+            var players = await GetPlayersAsync();
+            return players.Single(u => u.Id == id);
         }
 
-        public async Task<IEnumerable<BettingUser>> GetUsersAsync()
+        public async Task<IEnumerable<Player>> GetPlayersAsync()
         {
-            var users = await bettingUserStore.GetAllAsync();
+            var players = await playerStore.GetAllAsync();
             var communities = await GetCommunitiesAsync();
 
-            foreach (var user in users.Where(u => u.MemberOfCommunityId != null))
+            foreach (var player in players.Where(u => u.MemberOfCommunityId != null))
             {
-                user.Community = communities.SingleOrDefault(c => c.Id == user.MemberOfCommunityId);
+                player.Community = communities.SingleOrDefault(c => c.Id == player.MemberOfCommunityId);
             }
 
-            return users;
+            return players;
         }
 
-        public async Task UpdateUsersAsync(IEnumerable<BettingUser> users)
+        public async Task UpdatePlayersAsync(IEnumerable<Player> players)
         {
-            foreach (var user in users)
+            foreach (var player in players)
             {
-                await bettingUserStore.UpdateAsync(user);
+                await playerStore.UpdateAsync(player);
             }
         }
 
         public async Task<IEnumerable<Community>> GetCommunitiesAsync()
         {
             var communities = await communityStore.GetAllAsync();
-            var users = await bettingUserStore.GetAllAsync();
+            var players = await playerStore.GetAllAsync();
 
-            foreach(var user in users)
+            foreach(var player in players)
             {
-                user.Community = communities.SingleOrDefault(c => c.Id == user.MemberOfCommunityId);
+                player.Community = communities.SingleOrDefault(c => c.Id == player.MemberOfCommunityId);
             }
 
             foreach (var community in communities)
             {
-                community.Members = users.Where(u => community.Id == u.MemberOfCommunityId).ToList();
-                community.Owner = users.Single(u => community.OwnerId == u.Id);
+                community.Members = players.Where(u => community.Id == u.MemberOfCommunityId).ToList();
+                community.Owner = players.Single(u => community.OwnerId == u.Id);
             }
 
             return communities;

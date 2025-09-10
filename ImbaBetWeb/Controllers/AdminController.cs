@@ -164,7 +164,7 @@ namespace ImbaBetWeb.Controllers
                 var dbUser = await _userManager.FindByIdAsync(user.Id);
                 if(dbUser != null)
                 {
-                    success &= await _communityManager.UpdateCommunityMembershipAsync(dbUser.BettingUserId, user.MemberOfCommunityId);
+                    success &= await _communityManager.UpdateCommunityMembershipAsync(dbUser.PlayerId, user.MemberOfCommunityId);
                     success &= await _databaseManager.UpdateRolesAsync(user.Id, user.IsAdmin, user.IsEditor);
                 }                
             }
@@ -202,7 +202,7 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteUser(string userId)
         {
-            await _databaseManager.DeleteUserAsync(userId);
+            await _databaseManager.DeletePlayerAsync(userId);
 
             this.SetSuccessAlert($"User with ID {userId} has been deleted.");
 

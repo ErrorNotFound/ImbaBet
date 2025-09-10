@@ -2,8 +2,8 @@
 
 namespace ImbaBetWeb.Business.Ranking.Details
 {
-    public class UserDetails
+    public class PlayerDetails
     {
-        public required BettingUser User { get; set; }
+        public required Player Player { get; set; }
     }
 }

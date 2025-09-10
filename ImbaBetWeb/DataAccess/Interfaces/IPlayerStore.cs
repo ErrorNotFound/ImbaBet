@@ -2,7 +2,7 @@
 
 namespace ImbaBetWeb.DataAccess.Interfaces
 {
-    public interface IBettingUserStore : IStoreBase<BettingUser, int>
+    public interface IPlayerStore : IStoreBase<Player, int>
     {
 
     }

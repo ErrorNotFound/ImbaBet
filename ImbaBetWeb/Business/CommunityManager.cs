@@ -14,7 +14,7 @@ namespace ImbaBetWeb.Business
             return await _dataStoreManager.GetCommunitiesAsync();
         }
 
-        public async Task CreateCommunityAsync(BettingUser owner, string name)
+        public async Task CreateCommunityAsync(Player owner, string name)
         {
             if(false == await _dataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_CREATE))
             {
@@ -31,24 +31,24 @@ namespace ImbaBetWeb.Business
             await _dataStoreManager.AddCommunityAsync(newCommunity);
         }
 
-        public async Task DeleteCommunityOfUserAsync(int userId)
+        public async Task DeleteCommunityOfPlayerAsync(int playerId)
         {
-            var users = await _dataStoreManager.GetUsersAsync();
-            var user = users.SingleOrDefault(u => u.Id == userId);
-            if (user != null)
+            var players = await _dataStoreManager.GetPlayersAsync();
+            var player = players.SingleOrDefault(u => u.Id == playerId);
+            if (player != null)
             {
-                await DeleteCommunityOfUserAsync(user);
+                await DeleteCommunityOfPlayerAsync(player);
             }
         }
 
-        public async Task DeleteCommunityOfUserAsync(BettingUser user)
+        public async Task DeleteCommunityOfPlayerAsync(Player player)
         {
             var communities = await _dataStoreManager.GetCommunitiesAsync();
-            var communityOfUser = communities.FirstOrDefault(com => com.OwnerId == user.Id);
+            var communityOfPlayer = communities.FirstOrDefault(com => com.OwnerId == player.Id);
 
-            if (communityOfUser != null)
+            if (communityOfPlayer != null)
             {
-                await DeleteCommunityAsync(communityOfUser.Id);
+                await DeleteCommunityAsync(communityOfPlayer.Id);
             }
         }
 
@@ -57,7 +57,7 @@ namespace ImbaBetWeb.Business
             await _dataStoreManager.DeleteCommunityAsync(communityId);
         }
 
-        public async Task<bool> JoinCommunityAsync(BettingUser user, int communityId)
+        public async Task<bool> JoinCommunityAsync(Player player, int communityId)
         {
             if (false == await _dataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_JOIN))
             {
@@ -67,10 +67,10 @@ namespace ImbaBetWeb.Business
             var communities = await _dataStoreManager.GetCommunitiesAsync();
             var community = communities.FirstOrDefault(x => x.Id == communityId);
 
-            if (user != null && !user.MemberOfCommunityId.HasValue)
+            if (player != null && !player.MemberOfCommunityId.HasValue)
             {
-                user.MemberOfCommunityId = communityId;
-                await _dataStoreManager.UpdateUsersAsync([user]);
+                player.MemberOfCommunityId = communityId;
+                await _dataStoreManager.UpdatePlayersAsync([player]);
 
                 return true;
             }
@@ -78,7 +78,7 @@ namespace ImbaBetWeb.Business
             return false;
         }
 
-        public async Task<bool> LeaveCommunityAsync(BettingUser user)
+        public async Task<bool> LeaveCommunityAsync(Player player)
         {
             if (false == await _dataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE))
             {
@@ -87,13 +87,13 @@ namespace ImbaBetWeb.Business
 
             var communities = await _dataStoreManager.GetCommunitiesAsync();
 
-            if (user != null && user.MemberOfCommunityId.HasValue) 
+            if (player != null && player.MemberOfCommunityId.HasValue) 
             {
-                var community = communities.Single(x => x.Id == user.MemberOfCommunityId);
-                if(community.OwnerId != user.Id)// may only leave if not owner of the community
+                var community = communities.Single(x => x.Id == player.MemberOfCommunityId);
+                if(community.OwnerId != player.Id)// may only leave if not owner of the community
                 {
-                    user.MemberOfCommunityId = null;
-                    await _dataStoreManager.UpdateUsersAsync([user]);
+                    player.MemberOfCommunityId = null;
+                    await _dataStoreManager.UpdatePlayersAsync([player]);
                     return true;
                 }
             }
@@ -101,56 +101,56 @@ namespace ImbaBetWeb.Business
             return false;
         }
 
-        public async Task<bool> UpdateCommunityMembershipAsync(int userId, int? communityId)
+        public async Task<bool> UpdateCommunityMembershipAsync(int playerId, int? communityId)
         {
-            var user = await _dataStoreManager.GetUserByIdAsync(userId);
+            var player = await _dataStoreManager.GetPlayerByIdAsync(playerId);
             var communities = await _dataStoreManager.GetCommunitiesAsync();
             var community = communities.FirstOrDefault(x => x.Id == communityId);
 
-            if(user == null)
+            if(player == null)
             {
                 return false;
             }
 
-            if (user.MemberOfCommunityId == communityId) // already up to date
+            if (player.MemberOfCommunityId == communityId) // already up to date
             {
                 return true;
             }
 
-            if (communities.Any(c => c.OwnerId == user.Id)) // may only change or remove ownership if not already owner of a community
+            if (communities.Any(c => c.OwnerId == player.Id)) // may only change or remove ownership if not already owner of a community
             {
                 return false;
             }
 
-            user.MemberOfCommunityId = communityId;
-            await _dataStoreManager.UpdateUsersAsync([user]);
+            player.MemberOfCommunityId = communityId;
+            await _dataStoreManager.UpdatePlayersAsync([player]);
 
             return true;
         }
 
-        public async Task<bool> KickMemberAsync(int communityId, int userId)
+        public async Task<bool> KickMemberAsync(int communityId, int playerId)
         {
             if (false == await _dataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE))
             {
                 return false;
             }
 
-            var user = await _dataStoreManager.GetUserByIdAsync(userId);
+            var player = await _dataStoreManager.GetPlayerByIdAsync(playerId);
 
-            if (user != null 
-                && user.MemberOfCommunityId == communityId)
+            if (player != null 
+                && player.MemberOfCommunityId == communityId)
             {
-                user.MemberOfCommunityId = null;
-                await _dataStoreManager.UpdateUsersAsync([user]);
+                player.MemberOfCommunityId = null;
+                await _dataStoreManager.UpdatePlayersAsync([player]);
                 return true;
             }
 
             return false;
         }
 
-        public async Task<bool> PromoteToOwnerAsync(int communityId, int userId)
+        public async Task<bool> PromoteToOwnerAsync(int communityId, int playerId)
         {
-            var newOwner = await _dataStoreManager.GetUserByIdAsync(userId);
+            var newOwner = await _dataStoreManager.GetPlayerByIdAsync(playerId);
             var communities = await _dataStoreManager.GetCommunitiesAsync();
             var community = communities.FirstOrDefault(x => x.Id == communityId);
 
@@ -168,16 +168,16 @@ namespace ImbaBetWeb.Business
 
         public async Task UpdateCommunitiesAsync(IEnumerable<Community> communities)
         {
-            var users = await _dataStoreManager.GetUsersAsync();
+            var players = await _dataStoreManager.GetPlayersAsync();
 
             foreach (var community in communities)
             {
                 // make sure that an owner is also member of the community
-                var user = users.SingleOrDefault(u => u.Id == community.OwnerId);
-                if (user != null && user.MemberOfCommunityId != community.Id)
+                var player = players.SingleOrDefault(u => u.Id == community.OwnerId);
+                if (player != null && player.MemberOfCommunityId != community.Id)
                 {
-                    user.MemberOfCommunityId = community.Id;
-                    await _dataStoreManager.UpdateUsersAsync([user]);
+                    player.MemberOfCommunityId = community.Id;
+                    await _dataStoreManager.UpdatePlayersAsync([player]);
                 }  
             }
 

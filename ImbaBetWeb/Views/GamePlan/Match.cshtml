@@ -52,7 +52,7 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => bet.User)
+                        @Html.DisplayFor(modelItem => bet.Player)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => bet.GoalsA) : @Html.DisplayFor(modelItem => bet.GoalsB)
@@ -90,7 +90,7 @@
             {
                 <tr @(bet.Points > 0 ? "class=table-success" : "")>
                     <td>
-                        @Html.DisplayFor(modelItem => bet.User)
+                        @Html.DisplayFor(modelItem => bet.Player)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => bet.GoalsA) : @Html.DisplayFor(modelItem => bet.GoalsB)

@@ -1,7 +1,4 @@
-﻿
-using Microsoft.Build.Framework;
-
-namespace ImbaBetWeb.Model
+﻿namespace ImbaBetWeb.Model
 {
     public interface IIdentifiable<T> where T : notnull
     {

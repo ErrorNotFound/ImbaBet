@@ -6,9 +6,9 @@
         public required string Name { get; set; }
 
         public required int OwnerId { get; set; }
-        public BettingUser? Owner { get; set; } = null!;
+        public Player? Owner { get; set; } = null!;
 
-        public IEnumerable<BettingUser> Members { get; set; } = null!;
+        public IEnumerable<Player> Members { get; set; } = null!;
 
         public override string ToString()
         {

@@ -14,44 +14,44 @@ namespace ImbaBetWeb.Business
         private readonly IDataStoreManager _dataStoreManager = dataStoreManager;
 
         /// <summary>
-        /// Returns a list of bets that the user has not betted on yet
+        /// Returns a list of bets that the player has not betted on yet
         /// </summary>
-        public async Task<IEnumerable<Bet>> GetOpenBetsOfUserAsync(BettingUser user)
+        public async Task<IEnumerable<Bet>> GetOpenBetsOfPlayerAsync(Player player)
         {
             var matchplan = await _dataStoreManager.GetMatchplanAsync();
-            var betsOfUser = await _dataStoreManager.GetBetsOfUserAsync(user);
+            var betsOfPlayer = await _dataStoreManager.GetBetsOfPlayerAsync(player);
 
             var betableMatches = matchplan.Matches.Where(match => match.CanBet());
 
-            var matchesNotBetOnByUser = betableMatches.Where(m => !betsOfUser.Any(b => b.MatchId == m.Id));
+            var matchesNotBetOnByPlayer = betableMatches.Where(m => !betsOfPlayer.Any(b => b.MatchId == m.Id));
 
-            var openBets = matchesNotBetOnByUser.Select(m => new Bet()
+            var openBets = matchesNotBetOnByPlayer.Select(m => new Bet()
             {
                 Match = m,
                 MatchId = m.Id,
-                UserId = user.Id,
-                User = user
+                PlayerId = player.Id,
+                Player = player
             });
 
             return openBets.ToList();
         }
 
         /// <summary>
-        /// Returns a list of bets that the user has betted on but can still be modified
+        /// Returns a list of bets that the player has betted on but can still be modified
         /// </summary>
-        public async Task<IEnumerable<Bet>> GetActiveBetsOfUserAsync(BettingUser user)
+        public async Task<IEnumerable<Bet>> GetActiveBetsOfPlayerAsync(Player player)
         {
-            var betsOfUser = await _dataStoreManager.GetBetsOfUserAsync(user);
-            return betsOfUser.Where(bet => bet.IsActiveBet());
+            var betsOfPlayer = await _dataStoreManager.GetBetsOfPlayerAsync(player);
+            return betsOfPlayer.Where(bet => bet.IsActiveBet());
         }
 
         /// <summary>
-        /// Returns a list of bets that the user has betted on and can't be modified anymore
+        /// Returns a list of bets that the player has betted on and can't be modified anymore
         /// </summary>
-        public async Task<IEnumerable<Bet>> GetClosedBetsOfUserAsync(BettingUser user)
+        public async Task<IEnumerable<Bet>> GetClosedBetsOfPlayerAsync(Player user)
         {
-            var betsOfUser = await _dataStoreManager.GetBetsOfUserAsync(user);
-            return betsOfUser.Where(bet => bet.IsClosedBet());
+            var betsOfPlayer = await _dataStoreManager.GetBetsOfPlayerAsync(user);
+            return betsOfPlayer.Where(bet => bet.IsClosedBet());
         }
 
         public async Task<IEnumerable<Bet>> GetActiveBetsOfMatchAsync(Match match)
@@ -91,29 +91,29 @@ namespace ImbaBetWeb.Business
             }
             await _dataStoreManager.UpdateBetsAsync(allBets);
 
-            // Update Users
-            var users = await _dataStoreManager.GetUsersAsync();
-            foreach (var user in users)
+            // Update Players
+            var players = await _dataStoreManager.GetPlayersAsync();
+            foreach (var player in players)
             {
-                var userBets = allBets.Where(bet => bet.UserId == user.Id);
-                user.Points = userBets.Sum(b => b.Points);
+                var playerBets = allBets.Where(bet => bet.PlayerId == player.Id);
+                player.Points = playerBets.Sum(b => b.Points);
             }
-            await _dataStoreManager.UpdateUsersAsync(users);
+            await _dataStoreManager.UpdatePlayersAsync(players);
         }
 
-        public async Task<IList<RankingItem<UserDetails>>> GetUserRankingAsync()
+        public async Task<IList<RankingItem<PlayerDetails>>> GetPlayerRankingAsync()
         {
-            var users = await _dataStoreManager.GetUsersAsync();
-            var list = GetRankingOfUsersInternal(users);
+            var players = await _dataStoreManager.GetPlayersAsync();
+            var list = GetRankingOfPlayersInternal(players);
 
             return list;
         }
 
-        public async Task<IList<RankingItem<UserDetails>>> GetUserRankingOfCommunityAsync(int communityId)
+        public async Task<IList<RankingItem<PlayerDetails>>> GetPlayerRankingOfCommunityAsync(int communityId)
         {
-            var users = await _dataStoreManager.GetUsersAsync();
-            var communityUsers = users.Where(user => user.MemberOfCommunityId == communityId);
-            var list = GetRankingOfUsersInternal(communityUsers);
+            var players = await _dataStoreManager.GetPlayersAsync();
+            var communityPlayers = players.Where(user => user.MemberOfCommunityId == communityId);
+            var list = GetRankingOfPlayersInternal(communityPlayers);
 
             return list;
         }
@@ -147,20 +147,20 @@ namespace ImbaBetWeb.Business
             return list;
         }
 
-        private IList<RankingItem<UserDetails>> GetRankingOfUsersInternal(IEnumerable<BettingUser> users)
+        private IList<RankingItem<PlayerDetails>> GetRankingOfPlayersInternal(IEnumerable<Player> players)
         {
-            var rankingList = new List<RankingItem<UserDetails>>();
+            var rankingList = new List<RankingItem<PlayerDetails>>();
 
-            foreach (var user in users)
+            foreach (var player in players)
             {
-                rankingList.Add(new RankingItem<UserDetails>()
+                rankingList.Add(new RankingItem<PlayerDetails>()
                 {
-                    Details = new UserDetails() { User = user },
-                    Points = user.Points
+                    Details = new PlayerDetails() { Player = player },
+                    Points = player.Points
                 });
             }
 
-            RankingHelper.SortDescendingAndSetRanks(rankingList, new UserComparer());
+            RankingHelper.SortDescendingAndSetRanks(rankingList, new PlayerComparer());
             return rankingList;
         }
 

@@ -31,20 +31,20 @@ namespace ImbaBetWeb.Controllers
         public async Task<IActionResult> Leaderboards()
         {
             var identityUser = await _userManager.GetUserAsync(User);
-            BettingUser? bettingUser = null;
+            Player? player = null;
 
             if (identityUser != null)
             {
-                bettingUser = await _databaseManager.GetUserAsync(identityUser.BettingUserId);
+                player = await _databaseManager.GetPlayerAsync(identityUser.PlayerId);
             }           
 
-            var userRanking = await _bettingManager.GetUserRankingAsync();
+            var userRanking = await _bettingManager.GetPlayerRankingAsync();
             var communityRanking = await _bettingManager.GetCommunityRankingAsync();
-            var internalRanking = bettingUser?.MemberOfCommunityId.HasValue ?? false ? await _bettingManager.GetUserRankingOfCommunityAsync(bettingUser.MemberOfCommunityId.Value) : null;
+            var internalRanking = player?.MemberOfCommunityId.HasValue ?? false ? await _bettingManager.GetPlayerRankingOfCommunityAsync(player.MemberOfCommunityId.Value) : null;
 
             var vm = new LeaderboardsViewModel()
             {
-                UserRanking = userRanking,
+                PlayerRanking = userRanking,
                 CommunityRanking = communityRanking,
                 CommunityInternalRanking = internalRanking
             };
@@ -68,13 +68,13 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            var bettingUser = await _databaseManager.GetUserAsync(identityUser.BettingUserId);
+            var player = await _databaseManager.GetPlayerAsync(identityUser.PlayerId);
 
             var vm = new MyBetsViewModel()
             {
-                OpenBets = await _bettingManager.GetOpenBetsOfUserAsync(bettingUser),
-                ActiveBets = await _bettingManager.GetActiveBetsOfUserAsync(bettingUser),
-                ClosedBets = await _bettingManager.GetClosedBetsOfUserAsync(bettingUser)
+                OpenBets = await _bettingManager.GetOpenBetsOfPlayerAsync(player),
+                ActiveBets = await _bettingManager.GetActiveBetsOfPlayerAsync(player),
+                ClosedBets = await _bettingManager.GetClosedBetsOfPlayerAsync(player)
             };
 
             return View(vm);

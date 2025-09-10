@@ -6,13 +6,13 @@ using ImbaBetWeb.Tests.Int.DataAccess.TestHelper;
 namespace ImbaBetWeb.Tests.Int.DataAccess
 {
     [AllureNUnit]
-    public class SqlBettingUserStoreTests : SqlDatabaseTestsBase
+    public class SqlPlayerStoreTests : SqlDatabaseTestsBase
     {
         [Test]
         public async Task EnsureInitializedAsync_NoTableAvailable_TableIsAdded()
         {
             // Arrange
-            var store = new SqlBettingUserStore(TestDatabase.ConnectionString);
+            var store = new SqlPlayerStore(TestDatabase.ConnectionString);
 
             // Act and Assert
             Assert.That(await TestDatabase.TableExistsAsync(store.TableName), Is.False);
@@ -24,9 +24,9 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
         public async Task CreateGetUpdateDelete_TestWorkflow_NoUnexpectedError()
         {
             // Arrange
-            var store = new SqlBettingUserStore(TestDatabase.ConnectionString);
+            var store = new SqlPlayerStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var user = new BettingUser()
+            var player = new Player()
             {
                 MemberOfCommunityId = 1,
                 Points = 2,
@@ -34,21 +34,21 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             };
 
             // Test Create and Retrieve
-            user.Id = await store.CreateAsync(user);
-            var retrieved = await store.GetAsync(user.Id);
-            Assert.That(retrieved, Is.EqualTo(user));
+            player.Id = await store.CreateAsync(player);
+            var retrieved = await store.GetAsync(player.Id);
+            Assert.That(retrieved, Is.EqualTo(player));
 
             // Test Update
-            user.MemberOfCommunityId = 3;
-            user.Points = 4;
-            user.ProfilePicturePath = "newPath";
-            await store.UpdateAsync(user);
+            player.MemberOfCommunityId = 3;
+            player.Points = 4;
+            player.ProfilePicturePath = "newPath";
+            await store.UpdateAsync(player);
             retrieved = (await store.GetAllAsync()).Single();
-            Assert.That(retrieved, Is.EqualTo(user));
+            Assert.That(retrieved, Is.EqualTo(player));
 
             // Test Delete
-            await store.DeleteAsync(user);
-            Assert.ThrowsAsync<InvalidOperationException>(() => store.GetAsync(user.Id));
+            await store.DeleteAsync(player);
+            Assert.ThrowsAsync<InvalidOperationException>(() => store.GetAsync(player.Id));
             var items = await store.GetAllAsync();
             Assert.That(items, Is.Empty);
         }
@@ -57,25 +57,25 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
         public async Task CreateGetUpdate_WithNullables_NoError()
         {
             // Arrange
-            var store = new SqlBettingUserStore(TestDatabase.ConnectionString);
+            var store = new SqlPlayerStore(TestDatabase.ConnectionString);
             await store.EnsureInitializedAsync();
-            var user = new BettingUser()
+            var player = new Player()
             {
                 MemberOfCommunityId = null,
                 ProfilePicturePath = null
             };
 
             // Test Create and Retrieve
-            user.Id = await store.CreateAsync(user);
-            var retrieved = await store.GetAsync(user.Id);
-            Assert.That(retrieved, Is.EqualTo(user));
+            player.Id = await store.CreateAsync(player);
+            var retrieved = await store.GetAsync(player.Id);
+            Assert.That(retrieved, Is.EqualTo(player));
 
             // Test Update
-            user.MemberOfCommunityId = null;
-            user.ProfilePicturePath= null;
-            await store.UpdateAsync(user);
+            player.MemberOfCommunityId = null;
+            player.ProfilePicturePath= null;
+            await store.UpdateAsync(player);
             retrieved = (await store.GetAllAsync()).Single();
-            Assert.That(retrieved, Is.EqualTo(user));
+            Assert.That(retrieved, Is.EqualTo(player));
         }
     }
 }

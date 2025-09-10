@@ -13,7 +13,7 @@ namespace ImbaBetWeb.DataAccess
 
         private readonly string colName_Id = "Id";
         private readonly string colName_MatchId = "MatchId";
-        private readonly string colName_UserId = "UserId";
+        private readonly string colName_PlayerId = "PlayerId";
         private readonly string colName_GoalsA = "GoalsA";
         private readonly string colName_GoalsB = "GoalsB";
         private readonly string colName_Points = "Points";
@@ -26,13 +26,13 @@ namespace ImbaBetWeb.DataAccess
             using var command = connection.CreateCommand();
 
             command.CommandText = $"INSERT INTO {TableName} " +
-                $"([{colName_MatchId}],[{colName_UserId}],[{colName_GoalsA}],[{colName_GoalsB}],[{colName_Points}]) " +
+                $"([{colName_MatchId}],[{colName_PlayerId}],[{colName_GoalsA}],[{colName_GoalsB}],[{colName_Points}]) " +
                 "VALUES " +
-                $"(@{colName_MatchId},@{colName_UserId},@{colName_GoalsA},@{colName_GoalsB},@{colName_Points});" +
+                $"(@{colName_MatchId},@{colName_PlayerId},@{colName_GoalsA},@{colName_GoalsB},@{colName_Points});" +
                 $"SELECT CONVERT(int,SCOPE_IDENTITY());";
 
             command.Parameters.Add($"@{colName_MatchId}", SqlDbType.Int).Value = bet.MatchId;
-            command.Parameters.Add($"@{colName_UserId}", SqlDbType.Int).Value = bet.UserId;
+            command.Parameters.Add($"@{colName_PlayerId}", SqlDbType.Int).Value = bet.PlayerId;
             command.Parameters.Add($"@{colName_GoalsA}", SqlDbType.Int).Value = bet.GoalsA;
             command.Parameters.Add($"@{colName_GoalsB}", SqlDbType.Int).Value = bet.GoalsB;
             command.Parameters.Add($"@{colName_Points}", SqlDbType.Int).Value = bet.Points;
@@ -91,7 +91,7 @@ namespace ImbaBetWeb.DataAccess
                 $"(" +
                     $"[{colName_Id}] int NOT NULL IDENTITY(1,1) PRIMARY KEY, " +
                     $"[{colName_MatchId}] int NOT NULL, " +
-                    $"[{colName_UserId}] int NOT NULL, " +
+                    $"[{colName_PlayerId}] int NOT NULL, " +
                     $"[{colName_GoalsA}] int NOT NULL, " +
                     $"[{colName_GoalsB}] int NOT NULL, " +
                     $"[{colName_Points}] int NOT NULL " +
@@ -142,7 +142,7 @@ namespace ImbaBetWeb.DataAccess
 
             int oId = reader.GetOrdinal(colName_Id);
             int oMatchId = reader.GetOrdinal(colName_MatchId);
-            int oUserId = reader.GetOrdinal(colName_UserId);
+            int oUserId = reader.GetOrdinal(colName_PlayerId);
             int oGoalA = reader.GetOrdinal(colName_GoalsA);
             int oGoalB = reader.GetOrdinal(colName_GoalsB);
             int oPoints = reader.GetOrdinal(colName_Points);
@@ -155,7 +155,7 @@ namespace ImbaBetWeb.DataAccess
                 {
                     Id = reader.GetInt32(oId),
                     MatchId = reader.GetInt32(oMatchId),
-                    UserId = reader.GetInt32(oUserId),
+                    PlayerId = reader.GetInt32(oUserId),
                     GoalsA = reader.GetInt32(oGoalA),
                     GoalsB = reader.GetInt32(oGoalB),
                     Points = reader.GetInt32(oPoints)
@@ -172,11 +172,11 @@ namespace ImbaBetWeb.DataAccess
             using var command = connection.CreateCommand();
 
             command.CommandText = $"UPDATE {TableName} " +
-                $"SET [{colName_MatchId}]=@{colName_MatchId},[{colName_UserId}]=@{colName_UserId},[{colName_GoalsA}]=@{colName_GoalsA},[{colName_GoalsB}]=@{colName_GoalsB},[{colName_Points}]=@{colName_Points} " +
+                $"SET [{colName_MatchId}]=@{colName_MatchId},[{colName_PlayerId}]=@{colName_PlayerId},[{colName_GoalsA}]=@{colName_GoalsA},[{colName_GoalsB}]=@{colName_GoalsB},[{colName_Points}]=@{colName_Points} " +
                 $"WHERE [{colName_Id}]=@{colName_Id}";
 
             command.Parameters.Add($"@{colName_MatchId}", SqlDbType.Int).Value = bet.MatchId;
-            command.Parameters.Add($"@{colName_UserId}", SqlDbType.Int).Value = bet.UserId;
+            command.Parameters.Add($"@{colName_PlayerId}", SqlDbType.Int).Value = bet.PlayerId;
             command.Parameters.Add($"@{colName_GoalsA}", SqlDbType.Int).Value = bet.GoalsA;
             command.Parameters.Add($"@{colName_GoalsB}", SqlDbType.Int).Value = bet.GoalsB;
             command.Parameters.Add($"@{colName_Points}", SqlDbType.Int).Value = bet.Points;

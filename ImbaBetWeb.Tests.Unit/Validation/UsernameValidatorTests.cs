@@ -6,7 +6,7 @@ namespace ImbaBetWeb.Tests.Unit.Validation
     [AllureNUnit]
     public class UsernameValidatorTests
     {
-        private UsernameValidator validator;
+        private PlayerNameValidator validator;
         private readonly List<string> existingNames =
             [
                 "NameA",
@@ -18,7 +18,7 @@ namespace ImbaBetWeb.Tests.Unit.Validation
         [SetUp]
         public void Setup()
         {
-            validator = new UsernameValidator(existingNames);
+            validator = new PlayerNameValidator(existingNames);
         }
 
         [TestCase("abc")]

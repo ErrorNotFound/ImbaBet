@@ -125,7 +125,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var existingUsernames = _userManager.Users.Select(x => x.UserName).ToList();
-                var validator = new UsernameValidator(existingUsernames);
+                var validator = new PlayerNameValidator(existingUsernames);
                 var validationResult = validator.Validate(Input.Username);
                 if(validationResult.IsValid)
                 {
@@ -135,9 +135,9 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account
                     await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                     await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
-                    // Create BettingUser
-                    var bettingUser = new BettingUser();
-                    user.BettingUserId = await _dataStoreManager.CreateUserAsync(bettingUser);
+                    // Create Player
+                    var player = new Player();
+                    user.PlayerId = await _dataStoreManager.CreatePlayerAsync(player);
 
                     var result = await _userManager.CreateAsync(user, Input.Password);
 

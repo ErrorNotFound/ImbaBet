@@ -126,7 +126,7 @@
             <mxPoint x="195" y="116" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="RZqr6UeqnISZWWyAq15k-37" value="BettingUser" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="RZqr6UeqnISZWWyAq15k-37" value="Player" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="70" y="120" width="175" height="144" as="geometry">
             <mxRectangle x="285" y="280" width="110" height="30" as="alternateBounds" />
           </mxGeometry>

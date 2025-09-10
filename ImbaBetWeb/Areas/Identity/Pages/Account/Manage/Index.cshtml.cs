@@ -92,7 +92,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
             }
 
             var existingUsernames = _userManager.Users.Select(x => x.UserName).ToList();
-            var validator = new UsernameValidator(existingUsernames);
+            var validator = new PlayerNameValidator(existingUsernames);
             var validationResult = validator.Validate(UsernameChange.Username);
             if (validationResult.IsValid)
             {

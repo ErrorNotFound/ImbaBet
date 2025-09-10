@@ -43,7 +43,7 @@
 
                     @Html.HiddenFor(modelItem => bet.Id)
                     @Html.HiddenFor(modelItem => bet.MatchId)
-                    @Html.HiddenFor(modelItem => bet.UserId)
+                    @Html.HiddenFor(modelItem => bet.PlayerId)
                     <tr @(bet.Id == 0 ? "class=table-warning" : "")>
                     <td>
                             @Html.DisplayFor(modelItem => bet.Match!.TeamA)

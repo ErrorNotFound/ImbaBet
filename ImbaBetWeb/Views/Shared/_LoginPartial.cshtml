@@ -9,14 +9,14 @@
 <ul class="navbar-nav">
     @{
         var user = await UserManager.GetUserAsync(User);
-        BettingUser? bettingUser = null;
+        Player? player = null;
         if(user != null)
         {
-            bettingUser = await DataStoreManager.GetUserByIdAsync(user.BettingUserId);
+            player = await DataStoreManager.GetPlayerByIdAsync(user.PlayerId);
         }
         
     }
-    @if (user != null && bettingUser != null && SignInManager.IsSignedIn(User))
+    @if (user != null && player != null && SignInManager.IsSignedIn(User))
     {
     <li class="nav-item dropdown">
         <a class="nav-link text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -39,7 +39,7 @@
     </li>
     <li>
         <a asp-controller="Account" asp-action="Profile" asp-route-userId="@(user.Id)">
-                <img width="38px" height="38px" src="@(bettingUser.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" style="border-radius: 50%;" />
+                <img width="38px" height="38px" src="@(player.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" style="border-radius: 50%;" />
         </a>
     </li>
 }

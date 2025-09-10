@@ -6,6 +6,6 @@ namespace ImbaBetWeb.ViewModels.Orga
     {
         public required IEnumerable<Community> Communities { get; set; }
 
-        public required BettingUser User { get; set; }
+        public required Player Player { get; set; }
     }
 }

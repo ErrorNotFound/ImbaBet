@@ -3,9 +3,9 @@ using FluentValidation.Results;
 
 namespace ImbaBetWeb.Validation
 {
-    public class UsernameValidator : AbstractValidator<string>
+    public class PlayerNameValidator : AbstractValidator<string>
     {
-        public UsernameValidator(IEnumerable<string> exisitingUsernames) 
+        public PlayerNameValidator(IEnumerable<string> exisitingUsernames) 
         {
             RuleFor(x => x).Cascade(CascadeMode.Stop).NotNull().NotEmpty().Length(3, 30).OverridePropertyName("Username");
             RuleFor(x => x).Must(x => !exisitingUsernames.Any(name => name == x)).WithMessage("Username already existing.");

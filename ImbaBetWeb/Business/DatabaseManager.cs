@@ -25,23 +25,23 @@ namespace ImbaBetWeb.Business
             await _dataStoreManager.DeleteMatchplanAsync();
         }
 
-        public async Task<BettingUser> GetUserAsync(int userId)
+        public async Task<Player> GetPlayerAsync(int playerId)
         {
-            var users = await _dataStoreManager.GetUsersAsync();
-            var user = users.SingleOrDefault(x => x.Id == userId);
-            if (user != null)
+            var players = await _dataStoreManager.GetPlayersAsync();
+            var player = players.SingleOrDefault(x => x.Id == playerId);
+            if (player != null)
             {
-                return user;
+                return player;
             }
-            throw new Exception($"User with id ({userId}) not found");
+            throw new Exception($"User with id ({playerId}) not found");
         }
 
-        public async Task DeleteUserAsync(string userId)
+        public async Task DeletePlayerAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if(user != null)
             {
-                await _communityManager.DeleteCommunityOfUserAsync(user.BettingUserId);
+                await _communityManager.DeleteCommunityOfPlayerAsync(user.PlayerId);
                 await _userManager.DeleteAsync(user);
             }
         }
@@ -52,17 +52,17 @@ namespace ImbaBetWeb.Business
             if (user == null)
                 return false;
 
-            var bettingUser = await _dataStoreManager.GetUserByIdAsync(user.BettingUserId);
+            var player = await _dataStoreManager.GetPlayerByIdAsync(user.PlayerId);
 
-            if(bettingUser.ProfilePicturePath == null)
+            if(player.ProfilePicturePath == null)
                 return true;
 
             try
             {
-                var fileToBeDeleted = _webHostEnvironment.WebRootPath + bettingUser.ProfilePicturePath;
+                var fileToBeDeleted = _webHostEnvironment.WebRootPath + player.ProfilePicturePath;
                 File.Delete(fileToBeDeleted);
-                bettingUser.ProfilePicturePath = null;
-                await _dataStoreManager.UpdateUsersAsync([bettingUser]);
+                player.ProfilePicturePath = null;
+                await _dataStoreManager.UpdatePlayersAsync([player]);
                 return true;
             }
             catch 
@@ -77,10 +77,10 @@ namespace ImbaBetWeb.Business
             if (user == null)
                 return;
 
-            var bettingUser = await _dataStoreManager.GetUserByIdAsync(user.BettingUserId);
+            var player = await _dataStoreManager.GetPlayerByIdAsync(user.PlayerId);
 
-            bettingUser.ProfilePicturePath = path;
-            await _dataStoreManager.UpdateUsersAsync([bettingUser]);
+            player.ProfilePicturePath = path;
+            await _dataStoreManager.UpdatePlayersAsync([player]);
             return;
         }
 
@@ -122,11 +122,11 @@ namespace ImbaBetWeb.Business
             {
                 if (await _userManager.FindByEmailAsync(newUser.Email) == null)
                 {
-                    var bettingUser = new BettingUser();
-                    bettingUser.Id = await _dataStoreManager.CreateUserAsync(bettingUser);
+                    var player = new Player();
+                    player.Id = await _dataStoreManager.CreatePlayerAsync(player);
 
                     var user = new MyIdentityUser();
-                    user.BettingUserId = bettingUser.Id;
+                    user.PlayerId = player.Id;
                     user.Email = newUser.Email;
                     user.UserName = newUser.Username;
                     user.EmailConfirmed = true;
@@ -148,20 +148,20 @@ namespace ImbaBetWeb.Business
                 if (idUser == null)
                     return;
 
-                var bettingUsers = await _dataStoreManager.GetUsersAsync();
-                var bettingUser = bettingUsers.SingleOrDefault(u => u.Id == idUser.BettingUserId);
-                if (bettingUser == null)
+                var players = await _dataStoreManager.GetPlayersAsync();
+                var player = players.SingleOrDefault(u => u.Id == idUser.PlayerId);
+                if (player == null)
                     return;
 
                 var community = new Community()
                 {
-                    OwnerId = bettingUser.Id,
+                    OwnerId = player.Id,
                     Name = "Die wilde Bande"
                 };
                 await _dataStoreManager.AddCommunityAsync(community);
 
-                bettingUser.MemberOfCommunityId = community.Id;
-                await _dataStoreManager.UpdateUsersAsync([bettingUser]);
+                player.MemberOfCommunityId = community.Id;
+                await _dataStoreManager.UpdatePlayersAsync([player]);
             }
         }
 
@@ -204,11 +204,11 @@ namespace ImbaBetWeb.Business
                 return;
             }
 
-            var bettingUser = new BettingUser();
-            bettingUser.Id = await _dataStoreManager.CreateUserAsync(bettingUser);
+            var player = new Player();
+            player.Id = await _dataStoreManager.CreatePlayerAsync(player);
 
             var user = new MyIdentityUser();
-            user.BettingUserId = bettingUser.Id;
+            user.PlayerId = player.Id;
             user.Email = _configuration.GetSection("InitialSetup")["AdminAccountEMail"];
             user.UserName = _configuration.GetSection("InitialSetup")["AdminAccountUsername"];
             user.EmailConfirmed = true;

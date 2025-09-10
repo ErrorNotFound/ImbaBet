@@ -28,7 +28,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             await store.EnsureInitializedAsync();
             var bet = new Bet()
             {
-                UserId = 1,
+                PlayerId = 1,
                 MatchId = 2,
                 GoalsA = 3,
                 GoalsB = 4,
@@ -41,7 +41,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             Assert.That(retrieved, Is.EqualTo(bet));
 
             // Test Update
-            bet.UserId = 11;
+            bet.PlayerId = 11;
             bet.MatchId = 12;
             bet.GoalsA = 13;
             bet.GoalsB = 14;

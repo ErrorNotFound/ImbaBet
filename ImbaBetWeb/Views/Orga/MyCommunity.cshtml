@@ -14,11 +14,11 @@
 <h1>@ViewData["Title"]</h1>
 <br />
 
-@if(Model.User == null)
+@if(Model.Player == null)
 {
     <p>Could not load data.</p>
 }
-else if (Model.User.MemberOfCommunityId == null)
+else if (Model.Player.MemberOfCommunityId == null)
 {
     <h3>Create your own</h3>
     <br />
@@ -59,8 +59,8 @@ else if (Model.User.MemberOfCommunityId == null)
 }
 else
 {
-    var community = Model.Communities.Single(c => c.Id == Model.User.MemberOfCommunityId);
-    var isOwner = Model.User.Id == community.Id;
+    var community = Model.Communities.Single(c => c.Id == Model.Player.MemberOfCommunityId);
+    var isOwner = Model.Player.Id == community.Id;
 
     <h2>@Html.DisplayFor(model => community.Name)</h2>
     <br />

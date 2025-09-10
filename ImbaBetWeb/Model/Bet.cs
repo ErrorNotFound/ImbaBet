@@ -7,8 +7,8 @@
         public Match? Match { get; set; } = null!;
         public int MatchId { get; set; }
 
-        public BettingUser? User { get; set; } = null!;
-        public int UserId { get; set; }
+        public Player? Player { get; set; } = null!;
+        public int PlayerId { get; set; }
 
         public int GoalsA { get; set; }
 

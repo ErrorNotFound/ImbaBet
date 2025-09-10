@@ -22,6 +22,7 @@ namespace ImbaBetWeb.Controllers
         UserManager<MyIdentityUser> userManager,
         RoleManager<IdentityRole> roleManager,
         DatabaseManager databaseManager,
+        PlayerManager playerManager,
         CommunityManager communityManager,
         IDataStoreManager dataStoreManager,
         MatchPlanImportService matchPlanImportService,
@@ -32,6 +33,7 @@ namespace ImbaBetWeb.Controllers
         private readonly UserManager<MyIdentityUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly DatabaseManager _databaseManager = databaseManager;
+        private readonly PlayerManager _playerManager = playerManager;
         private readonly CommunityManager _communityManager = communityManager;
         private readonly IDataStoreManager _dataStoreManager = dataStoreManager;
         private readonly MatchPlanImportService _matchPlanImportService = matchPlanImportService;
@@ -213,7 +215,13 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteProfilePicture(string userId)
         {
-            var success = await _databaseManager.DeleteProfilePicture(userId);
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return RedirectToAction(nameof(Accounts));
+            }
+
+            var success = await _playerManager.DeleteProfilePicture(user.PlayerId);
             if(success)
             {
                 this.SetSuccessAlert($"Profile picture of {userId} has been deleted.");

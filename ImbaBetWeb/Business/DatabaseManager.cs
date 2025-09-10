@@ -10,14 +10,13 @@ namespace ImbaBetWeb.Business
         RoleManager<IdentityRole> roleManager,
         UserManager<MyIdentityUser> userManager,
         CommunityManager communityManager,
-        IWebHostEnvironment webHostEnvironment,
         IConfiguration configuration)
     {
         private readonly IDataStoreManager _dataStoreManager = dataStoreManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly UserManager<MyIdentityUser> _userManager = userManager;
         private readonly CommunityManager _communityManager = communityManager;
-        private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
+        
         private readonly IConfiguration _configuration = configuration;
 
         public async Task DeleteMatchplanAsync()
@@ -25,63 +24,14 @@ namespace ImbaBetWeb.Business
             await _dataStoreManager.DeleteMatchplanAsync();
         }
 
-        public async Task<Player> GetPlayerAsync(int playerId)
-        {
-            var players = await _dataStoreManager.GetPlayersAsync();
-            var player = players.SingleOrDefault(x => x.Id == playerId);
-            if (player != null)
-            {
-                return player;
-            }
-            throw new Exception($"User with id ({playerId}) not found");
-        }
-
         public async Task DeletePlayerAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            if(user != null)
+            if (user != null)
             {
                 await _communityManager.DeleteCommunityOfPlayerAsync(user.PlayerId);
                 await _userManager.DeleteAsync(user);
             }
-        }
-
-        public async Task<bool> DeleteProfilePicture(string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-                return false;
-
-            var player = await _dataStoreManager.GetPlayerByIdAsync(user.PlayerId);
-
-            if(player.ProfilePicturePath == null)
-                return true;
-
-            try
-            {
-                var fileToBeDeleted = _webHostEnvironment.WebRootPath + player.ProfilePicturePath;
-                File.Delete(fileToBeDeleted);
-                player.ProfilePicturePath = null;
-                await _dataStoreManager.UpdatePlayersAsync([player]);
-                return true;
-            }
-            catch 
-            {
-                return false;
-            }
-        }
-
-        public async Task SetProfilePicture(string userId, string path)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-                return;
-
-            var player = await _dataStoreManager.GetPlayerByIdAsync(user.PlayerId);
-
-            player.ProfilePicturePath = path;
-            await _dataStoreManager.UpdatePlayersAsync([player]);
-            return;
         }
 
         public async Task<bool> ConfirmEMail(string userId)

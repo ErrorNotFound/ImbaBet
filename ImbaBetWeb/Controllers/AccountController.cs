@@ -9,16 +9,19 @@ namespace ImbaBetWeb.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<MyIdentityUser> _userManager;
-		private readonly BettingManager _bettingManager;
+        private readonly PlayerManager _playerManager;
+        private readonly BettingManager _bettingManager;
         private readonly DatabaseManager _databaseManager;
 
         public AccountController(
             UserManager<MyIdentityUser> userManager, 
+            PlayerManager playerManager,
             BettingManager bettingManager,
             DatabaseManager databaseManager)
         {
             _userManager = userManager;
-			_bettingManager = bettingManager;
+            _playerManager = playerManager;
+            _bettingManager = bettingManager;
             _databaseManager = databaseManager;
         }
 
@@ -30,7 +33,7 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var player = await _databaseManager.GetPlayerAsync(idUser.PlayerId);
+            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
             if (player == null)
             {
                 return RedirectToAction("Index", "Home");

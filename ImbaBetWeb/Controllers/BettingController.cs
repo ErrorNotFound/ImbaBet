@@ -15,17 +15,20 @@ namespace ImbaBetWeb.Controllers
         private readonly BettingManager _bettingManager;
         private readonly CommunityManager _communityManager;
         private readonly DatabaseManager _databaseManager;
+        private readonly PlayerManager _playerManager;
 
         public BettingController(
             UserManager<MyIdentityUser> userManager, 
             BettingManager bettingManager,
             CommunityManager communityManager,
-            DatabaseManager databaseManager)
+            DatabaseManager databaseManager,
+            PlayerManager playerManager)
         {
             _userManager = userManager;
             _bettingManager = bettingManager;
             _communityManager = communityManager;
-            this._databaseManager = databaseManager;
+            _databaseManager = databaseManager;
+            _playerManager = playerManager;
         }
 
         public async Task<IActionResult> Leaderboards()
@@ -35,7 +38,7 @@ namespace ImbaBetWeb.Controllers
 
             if (identityUser != null)
             {
-                player = await _databaseManager.GetPlayerAsync(identityUser.PlayerId);
+                player = await _playerManager.GetPlayerAsync(identityUser.PlayerId);
             }           
 
             var userRanking = await _bettingManager.GetPlayerRankingAsync();
@@ -68,7 +71,7 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            var player = await _databaseManager.GetPlayerAsync(identityUser.PlayerId);
+            var player = await _playerManager.GetPlayerAsync(identityUser.PlayerId);
 
             var vm = new MyBetsViewModel()
             {

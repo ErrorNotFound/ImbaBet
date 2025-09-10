@@ -15,15 +15,18 @@ namespace ImbaBetWeb.Controllers
         private readonly UserManager<MyIdentityUser> _userManager;
         private readonly CommunityManager _communityManager;
         private readonly DatabaseManager _databaseManager;
+        private readonly PlayerManager _playerManager;
 
         public OrgaController( 
             UserManager<MyIdentityUser> userManager,
             CommunityManager communityManager,
-            DatabaseManager databaseManager)
+            DatabaseManager databaseManager,
+            PlayerManager playerManager)
         {
             _userManager = userManager;
             _communityManager = communityManager;
             _databaseManager = databaseManager;
+            this._playerManager = playerManager;
         }
 
 
@@ -36,7 +39,7 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
-            var player = await _databaseManager.GetPlayerAsync(idUser.PlayerId);
+            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
             if (player == null)
             {
                 return RedirectToAction("Error", "Home");
@@ -60,7 +63,7 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
-            var player = await _databaseManager.GetPlayerAsync(idUser.PlayerId);
+            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
             if (player == null)
             {
                 return RedirectToAction("Error", "Home");
@@ -94,7 +97,7 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
-            var player = await _databaseManager.GetPlayerAsync(idUser.PlayerId);
+            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
             if (player == null)
             {
                 return RedirectToAction("Error", "Home");
@@ -125,7 +128,7 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
-            var player = await _databaseManager.GetPlayerAsync(idUser.PlayerId);
+            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
             if (player == null)
             {
                 return RedirectToAction("Error", "Home");
@@ -164,7 +167,7 @@ namespace ImbaBetWeb.Controllers
             {
                 return RedirectToAction("Error", "Home");
             }
-            var player = await _databaseManager.GetPlayerAsync(idUser.PlayerId);
+            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
             if (player == null)
             {
                 return RedirectToAction("Error", "Home");
@@ -194,7 +197,7 @@ namespace ImbaBetWeb.Controllers
             {
                 return RedirectToAction("Error", "Home");
             }
-            var player = await _databaseManager.GetPlayerAsync(idUser.PlayerId);
+            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
             if (player == null)
             {
                 return RedirectToAction("Error", "Home");

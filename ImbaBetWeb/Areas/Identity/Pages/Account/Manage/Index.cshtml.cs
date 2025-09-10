@@ -19,6 +19,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<MyIdentityUser> _userManager;
         private readonly SignInManager<MyIdentityUser> _signInManager;
         private readonly DatabaseManager _databaseManager;
+        private readonly PlayerManager _playerManager;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
@@ -26,6 +27,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
             UserManager<MyIdentityUser> userManager,
             SignInManager<MyIdentityUser> signInManager,
             DatabaseManager databaseManager,
+            PlayerManager playerManager,
             IConfiguration configuration,
             IWebHostEnvironment webHostEnvironment)
         {
@@ -33,6 +35,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
             _databaseManager = databaseManager;
+            this._playerManager = playerManager;
             _configuration = configuration;
             _webHostEnvironment = webHostEnvironment;
         }
@@ -131,7 +134,13 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await _databaseManager.DeleteProfilePicture(user.Id);
+            var player = await _playerManager.GetPlayerAsync(user.PlayerId);
+            if (player == null)
+            {
+                return NotFound($"Unable to load player with ID '{user.PlayerId}'.");
+            }
+
+            await _playerManager.DeleteProfilePicture(player.Id);
 
             StatusMessage = "Your profile picture has been deleted";
 
@@ -144,6 +153,12 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var player = await _playerManager.GetPlayerAsync(user.PlayerId);
+            if (player == null)
+            {
+                return NotFound($"Unable to load player with ID '{user.PlayerId}'.");
             }
 
             var allowedExtensions = _configuration["ProfilePictureUpload:UploadAllowedExtensions"].Split(';');
@@ -169,8 +184,8 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
                 await fileStream.WriteAsync(formFileContent); 
             }
 
-            await _databaseManager.DeleteProfilePicture(user.Id);
-            await _databaseManager.SetProfilePicture(user.Id, relativePath);
+            await _playerManager.DeleteProfilePicture(player.Id);
+            await _playerManager.SetProfilePicture(player.Id, relativePath);
 
             return RedirectToPage("./Index");
         }

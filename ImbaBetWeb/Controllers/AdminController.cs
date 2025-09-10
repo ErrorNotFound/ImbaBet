@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ImbaBetWeb.DataAccess.Interfaces;
+using ImbaBetWeb.ViewModels.DTO;
 
 
 namespace ImbaBetWeb.Controllers
@@ -95,8 +96,7 @@ namespace ImbaBetWeb.Controllers
                 Username = u?.UserName ?? "Username not found",
                 Email = u?.Email ?? "Email not found",
                 EmailConfirmed = await _userManager.IsEmailConfirmedAsync(u!),
-                //todo
-                //MemberOfCommunityId = u!.MemberOfCommunityId, 
+                MemberOfCommunityId = (await _playerManager.GetPlayerAsync(u!.PlayerId)).MemberOfCommunityId, 
                 IsAdmin = await _userManager.IsInRoleAsync(u!, UserRoles.Admin),
                 IsEditor = await _userManager.IsInRoleAsync(u!, UserRoles.Editor)
             }).Select(x => x.Result).ToList();

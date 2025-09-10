@@ -1,5 +1,5 @@
-﻿using ImbaBetWeb.Data;
-using ImbaBetWeb.Models;
+﻿using ImbaBetWeb.DataAccess.Interfaces;
+using ImbaBetWeb.Model;
 using System.Globalization;
 using System.Xml;
 using System.Xml.Linq;
@@ -9,7 +9,7 @@ namespace ImbaBetWeb.Services
 {
     public class MatchPlanImportService
     {
-        private readonly ApplicationContext _context;
+        private readonly IDataStoreManager _dataStore;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
@@ -27,11 +27,11 @@ namespace ImbaBetWeb.Services
         private const string XML_ATTRIBUTE_NAME_ALTERNATE_B = "AlternativeTeamBText";
 
         public MatchPlanImportService(
-            ApplicationContext context,
+            IDataStoreManager dataStore,
             IConfiguration configuration,
             IWebHostEnvironment webHostEnvironment)
         {
-            _context = context;
+            _dataStore = dataStore;
             _configuration = configuration;
             _webHostEnvironment = webHostEnvironment;
         }
@@ -168,10 +168,9 @@ namespace ImbaBetWeb.Services
                 matchGroups.Add(matchGroup);
             }
 
-            _context.Teams.AddRange(teams);
-            _context.Matches.AddRange(allMatches);
-            _context.MatchGroups.AddRange(matchGroups);
-            await _context.SaveChangesAsync();
+            var matchplan = new Matchplan() { Matches = allMatches, MatchGroups = matchGroups, Teams = teams };
+
+            await _dataStore.ImportMatchplanAsync(matchplan);
         }
     }
 }

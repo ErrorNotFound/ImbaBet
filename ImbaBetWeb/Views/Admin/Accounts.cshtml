@@ -9,7 +9,7 @@
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="user-tab" data-bs-toggle="tab" data-bs-target="#user-tab-pane" type="button" role="tab" aria-controls="user-tab-pane" aria-selected="true">Users</button>
+        <button class="nav-link active" id="user-tab" data-bs-toggle="tab" data-bs-target="#user-tab-pane" type="button" role="tab" aria-controls="user-tab-pane" aria-selected="true">Players</button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="community-tab" data-bs-toggle="tab" data-bs-target="#community-tab-pane" type="button" role="tab" aria-controls="community-tab-pane" aria-selected="false">Communities</button>
@@ -58,7 +58,7 @@
                                 @Html.HiddenFor(model => model.Users[i].Email)
                             </td>
                             <td>
-                                @Html.DropDownListFor(model => model.Users[i].MemberOfCommunityId, new SelectList(Model.Communities, "Id", "Name"), "", Model.Users[i].MemberOfCommunityId)
+                                @Html.DropDownListFor(model => Model.Users[i].MemberOfCommunityId, new SelectList(Model.Communities, "Id", "Name"), "", Model.Users[i].MemberOfCommunityId)
                             </td>
                             <td>
                                 @Html.CheckBoxFor(model => model.Users[i].IsAdmin)
@@ -73,20 +73,20 @@
                                              "Confirm E-Mail",                  // Button Text
                                              "ConfirmEMail",            // controller action
                                              "Admin",                           // controller
-                                             new { userId = Model.Users[i].Id },          // action parameters aka route values
+                                                new { userId = Model.Users[i].Id },          // action parameters aka route values
                                              new { @class = "btn btn-primary" })
                                 }
                                 @Html.ActionLink(
                                          "Delete Picture",                  // Button Text
                                          "DeleteProfilePicture",            // controller action
                                          "Admin",                           // controller
-                                         new { userId = Model.Users[i].Id },          // action parameters aka route values
+                                                new { userId = Model.Users[i].Id },          // action parameters aka route values
                                          new { @class = "btn btn-warning" })
                                 @Html.ActionLink(
                                          "Delete",                          // Button Text
                                          "DeleteUser",                      // controller action
                                          "Admin",                           // controller
-                                         new { userId = Model.Users[i].Id },          // action parameters aka route values
+                                                new { userId = Model.Users[i].Id },          // action parameters aka route values
                                          new { onclick = "return confirm('Are you sure you want to delete this user?')", @class = "btn btn-danger" })
                             </td>
                         </tr>
@@ -131,16 +131,19 @@
                                 @Html.DropDownListFor(model => Model.Communities[i].OwnerId, new SelectList(Model.Users, "Id", "Username"), "", Model.Communities[i].OwnerId)
                             </td>
                             <td>
-                                @Html.DisplayFor(model => Model.Communities[i].Members.Count)
+                                @{
+                                    var memberCount = Model.Communities[i].Members.Count();
+                                }
+                                @Html.DisplayFor(model => memberCount)
                             </td>
                             <td>
                                 @Html.ActionLink(
-                                         "Delete",                          // Button Text
-                                         "DeleteCommunity",                      // controller action
-                                         "Admin",                           // controller
-                                         new { communityId = Model.Communities[i].Id },          // action parameters aka route values
-                                         new { onclick = "return confirm('Are you sure you want to delete this community?')", @class = "btn btn-danger" })
-                            </td>
+                                "Delete",                          // Button Text
+                                                "DeleteCommunity",                      // controller action
+                                                "Admin",                           // controller
+                                                new { communityId = Model.Communities[i].Id },          // action parameters aka route values
+                                                new { onclick = "return confirm('Are you sure you want to delete this community?')", @class = "btn btn-danger" })
+                    </td>
                         </tr>
                     }
                 </tbody>

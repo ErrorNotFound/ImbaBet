@@ -11,7 +11,7 @@
 <div class="container text-center">
     <div class="row">
         <div class="col">
-            <img width="300" height="300" src="@(Model.User.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" style="border-radius: 50%;" />
+            <img width="300" height="300" src="@(Model.Player.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" style="border-radius: 50%;" />
         </div>
         <div class="col" style="display: flex; justify-content: left; align-items: center;">
             <h1>@(Model.User.UserName)</h1>
@@ -60,23 +60,23 @@
             {
                 <tr onclick="location.href = '@Url.Action("Match","GamePlan", new { matchId = bet.MatchId })'">
                     <td>
-                        @Html.DisplayFor(modelItem => bet.Match.TeamA)
+                        @Html.DisplayFor(modelItem => bet.Match!.TeamA)
                     </td>
                     <td style="text-align: center;">
-                        @Html.DisplayFor(modelItem => bet.Match.GoalsA) : @Html.DisplayFor(modelItem => bet.Match.GoalsB)
+                        @Html.DisplayFor(modelItem => bet.Match!.GoalsA) : @Html.DisplayFor(modelItem => bet.Match!.GoalsB)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => bet.Match.TeamB)
+                        @Html.DisplayFor(modelItem => bet.Match!.TeamB)
                     </td>
 
                     <td>
                         @Html.DisplayFor(modelItem => bet.GoalsA) : @Html.DisplayFor(modelItem => bet.GoalsB)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => bet.Match.MatchGroup.Name)
+                        @Html.DisplayFor(modelItem => bet.Match!.MatchGroup!.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => bet.Match.DateTime)
+                        @Html.DisplayFor(modelItem => bet.Match!.DateTime)
                     </td>
                 </tr>
             }
@@ -127,13 +127,13 @@
             {
                 <tr @(bet.Points > 0 ? "class=table-success" : "") onclick="location.href = '@Url.Action("Match", "GamePlan", new { matchId = bet.MatchId })'">
                     <td>
-                        @Html.DisplayFor(modelItem => bet.Match.TeamA)
+                        @Html.DisplayFor(modelItem => bet.Match!.TeamA)
                     </td>
                     <td style="text-align: center;">
-                        @Html.DisplayFor(modelItem => bet.Match.GoalsA) : @Html.DisplayFor(modelItem => bet.Match.GoalsB)
+                        @Html.DisplayFor(modelItem => bet.Match!.GoalsA) : @Html.DisplayFor(modelItem => bet.Match!.GoalsB)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => bet.Match.TeamB)
+                        @Html.DisplayFor(modelItem => bet.Match!.TeamB)
                     </td>
 
                     <td>
@@ -143,10 +143,10 @@
                         @Html.DisplayFor(modelItem => bet.Points)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => bet.Match.MatchGroup.Name)
+                        @Html.DisplayFor(modelItem => bet.Match!.MatchGroup!.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => bet.Match.DateTime)
+                        @Html.DisplayFor(modelItem => bet.Match!.DateTime)
                     </td>
                 </tr>
             }

@@ -1,14 +1,22 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using ImbaBetWeb.Models
+﻿@using ImbaBetWeb.DataAccess.Interfaces
+@using Microsoft.AspNetCore.Identity
+@using ImbaBetWeb.Model
 
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<MyIdentityUser> SignInManager
+@inject UserManager<MyIdentityUser> UserManager
+@inject IDataStoreManager DataStoreManager
 
 <ul class="navbar-nav">
     @{
         var user = await UserManager.GetUserAsync(User);
+        Player? player = null;
+        if(user != null)
+        {
+            player = await DataStoreManager.GetPlayerByIdAsync(user.PlayerId);
+        }
+        
     }
-    @if (user != null && SignInManager.IsSignedIn(User))
+    @if (user != null && player != null && SignInManager.IsSignedIn(User))
     {
     <li class="nav-item dropdown">
         <a class="nav-link text-dark" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -31,7 +39,7 @@
     </li>
     <li>
         <a asp-controller="Account" asp-action="Profile" asp-route-userId="@(user.Id)">
-            <img width="38px" height="38px" src="@(user.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" style="border-radius: 50%;" />
+                <img width="38px" height="38px" src="@(player.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" style="border-radius: 50%;" />
         </a>
     </li>
 }

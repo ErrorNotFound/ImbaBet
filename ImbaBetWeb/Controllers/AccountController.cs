@@ -1,10 +1,6 @@
-﻿using ImbaBetWeb.Logic;
-using ImbaBetWeb.Logic.Extensions;
-using ImbaBetWeb.Models;
-using ImbaBetWeb.Models.Consts;
+﻿using ImbaBetWeb.Business;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.ViewModels.Account;
-using ImbaBetWeb.ViewModels.DTO;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,34 +8,44 @@ namespace ImbaBetWeb.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-		private readonly BettingManager _bettingManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
+        private readonly PlayerManager _playerManager;
+        private readonly BettingManager _bettingManager;
         private readonly DatabaseManager _databaseManager;
 
         public AccountController(
-            UserManager<ApplicationUser> userManager, 
+            UserManager<MyIdentityUser> userManager, 
+            PlayerManager playerManager,
             BettingManager bettingManager,
             DatabaseManager databaseManager)
         {
             _userManager = userManager;
-			_bettingManager = bettingManager;
+            _playerManager = playerManager;
+            _bettingManager = bettingManager;
             _databaseManager = databaseManager;
         }
 
         public async Task<IActionResult> Profile(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            var idUser = await _userManager.FindByIdAsync(userId);
+            if (idUser == null)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            var activeBets = await _bettingManager.GetActiveBetsForUserAsync(user);
-			var closedBets = await _bettingManager.GetClosedBetsForUserAsync(user);
+            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
+            if (player == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var activeBets = await _bettingManager.GetActiveBetsOfPlayerAsync(player);
+			var closedBets = await _bettingManager.GetClosedBetsOfPlayerAsync(player);
 
             var vm = new ProfileViewModel()
             {
-                User = user,
+                User = idUser,
+                Player = player,
                 ClosedBets = closedBets,
                 ActiveBets = activeBets
             };

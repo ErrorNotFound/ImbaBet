@@ -1,9 +1,10 @@
-﻿@using ImbaBetWeb.Logic
-@using ImbaBetWeb.Models.Consts
+﻿@using ImbaBetWeb.Business
+@using ImbaBetWeb.DataAccess.Interfaces
+@using ImbaBetWeb.Model.Consts
 @using ImbaBetWeb.ViewModels.Orga
 @using Microsoft.AspNetCore.Identity
 
-@inject SettingsManager SettingsManager
+@inject IDataStoreManager DataStoreManager
 
 @model ImbaBetWeb.ViewModels.Orga.MyCommunityViewModel
 
@@ -13,11 +14,11 @@
 <h1>@ViewData["Title"]</h1>
 <br />
 
-@if(Model.User == null)
+@if(Model.Player == null)
 {
     <p>Could not load data.</p>
 }
-else if (Model.User.MemberOfCommunityId == null)
+else if (Model.Player.MemberOfCommunityId == null)
 {
     <h3>Create your own</h3>
     <br />
@@ -28,7 +29,7 @@ else if (Model.User.MemberOfCommunityId == null)
                 <input name="communityName" class="form-control" placeholder="Name" />
             </div>
             <div class="col">
-                <button type="submit" disabled="@(!await SettingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_CREATE))" class="btn btn-primary btn-block">Create</button>
+                <button type="submit" disabled="@(!await DataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_CREATE))" class="btn btn-primary btn-block">Create</button>
             </div>
         </div>
     }
@@ -50,18 +51,17 @@ else if (Model.User.MemberOfCommunityId == null)
                     @Html.DropDownList(OrgaConsts.Dropdown_CommunitySelection, selectionItemList, null, new { @class = "form-select" })
                 </div>
                 <div class="col">
-                    <button type="submit" disabled="@(!await SettingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_JOIN))" class="btn btn-primary btn-block">Join</button>
+                    <button type="submit" disabled="@(!await DataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_JOIN))" class="btn btn-primary btn-block">Join</button>
                 </div>
             </div>
         }
     } 
 }
-else
+else if (Model.CommunityOfPlayer != null)
 {
-    var community = Model.Communities.Single(c => c.Id == Model.User.MemberOfCommunityId);
-    var isOwner = Model.User.OwnerOfCommunity == community;
+    var isOwner = Model.Player.Id == Model.CommunityOfPlayer.Id;
 
-    <h2>@Html.DisplayFor(model => community.Name)</h2>
+    <h2>@Html.DisplayFor(model => Model.CommunityOfPlayer.Name)</h2>
     <br />
 
     <table class="table table-hover">
@@ -83,7 +83,7 @@ else
                                  "LeaveCommunity",                      // controller action
                                  "Orga",                           // controller
                                  new { },          // action parameters aka route values
-                             new { onclick = "return confirm('Are you sure you want to leave this community?')", @class = "btn btn-danger " + (!await SettingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
+                                new { onclick = "return confirm('Are you sure you want to leave this community?')", @class = "btn btn-danger " + (!await DataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
                 </td>
                 <td>
                     @if(isOwner)
@@ -125,33 +125,38 @@ else
             </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < community.Members.Count; i++)
+            @for (int i = 0; i < Model.CommunityOfPlayer.Members.Count(); i++)
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(model => community.Members[i])
+                        @{
+                            Player member = Model.CommunityOfPlayer.Members.ElementAt(i);
+                        }
+                        @Html.DisplayFor(model => member)
                     </td>
                     <td>
-                        <i>@(community.Owner.Id == community.Members[i].Id ? "Owner" : "Member")</i>
+                        <i>@(Model.CommunityOfPlayer.OwnerId == Model.CommunityOfPlayer.Members.ElementAt(i).Id ? "Owner" : "Member")</i>
                     </td>
                     <td>
-                        @if (isOwner && community.Members[i].Id != community.Owner.Id)
+                        @if (isOwner && Model.CommunityOfPlayer.Members.ElementAt(i).Id != Model.CommunityOfPlayer.OwnerId)
                         {
                             @Html.ActionLink(
-                                     "Kick",                          // Button Text
-                                     "KickMember",                      // controller action
-                                     "Orga",                           // controller
-                                     new { community.Members[i].Id },          // action parameters aka route values
-                                     new { onclick = $"return confirm('Are you sure you want to kick {community.Members[i].UserName}?')", @class = "btn btn-danger " + (!await SettingsManager.GetSettingAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
-                            @:&nbsp;
-                            @Html.ActionLink(
-                                     "Promote",                          // Button Text
-                                     "PromoteToOwner",                      // controller action
-                                     "Orga",                           // controller
-                                     new { community.Members[i].Id },          // action parameters aka route values
-                                     new { onclick = $"return confirm('Are you sure you want to make {community.Members[i].UserName} the owner of this community?')", @class = "btn btn-info " })
-                        }
-                    </td>
+                            "Kick",                          // Button Text
+                                "KickMember",                      // controller action
+                                "Orga",                           // controller
+                                new { Model.CommunityOfPlayer.Members.ElementAt(i).Id },          // action parameters aka route values
+                                //todo: replace id with username
+                                new { onclick = $"return confirm('Are you sure you want to kick {Model.CommunityOfPlayer.Members.ElementAt(i).Id}?')", @class = "btn btn-danger " + (!await DataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
+                                @:&nbsp;
+                    @Html.ActionLink(
+                    "Promote",                          // Button Text
+                                "PromoteToOwner",                      // controller action
+                                "Orga",                           // controller
+                                new { Model.CommunityOfPlayer.Members.ElementAt(i).Id },          // action parameters aka route values
+                                //todo: replace id with username
+                                new { onclick = $"return confirm('Are you sure you want to make {Model.CommunityOfPlayer.Members.ElementAt(i).Id} the owner of this community?')", @class = "btn btn-info " })
+                                }
+            </td>
                 </tr>
             }
         </tbody>

@@ -1,5 +1,5 @@
-﻿@using ImbaBetWeb.Logic.Ranking
-@using ImbaBetWeb.Logic.Ranking.Details
+﻿@using ImbaBetWeb.Business.Ranking
+@using ImbaBetWeb.Business.Ranking.Details
 @using ImbaBetWeb.ViewModels.Betting
 @model LeaderboardsViewModel
 
@@ -11,7 +11,7 @@
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="user-tab" data-bs-toggle="tab" data-bs-target="#user-tab-pane" type="button" role="tab" aria-controls="user-tab-pane" aria-selected="true">User Ranking</button>
+        <button class="nav-link active" id="user-tab" data-bs-toggle="tab" data-bs-target="#user-tab-pane" type="button" role="tab" aria-controls="user-tab-pane" aria-selected="true">Player Ranking</button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="community-tab" data-bs-toggle="tab" data-bs-target="#community-tab-pane" type="button" role="tab" aria-controls="community-tab-pane" aria-selected="false">Community Ranking</button>
@@ -38,7 +38,7 @@
                         #
                     </th>
                     <th>
-                        User
+                        Players
                     </th>
                     <th>
                         Points
@@ -46,14 +46,14 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.UserRanking)
+                @foreach (var item in Model.PlayerRanking)
                 {
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => item.Rank)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Details.User)
+                            @Html.DisplayFor(modelItem => item.Details.Player)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Points)
@@ -147,7 +147,7 @@
                                 @Html.DisplayFor(modelItem => item.Rank)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Details.User)
+                                @Html.DisplayFor(modelItem => item.Details.Player)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Points)

@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using ImbaBetWeb.Logic;
-using ImbaBetWeb.Logic.Extensions;
-using ImbaBetWeb.Logic.Helper;
-using ImbaBetWeb.Models;
+using ImbaBetWeb.Business;
+using ImbaBetWeb.Business.Extensions;
+using ImbaBetWeb.Business.Helper;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Validation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,16 +16,18 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<MyIdentityUser> _userManager;
+        private readonly SignInManager<MyIdentityUser> _signInManager;
         private readonly DatabaseManager _databaseManager;
+        private readonly PlayerManager _playerManager;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public IndexModel(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
+            UserManager<MyIdentityUser> userManager,
+            SignInManager<MyIdentityUser> signInManager,
             DatabaseManager databaseManager,
+            PlayerManager playerManager,
             IConfiguration configuration,
             IWebHostEnvironment webHostEnvironment)
         {
@@ -33,6 +35,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
             _databaseManager = databaseManager;
+            this._playerManager = playerManager;
             _configuration = configuration;
             _webHostEnvironment = webHostEnvironment;
         }
@@ -92,7 +95,7 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
             }
 
             var existingUsernames = _userManager.Users.Select(x => x.UserName).ToList();
-            var validator = new UsernameValidator(existingUsernames);
+            var validator = new PlayerNameValidator(existingUsernames);
             var validationResult = validator.Validate(UsernameChange.Username);
             if (validationResult.IsValid)
             {
@@ -131,7 +134,13 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await _databaseManager.DeleteProfilePicture(user.Id);
+            var player = await _playerManager.GetPlayerAsync(user.PlayerId);
+            if (player == null)
+            {
+                return NotFound($"Unable to load player with ID '{user.PlayerId}'.");
+            }
+
+            await _playerManager.DeleteProfilePicture(player.Id);
 
             StatusMessage = "Your profile picture has been deleted";
 
@@ -144,6 +153,12 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var player = await _playerManager.GetPlayerAsync(user.PlayerId);
+            if (player == null)
+            {
+                return NotFound($"Unable to load player with ID '{user.PlayerId}'.");
             }
 
             var allowedExtensions = _configuration["ProfilePictureUpload:UploadAllowedExtensions"].Split(';');
@@ -169,10 +184,8 @@ namespace ImbaBetWeb.Areas.Identity.Pages.Account.Manage
                 await fileStream.WriteAsync(formFileContent); 
             }
 
-            await _databaseManager.DeleteProfilePicture(user.Id);
-
-            user.ProfilePicturePath = relativePath;
-            await _userManager.UpdateAsync(user);
+            await _playerManager.DeleteProfilePicture(player.Id);
+            await _playerManager.SetProfilePicture(player.Id, relativePath);
 
             return RedirectToPage("./Index");
         }

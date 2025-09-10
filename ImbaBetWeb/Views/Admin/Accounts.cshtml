@@ -44,49 +44,49 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < Model.Users.Count(); i++)
+                    @for (int i = 0; i < Model.Users.Count; i++)
                     {
-                        @Html.HiddenFor(model => model.Users.ElementAt(i).Id)
-                        @Html.HiddenFor(model => model.Users.ElementAt(i).EmailConfirmed)
+                        @Html.HiddenFor(model => model.Users[i].Id)
+                        @Html.HiddenFor(model => model.Users[i].EmailConfirmed)
                         <tr>
                             <td>
-                                @Html.DisplayFor(model => model.Users.ElementAt(i).Username)
-                                @Html.HiddenFor(model => model.Users.ElementAt(i).Username)
+                                @Html.DisplayFor(model => model.Users[i].Username)
+                                @Html.HiddenFor(model => model.Users[i].Username)
                             </td>
                             <td>
-                                @Html.DisplayFor(model => model.Users.ElementAt(i).Email)
-                                @Html.HiddenFor(model => model.Users.ElementAt(i).Email)
+                                @Html.DisplayFor(model => model.Users[i].Email)
+                                @Html.HiddenFor(model => model.Users[i].Email)
                             </td>
                             <td>
-                                @Html.DropDownListFor(model => model.Users.ElementAt(i).MemberOfCommunityId, new SelectList(Model.Communities, "Id", "Name"), "", Model.Users.ElementAt(i).MemberOfCommunityId)
+                                @Html.DropDownListFor(model => Model.Users[i].MemberOfCommunityId, new SelectList(Model.Communities, "Id", "Name"), "", Model.Users[i].MemberOfCommunityId)
                             </td>
                             <td>
-                                @Html.CheckBoxFor(model => model.Users.ElementAt(i).IsAdmin)
+                                @Html.CheckBoxFor(model => model.Users[i].IsAdmin)
                             </td>
                             <td>
-                                @Html.CheckBoxFor(model => model.Users.ElementAt(i).IsEditor)
+                                @Html.CheckBoxFor(model => model.Users[i].IsEditor)
                             </td>
                             <td>
-                                @if (!Model.Users.ElementAt(i).EmailConfirmed)
+                                @if (!Model.Users[i].EmailConfirmed)
                                 {
                                     @Html.ActionLink(
                                              "Confirm E-Mail",                  // Button Text
                                              "ConfirmEMail",            // controller action
                                              "Admin",                           // controller
-                                                new { userId = Model.Users.ElementAt(i).Id },          // action parameters aka route values
+                                                new { userId = Model.Users[i].Id },          // action parameters aka route values
                                              new { @class = "btn btn-primary" })
                                 }
                                 @Html.ActionLink(
                                          "Delete Picture",                  // Button Text
                                          "DeleteProfilePicture",            // controller action
                                          "Admin",                           // controller
-                                                new { userId = Model.Users.ElementAt(i).Id },          // action parameters aka route values
+                                                new { userId = Model.Users[i].Id },          // action parameters aka route values
                                          new { @class = "btn btn-warning" })
                                 @Html.ActionLink(
                                          "Delete",                          // Button Text
                                          "DeleteUser",                      // controller action
                                          "Admin",                           // controller
-                                                new { userId = Model.Users.ElementAt(i).Id },          // action parameters aka route values
+                                                new { userId = Model.Users[i].Id },          // action parameters aka route values
                                          new { onclick = "return confirm('Are you sure you want to delete this user?')", @class = "btn btn-danger" })
                             </td>
                         </tr>
@@ -119,28 +119,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < Model.Communities.Count(); i++)
+                    @for (int i = 0; i < Model.Communities.Count; i++)
                     {
-                        @Html.HiddenFor(model => Model.Communities.ElementAt(i).Id)
+                        @Html.HiddenFor(model => Model.Communities[i].Id)
                         <tr>
                             <td>
-                                @Html.DisplayFor(model => Model.Communities.ElementAt(i).Name)
-                                @Html.HiddenFor(model => Model.Communities.ElementAt(i).Name)
+                                @Html.DisplayFor(model => Model.Communities[i].Name)
+                                @Html.HiddenFor(model => Model.Communities[i].Name)
                             </td>
                             <td>
-                                @Html.DropDownListFor(model => Model.Communities.ElementAt(i).OwnerId, new SelectList(Model.Users, "Id", "Username"), "", Model.Communities.ElementAt(i).OwnerId)
+                                @Html.DropDownListFor(model => Model.Communities[i].OwnerId, new SelectList(Model.Users, "Id", "Username"), "", Model.Communities[i].OwnerId)
                             </td>
                             <td>
-                                @Html.DisplayFor(model => Model.Communities.ElementAt(i).Members.Count())
+                                @{
+                                    var memberCount = Model.Communities[i].Members.Count();
+                                }
+                                @Html.DisplayFor(model => memberCount)
                             </td>
                             <td>
                                 @Html.ActionLink(
                                 "Delete",                          // Button Text
                                                 "DeleteCommunity",                      // controller action
                                                 "Admin",                           // controller
-                                                new { communityId = Model.Communities.ElementAt(i).Id },          // action parameters aka route values
+                                                new { communityId = Model.Communities[i].Id },          // action parameters aka route values
                                                 new { onclick = "return confirm('Are you sure you want to delete this community?')", @class = "btn btn-danger" })
-                            </td>
+                    </td>
                         </tr>
                     }
                 </tbody>

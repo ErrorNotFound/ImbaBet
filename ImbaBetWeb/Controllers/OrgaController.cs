@@ -45,11 +45,13 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
+            var communityOfPlayer = await _communityManager.GetCommunityByIdAsync(player.MemberOfCommunityId ?? -1);
+
             var vm = new MyCommunityViewModel()
             {
                 Communities = [.. communities],
                 Player = player,
-                CommunityOfPlayer = player.Community
+                CommunityOfPlayer = communityOfPlayer
             };
 
             return View(vm);
@@ -135,7 +137,7 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
-            var community = player.Community;
+            var community = await _communityManager.GetCommunityByIdAsync(player.MemberOfCommunityId ?? -1);
             if (community != null)
             {
                 var isOwner = community.OwnerId == player.Id;
@@ -174,9 +176,9 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction("Error", "Home");
             }
             var userToBeKicked = await _userManager.FindByIdAsync(userId);
-            var community = player.Community;
+            var community = await _communityManager.GetCommunityByIdAsync(player.MemberOfCommunityId ?? -1);
 
-            if(community == null || idUser == null || userToBeKicked == null)
+            if (community == null || idUser == null || userToBeKicked == null)
             {
                 this.SetErrorAlert("Error while kicking user");
                 return RedirectToAction(nameof(MyCommunity));
@@ -204,14 +206,14 @@ namespace ImbaBetWeb.Controllers
                 return RedirectToAction("Error", "Home");
             }
             var idNewOwner = await _userManager.FindByIdAsync(userId);
-            var community = player?.Community;
+            var community = await _communityManager.GetCommunityByIdAsync(player.MemberOfCommunityId ?? -1);
 
             if (community == null || idNewOwner == null)
             {
                 return RedirectToAction(nameof(MyCommunity));
             }
             //todo: make sure he is owner
-            await _communityManager.PromoteToOwnerAsync(player!.Community!.Id, idNewOwner.PlayerId);
+            await _communityManager.PromoteToOwnerAsync(community.Id, idNewOwner.PlayerId);
 
             this.SetSuccessAlert($"{idNewOwner.UserName} has been promoted to owner.");
 

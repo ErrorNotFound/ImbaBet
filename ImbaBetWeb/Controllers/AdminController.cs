@@ -104,7 +104,7 @@ namespace ImbaBetWeb.Controllers
             return View(new AccountsViewModel()
             {
                 Users = dtos,
-                Communities = communities
+                Communities = communities.ToList()
             });
         }
 

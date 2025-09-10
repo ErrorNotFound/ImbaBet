@@ -140,15 +140,7 @@ namespace ImbaBetWeb.DataAccess
 
         public async Task<IEnumerable<Player>> GetPlayersAsync()
         {
-            var players = await playerStore.GetAllAsync();
-            var communities = await GetCommunitiesAsync();
-
-            foreach (var player in players.Where(u => u.MemberOfCommunityId != null))
-            {
-                player.Community = communities.SingleOrDefault(c => c.Id == player.MemberOfCommunityId);
-            }
-
-            return players;
+            return await playerStore.GetAllAsync();
         }
 
         public async Task UpdatePlayersAsync(IEnumerable<Player> players)
@@ -163,11 +155,6 @@ namespace ImbaBetWeb.DataAccess
         {
             var communities = await communityStore.GetAllAsync();
             var players = await playerStore.GetAllAsync();
-
-            foreach(var player in players)
-            {
-                player.Community = communities.SingleOrDefault(c => c.Id == player.MemberOfCommunityId);
-            }
 
             foreach (var community in communities)
             {

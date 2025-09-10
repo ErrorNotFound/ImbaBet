@@ -57,7 +57,7 @@ else if (Model.Player.MemberOfCommunityId == null)
         }
     } 
 }
-else
+else if (Model.CommunityOfPlayer != null)
 {
     var isOwner = Model.Player.Id == Model.CommunityOfPlayer.Id;
 

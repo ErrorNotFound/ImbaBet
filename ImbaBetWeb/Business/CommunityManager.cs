@@ -14,6 +14,12 @@ namespace ImbaBetWeb.Business
             return await _dataStoreManager.GetCommunitiesAsync();
         }
 
+        public async Task<Community?> GetCommunityByIdAsync(int communityId)
+        {
+            var communities = await _dataStoreManager.GetCommunitiesAsync();
+            return communities.FirstOrDefault(c => c.Id == communityId);
+        }
+
         public async Task CreateCommunityAsync(Player owner, string name)
         {
             if(false == await _dataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_CREATE))

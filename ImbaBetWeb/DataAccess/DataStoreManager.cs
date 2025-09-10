@@ -132,6 +132,12 @@ namespace ImbaBetWeb.DataAccess
             return await playerStore.CreateAsync(player);
         }
 
+        public async Task DeletePlayerAsync(int id)
+        {
+            var player = await GetPlayerByIdAsync(id);
+            await playerStore.DeleteAsync(player);
+        }
+
         public async Task<Player> GetPlayerByIdAsync(int id)
         {
             var players = await GetPlayersAsync();
@@ -285,5 +291,6 @@ namespace ImbaBetWeb.DataAccess
                 await settingStore.CreateAsync(setting);
             }
         }
+
     }
 }

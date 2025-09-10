@@ -20,9 +20,9 @@ namespace ImbaBetWeb.Business
             throw new Exception($"User with id ({playerId}) not found");
         }
 
-        public Task DeletePlayer(int playerId)
+        public async Task DeletePlayer(int playerId)
         {
-            throw new NotImplementedException();
+            await _dataStoreManager.DeletePlayerAsync(playerId);
         }
 
         public async Task<bool> DeleteProfilePicture(int playerId)

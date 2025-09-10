@@ -28,7 +28,10 @@ namespace ImbaBetWeb.Business
                 Members = [owner]
             };
             
-            await _dataStoreManager.AddCommunityAsync(newCommunity);
+            int communityId = await _dataStoreManager.CreateCommunityAsync(newCommunity);
+
+            owner.MemberOfCommunityId = communityId;
+            await _dataStoreManager.UpdatePlayersAsync([owner]);
         }
 
         public async Task DeleteCommunityOfPlayerAsync(int playerId)

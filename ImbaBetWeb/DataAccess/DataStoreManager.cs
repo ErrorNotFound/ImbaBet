@@ -178,9 +178,9 @@ namespace ImbaBetWeb.DataAccess
             return communities;
         }
 
-        public async Task AddCommunityAsync(Community community)
+        public async Task<int> CreateCommunityAsync(Community community)
         {
-            await communityStore.CreateAsync(community);
+            return await communityStore.CreateAsync(community);
         }
 
         public async Task UpdateCommunitiesAsync(IEnumerable<Community> communities)

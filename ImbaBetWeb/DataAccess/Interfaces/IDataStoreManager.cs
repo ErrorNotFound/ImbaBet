@@ -21,7 +21,7 @@ namespace ImbaBetWeb.DataAccess.Interfaces
         public Task UpdatePlayersAsync(IEnumerable<Player> players);
 
         public Task<IEnumerable<Community>> GetCommunitiesAsync();
-        public Task AddCommunityAsync(Community community);
+        public Task<int> CreateCommunityAsync(Community community);
         public Task UpdateCommunitiesAsync(IEnumerable<Community> communities);
         public Task DeleteCommunityAsync(int communityId);
 

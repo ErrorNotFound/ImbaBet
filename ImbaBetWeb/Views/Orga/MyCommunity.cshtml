@@ -59,10 +59,9 @@ else if (Model.Player.MemberOfCommunityId == null)
 }
 else
 {
-    var community = Model.Communities.Single(c => c.Id == Model.Player.MemberOfCommunityId);
-    var isOwner = Model.Player.Id == community.Id;
+    var isOwner = Model.Player.Id == Model.CommunityOfPlayer.Id;
 
-    <h2>@Html.DisplayFor(model => community.Name)</h2>
+    <h2>@Html.DisplayFor(model => Model.CommunityOfPlayer.Name)</h2>
     <br />
 
     <table class="table table-hover">
@@ -126,35 +125,38 @@ else
             </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < community.Members.Count(); i++)
+            @for (int i = 0; i < Model.CommunityOfPlayer.Members.Count(); i++)
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(model => community.Members.ElementAt(i))
+                        @{
+                            Player member = Model.CommunityOfPlayer.Members.ElementAt(i);
+                        }
+                        @Html.DisplayFor(model => member)
                     </td>
                     <td>
-                        <i>@(community.OwnerId == community.Members.ElementAt(i).Id ? "Owner" : "Member")</i>
+                        <i>@(Model.CommunityOfPlayer.OwnerId == Model.CommunityOfPlayer.Members.ElementAt(i).Id ? "Owner" : "Member")</i>
                     </td>
                     <td>
-                        @if (isOwner && community.Members.ElementAt(i).Id != community.OwnerId)
+                        @if (isOwner && Model.CommunityOfPlayer.Members.ElementAt(i).Id != Model.CommunityOfPlayer.OwnerId)
                         {
                             @Html.ActionLink(
-                                     "Kick",                          // Button Text
-                                     "KickMember",                      // controller action
-                                     "Orga",                           // controller
-                                new { community.Members.ElementAt(i).Id },          // action parameters aka route values
+                            "Kick",                          // Button Text
+                                "KickMember",                      // controller action
+                                "Orga",                           // controller
+                                new { Model.CommunityOfPlayer.Members.ElementAt(i).Id },          // action parameters aka route values
                                 //todo: replace id with username
-                                new { onclick = $"return confirm('Are you sure you want to kick {community.Members.ElementAt(i).Id}?')", @class = "btn btn-danger " + (!await DataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
-                            @:&nbsp;
-                            @Html.ActionLink(
-                                     "Promote",                          // Button Text
-                                     "PromoteToOwner",                      // controller action
-                                     "Orga",                           // controller
-                                new { community.Members.ElementAt(i).Id },          // action parameters aka route values
+                                new { onclick = $"return confirm('Are you sure you want to kick {Model.CommunityOfPlayer.Members.ElementAt(i).Id}?')", @class = "btn btn-danger " + (!await DataStoreManager.GetSettingValueAsync<bool>(SettingNames.ALLOW_COMMUNITY_LEAVE) ? "disabled" : "") })
+                                @:&nbsp;
+                    @Html.ActionLink(
+                    "Promote",                          // Button Text
+                                "PromoteToOwner",                      // controller action
+                                "Orga",                           // controller
+                                new { Model.CommunityOfPlayer.Members.ElementAt(i).Id },          // action parameters aka route values
                                 //todo: replace id with username
-                                new { onclick = $"return confirm('Are you sure you want to make {community.Members.ElementAt(i).Id} the owner of this community?')", @class = "btn btn-info " })
-                        }
-                    </td>
+                                new { onclick = $"return confirm('Are you sure you want to make {Model.CommunityOfPlayer.Members.ElementAt(i).Id} the owner of this community?')", @class = "btn btn-info " })
+                                }
+            </td>
                 </tr>
             }
         </tbody>

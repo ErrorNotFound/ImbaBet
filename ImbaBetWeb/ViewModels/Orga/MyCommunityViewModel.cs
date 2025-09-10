@@ -4,8 +4,10 @@ namespace ImbaBetWeb.ViewModels.Orga
 {
     public class MyCommunityViewModel
     {
-        public required IEnumerable<Community> Communities { get; set; }
+        public required IList<Community> Communities { get; set; }
 
         public required Player Player { get; set; }
+
+        public required Community? CommunityOfPlayer { get; set; }
     }
 }

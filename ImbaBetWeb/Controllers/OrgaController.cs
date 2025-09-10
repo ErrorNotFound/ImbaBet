@@ -47,8 +47,9 @@ namespace ImbaBetWeb.Controllers
 
             var vm = new MyCommunityViewModel()
             {
-                Communities = communities,
-                Player = player
+                Communities = [.. communities],
+                Player = player,
+                CommunityOfPlayer = player.Community
             };
 
             return View(vm);

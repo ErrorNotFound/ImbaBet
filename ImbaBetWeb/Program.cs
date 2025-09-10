@@ -35,6 +35,7 @@ builder.Services.AddScoped<BettingManager>();
 builder.Services.AddScoped<GameManager>();
 builder.Services.AddScoped<CommunityManager>();
 builder.Services.AddScoped<DatabaseManager>();
+builder.Services.AddScoped<PlayerManager>();
 builder.Services.AddScoped<MatchPlanImportService>();
 builder.Services.AddScoped<IDataStoreManager>((provider) => { return DataStoreManager.CreateDefault(connectionString); });
 

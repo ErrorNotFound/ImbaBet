@@ -105,7 +105,7 @@ namespace ImbaBetWeb.Business
                     OwnerId = player.Id,
                     Name = "Die wilde Bande"
                 };
-                await _dataStoreManager.AddCommunityAsync(community);
+                await _dataStoreManager.CreateCommunityAsync(community);
 
                 player.MemberOfCommunityId = community.Id;
                 await _dataStoreManager.UpdatePlayersAsync([player]);

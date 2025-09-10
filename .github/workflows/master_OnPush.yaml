@@ -7,7 +7,7 @@ on:
 jobs:
  build-test:
   name: Build and Test
-  runs-on: ubuntu-latest
+  runs-on: windows-latest
   steps:
   - name: Checkout
     uses: actions/checkout@v4
@@ -16,6 +16,18 @@ jobs:
     uses: actions/setup-dotnet@v4
     with:
       dotnet-version: '8.0.x'
+
+  - name: Install MSSQLLocalDB
+    run: |
+         Import-Module BitsTransfer
+         Start-BitsTransfer `
+            -Source https://download.microsoft.com/download/3/8/d/38de7036-2433-4207-8eae-06e247e17b25/SqlLocalDB.msi `
+            -Destination SqlLocalDB.msi
+         Start-Process `
+            -FilePath "SqlLocalDB.msi" `
+            -ArgumentList "/qn", "/norestart", "/l*v SqlLocalDBInstall.log", "IACCEPTSQLLOCALDBLICENSETERMS=YES" `
+            -Wait
+         sqlcmd -l 60 -S "(LocalDb)\MSSQLLocalDB" -Q "SELECT @@VERSION;"
 
   - name: Install dependencies
     run: dotnet restore

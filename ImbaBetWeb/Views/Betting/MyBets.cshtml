@@ -37,28 +37,26 @@
                 </tr>
             </thead>
             <tbody>
-                @for (int i = 0; i < Model.OpenBets.Count(); i++)
+                @for (int i = 0; i < Model.OpenBets.Count; i++)
                 {
-                    var bet = Model.OpenBets.ElementAt(i);
-
-                    @Html.HiddenFor(modelItem => bet.Id)
-                    @Html.HiddenFor(modelItem => bet.MatchId)
-                    @Html.HiddenFor(modelItem => bet.PlayerId)
-                    <tr @(bet.Id == 0 ? "class=table-warning" : "")>
+                    @Html.HiddenFor(modelItem => Model.OpenBets[i].Id)
+                    @Html.HiddenFor(modelItem => Model.OpenBets[i].MatchId)
+                    @Html.HiddenFor(modelItem => Model.OpenBets[i].PlayerId)
+                    <tr @(Model.OpenBets[i].Id == 0 ? "class=table-warning" : "")>
                     <td>
-                            @Html.DisplayFor(modelItem => bet.Match!.TeamA)
+                            @Html.DisplayFor(modelItem => Model.OpenBets[i].Match!.TeamA)
                     </td>
                     <td style="text-align: center;">
-                            @Html.TextBoxFor(model => bet.GoalsA, new { style = "width:40px;text-align:center;", type = "number" }) :
-                            @Html.TextBoxFor(model => bet.GoalsB, new { style = "width:40px;text-align:center;", type = "number" })
+                            @Html.TextBoxFor(model => Model.OpenBets[i].GoalsA, new { style = "width:40px;text-align:center;", type = "number" }) :
+                            @Html.TextBoxFor(model => Model.OpenBets[i].GoalsB, new { style = "width:40px;text-align:center;", type = "number" })
                     <td>
-                            @Html.DisplayFor(modelItem => bet.Match!.TeamB)
+                            @Html.DisplayFor(modelItem => Model.OpenBets[i].Match!.TeamB)
                     </td>
                         <td>
-                            @Html.DisplayFor(modelItem => bet.Match!.MatchGroup!.Name)
+                            @Html.DisplayFor(modelItem => Model.OpenBets[i].Match!.MatchGroup!.Name)
                         </td>
                     <td>
-                            @Html.DisplayFor(modelItem => bet.Match!.DateTime)
+                            @Html.DisplayFor(modelItem => Model.OpenBets[i].Match!.DateTime)
                     </td>
                 </tr>
                 }

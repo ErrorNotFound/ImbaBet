@@ -13,6 +13,8 @@ namespace ImbaBetWeb.Business
     {
         private readonly IDataStoreManager _dataStoreManager = dataStoreManager;
 
+        private const int NEW_BET_ID = -1;
+
         /// <summary>
         /// Returns a list of bets that the player has not betted on yet
         /// </summary>
@@ -27,6 +29,7 @@ namespace ImbaBetWeb.Business
 
             var openBets = matchesNotBetOnByPlayer.Select(m => new Bet()
             {
+                Id = NEW_BET_ID,
                 Match = m,
                 MatchId = m.Id,
                 PlayerId = player.Id,
@@ -66,7 +69,7 @@ namespace ImbaBetWeb.Business
             return betsOfMatch.Where(bet => bet.IsClosedBet());
         }
 
-        public async Task<bool> UpdateBetsAsync(IEnumerable<Bet> bets)
+        public async Task<bool> CreateAndUpdateBetsAsync(IEnumerable<Bet> bets)
         {
             if(bets == null)
             {  
@@ -76,7 +79,8 @@ namespace ImbaBetWeb.Business
             var matchplan = await _dataStoreManager.GetMatchplanAsync();
             var allowedBets = bets.Where((bet) => { return matchplan.Matches.SingleOrDefault(match => match.Id == bet.MatchId)?.CanBet() ?? false; });
 
-            await _dataStoreManager.UpdateBetsAsync(allowedBets);
+            await _dataStoreManager.UpdateBetsAsync(allowedBets.Where(b => b.Id != NEW_BET_ID));
+            await _dataStoreManager.CreateBetsAsync(allowedBets.Where(b => b.Id == NEW_BET_ID));
 
             return bets.Count() == allowedBets.Count();
         }

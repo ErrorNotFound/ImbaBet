@@ -13,6 +13,7 @@ namespace ImbaBetWeb.DataAccess.Interfaces
         public Task<IEnumerable<Bet>> GetBetsAsync();
         public Task<IEnumerable<Bet>> GetBetsOfPlayerAsync(Player player);
         public Task<IEnumerable<Bet>> GetBetsOfMatchAsync(Match match);
+        public Task CreateBetsAsync(IEnumerable<Bet> bets);
         public Task UpdateBetsAsync(IEnumerable<Bet> bets);
 
         public Task<int> CreatePlayerAsync(Player player);

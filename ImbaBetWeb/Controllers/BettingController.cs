@@ -56,9 +56,9 @@ namespace ImbaBetWeb.Controllers
 
             var vm = new MyBetsViewModel()
             {
-                OpenBets = await _bettingManager.GetOpenBetsOfPlayerAsync(userResolve.Player!),
-                ActiveBets = await _bettingManager.GetActiveBetsOfPlayerAsync(userResolve.Player!),
-                ClosedBets = await _bettingManager.GetClosedBetsOfPlayerAsync(userResolve.Player!)
+                OpenBets = [.. (await _bettingManager.GetOpenBetsOfPlayerAsync(userResolve.Player!))],
+                ActiveBets = [.. (await _bettingManager.GetActiveBetsOfPlayerAsync(userResolve.Player!))],
+                ClosedBets = [.. (await _bettingManager.GetClosedBetsOfPlayerAsync(userResolve.Player!))]
             };
 
             return View(vm);
@@ -73,7 +73,7 @@ namespace ImbaBetWeb.Controllers
 
             if (validationResult.IsValid)
             {
-                var success = await _bettingManager.UpdateBetsAsync(vm.OpenBets);
+                var success = await _bettingManager.CreateAndUpdateBetsAsync(vm.OpenBets);
                 if (success)
                 {
                     this.SetSuccessAlert("Your bets have been saved.");

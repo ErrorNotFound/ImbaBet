@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<MatchPlan>
+  <Teams>
+    <Team Name="Deutschland" Icon="de" />
+    <Team Name="Schottland" Icon="gb-sct" />
+    <Team Name="Ungarn" Icon="hu" />
+    <Team Name="Schweiz" Icon="ch" />
+    <Team Name="Spanien" Icon="es" />
+    <Team Name="Kroatien" Icon="hr" />
+    <Team Name="Italien" Icon="it" />
+    <Team Name="Albanien" Icon="al" />
+  </Teams>
+  <MatchGroups>
+    <MatchGroup Name="Group A" HasGroupRanking="true">
+      <Matches>
+        <Match TeamA="Deutschland" 	TeamB="Schottland" 	DateTime="2025-06-14T21:00:00.6521226Z"/>
+        <Match TeamA="Ungarn" 			TeamB="Schweiz" 		DateTime="2025-06-15T15:00:00.6521226Z"/>
+        <Match TeamA="Deutschland" 	TeamB="Ungarn" 			DateTime="2025-06-19T18:00:00.6521226Z"/>
+        <Match TeamA="Schottland" 	TeamB="Schweiz" 		DateTime="2025-06-19T21:00:00.6521226Z"/>
+        <Match TeamA="Schweiz" 			TeamB="Deutschland"	DateTime="2025-06-23T21:00:00.6521226Z"/>
+        <Match TeamA="Schottland" 	TeamB="Ungarn" 			DateTime="2025-06-23T21:00:00.6521226Z"/>
+      </Matches>
+    </MatchGroup>
+    <MatchGroup Name="Group B" HasGroupRanking="true">
+      <Matches>
+        <Match TeamA="Spanien" 	TeamB="Kroatien" 	DateTime="2025-10-15T18:00:00.6521226Z"/>
+        <Match TeamA="Italien" 	TeamB="Albanien" 	DateTime="2025-10-15T21:00:00.6521226Z"/>
+        <Match TeamA="Kroatien" TeamB="Albanien" 	DateTime="2025-10-19T15:00:00.6521226Z"/>
+        <Match TeamA="Spanien" 	TeamB="Italien" 	DateTime="2025-10-20T21:00:00.6521226Z"/>
+        <Match TeamA="Albanien" TeamB="Spanien"		DateTime="2025-10-24T21:00:00.6521226Z"/>
+        <Match TeamA="Kroatien" TeamB="Italien" 	DateTime="2025-10-24T21:00:00.6521226Z"/>
+      </Matches>
+    </MatchGroup>
+    <MatchGroup Name="Semi Finals">
+      <Matches>
+        <Match DateTime="2025-11-09T21:00:00.6521226Z" AlternativeTeamAText="Winner Group A" AlternativeTeamBText="Second Group B" />
+        <Match DateTime="2025-11-10T21:00:00.6521226Z" AlternativeTeamAText="Winner Group B" AlternativeTeamBText="Second Group A" />
+      </Matches>
+    </MatchGroup>
+    <MatchGroup Name="Finals">
+      <Matches>
+        <Match DateTime="2025-12-14T21:00:00.6521226Z" AlternativeTeamAText="Winner HF1" AlternativeTeamBText="Winner HF2" />
+      </Matches>
+    </MatchGroup>
+  </MatchGroups>
+</MatchPlan>

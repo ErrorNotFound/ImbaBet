@@ -120,6 +120,14 @@ namespace ImbaBetWeb.DataAccess
             return bets.Where(bet => bet.MatchId == match.Id);
         }
 
+        public async Task CreateBetsAsync(IEnumerable<Bet> bets)
+        {
+            foreach (var bet in bets)
+            {
+                bet.Id = await betStore.CreateAsync(bet);
+            }
+        }
+
         public async Task UpdateBetsAsync(IEnumerable<Bet> bets)
         {
             foreach(var bet in bets)
@@ -291,6 +299,5 @@ namespace ImbaBetWeb.DataAccess
                 await settingStore.CreateAsync(setting);
             }
         }
-
     }
 }

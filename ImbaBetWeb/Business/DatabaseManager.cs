@@ -20,6 +20,19 @@ namespace ImbaBetWeb.Business
         
         private readonly IConfiguration _configuration = configuration;
 
+        public MyIdentityUser GetIdentityUser(int playerId)
+        {
+            var identityUsers = _userManager.Users;
+            var identityUser = identityUsers.SingleOrDefault(x => x.PlayerId == playerId);
+
+            if (identityUser == null)
+            {
+                throw new Exception($"No identity user found for playerId {playerId}");
+            }
+
+            return identityUser;
+        }
+
         public async Task DeleteUserAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);

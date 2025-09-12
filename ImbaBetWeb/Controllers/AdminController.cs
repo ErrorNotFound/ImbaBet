@@ -21,20 +21,16 @@ namespace ImbaBetWeb.Controllers
         BettingManager bettingManager,
         GameManager gameManager,
         UserManager<MyIdentityUser> userManager,
-        RoleManager<IdentityRole> roleManager,
         DatabaseManager databaseManager,
         PlayerManager playerManager,
         CommunityManager communityManager,
         IDataStoreManager dataStoreManager,
         MatchPlanImportService matchPlanImportService,
-        IEmailSender emailSender) : Controller
+        IEmailSender emailSender) : ImbaBetControllerBase(userManager, playerManager)
     {
         private readonly BettingManager _bettingManager = bettingManager;
         private readonly GameManager _gameManager = gameManager;
-        private readonly UserManager<MyIdentityUser> _userManager = userManager;
-        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly DatabaseManager _databaseManager = databaseManager;
-        private readonly PlayerManager _playerManager = playerManager;
         private readonly CommunityManager _communityManager = communityManager;
         private readonly IDataStoreManager _dataStoreManager = dataStoreManager;
         private readonly MatchPlanImportService _matchPlanImportService = matchPlanImportService;
@@ -293,14 +289,14 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> SendTestMail()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            var userResolve = await TryResolveUserAsync();
+            if (!userResolve.Success)
             {
                 return RedirectToAction(nameof(Settings));
             }
             try
             {
-                await _emailSender.SendEmailAsync(user.Email!, "ImbaBet: Testmail", "This is a mail for testing purposes.");
+                await _emailSender.SendEmailAsync(userResolve.User!.Email!, "ImbaBet: Testmail", "This is a mail for testing purposes.");
 
                 this.SetSuccessAlert("E-Mail has been sent.");
             }

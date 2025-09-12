@@ -6,37 +6,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImbaBetWeb.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController(
+        UserManager<MyIdentityUser> userManager,
+        PlayerManager playerManager,
+        BettingManager bettingManager,
+        DatabaseManager databaseManager) : ImbaBetControllerBase(userManager, playerManager)
     {
-        private readonly UserManager<MyIdentityUser> _userManager;
-        private readonly PlayerManager _playerManager;
-        private readonly BettingManager _bettingManager;
-        private readonly DatabaseManager _databaseManager;
 
-        public AccountController(
-            UserManager<MyIdentityUser> userManager, 
-            PlayerManager playerManager,
-            BettingManager bettingManager,
-            DatabaseManager databaseManager)
+        private readonly BettingManager _bettingManager = bettingManager;
+        private readonly DatabaseManager _databaseManager = databaseManager;
+
+        public async Task<IActionResult> Profile(int playerId)
         {
-            _userManager = userManager;
-            _playerManager = playerManager;
-            _bettingManager = bettingManager;
-            _databaseManager = databaseManager;
-        }
+            var player = await _playerManager.GetPlayerAsync(playerId);
+            var user = _databaseManager.GetIdentityUser(playerId);
 
-        public async Task<IActionResult> Profile(string userId)
-        {
-            var idUser = await _userManager.FindByIdAsync(userId);
-            if (idUser == null)
+            if (player == null || user == null)
             {
-                return RedirectToAction("Index", "Home");
-            }
-
-            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
-            if (player == null)
-            {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Error", "Home");
             }
 
             var activeBets = await _bettingManager.GetActiveBetsOfPlayerAsync(player);
@@ -44,7 +31,7 @@ namespace ImbaBetWeb.Controllers
 
             var vm = new ProfileViewModel()
             {
-                User = idUser,
+                User = user,
                 Player = player,
                 ClosedBets = closedBets,
                 ActiveBets = activeBets

@@ -1,26 +1,19 @@
 ﻿using ImbaBetWeb.Business;
 using ImbaBetWeb.Model;
-using ImbaBetWeb.ViewModels.GamePlan;
+using ImbaBetWeb.ViewModels.MatchPlan;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImbaBetWeb.Controllers
 {
-    public class GamePlanController : Controller
+    public class MatchPlanController(
+        GameManager gameManager,
+        BettingManager bettingManager,
+        UserManager<MyIdentityUser> userManager,
+        PlayerManager playerManager) : ImbaBetControllerBase(userManager, playerManager)
     {
-        private readonly GameManager _gameManager;
-        private readonly BettingManager _bettingManager;
-        private readonly UserManager<MyIdentityUser> _userManager;
-
-        public GamePlanController(
-            GameManager gameManager, 
-            BettingManager bettingManager,
-            UserManager<MyIdentityUser> userManager)
-        {
-            _gameManager = gameManager;
-            _bettingManager = bettingManager;
-            _userManager = userManager;
-        }
+        private readonly GameManager _gameManager = gameManager;
+        private readonly BettingManager _bettingManager = bettingManager;
 
         public IActionResult Index()
         {

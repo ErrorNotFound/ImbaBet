@@ -4,14 +4,9 @@ namespace ImbaBetWeb.Business.Extensions
 {
     public static class BetExtensions
     {
-        public static bool IsDrawBet(this Bet bet)
-        {
-            return bet.GoalsA == bet.GoalsB;
-        }
-
         public static bool IsActiveBet(this Bet bet)
         {
-            return !bet.Match!.IsOver && DateTime.UtcNow >= bet.Match.DateTime;
+            return !bet.Match!.IsOver && DateTime.UtcNow <= bet.Match.DateTime;
         }
 
         public static bool IsClosedBet(this Bet bet)
@@ -19,24 +14,19 @@ namespace ImbaBetWeb.Business.Extensions
             return bet.Match!.IsOver;
         }
 
+        /// <summary>
+        /// Extracts the suggested winner from the bet.
+        /// </summary>
+        /// <returns>The team which the player bet to win. If he bet a draw, null is returned</returns>
         public static Team? GetSuggestedWinner(this Bet bet)
         {
-            if (bet.IsDrawBet())
+            // if it's a draw, return null
+            if (bet.GoalsA == bet.GoalsB)
             {
                 return null;
             }
 
-            if(bet.Match == null)
-            {
-                throw new InvalidOperationException("Match property is not loaded.");
-            }
-
-            if(bet.Match.TeamA == null || bet.Match.TeamB == null)
-            {
-                throw new InvalidOperationException("Match teams are not loaded.");
-            }
-
-            return bet.GoalsA > bet.GoalsB ? bet.Match.TeamA : bet.Match.TeamB;
+            return bet.GoalsA > bet.GoalsB ? bet.Match!.TeamA : bet.Match!.TeamB;
         }
     }
 }

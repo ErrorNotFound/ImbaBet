@@ -9,26 +9,30 @@ namespace ImbaBetWeb.Controllers
     public class AccountController(
         UserManager<MyIdentityUser> userManager,
         PlayerManager playerManager,
-        BettingManager bettingManager) : ImbaBetControllerBase(userManager, playerManager)
+        BettingManager bettingManager,
+        DatabaseManager databaseManager) : ImbaBetControllerBase(userManager, playerManager)
     {
 
         private readonly BettingManager _bettingManager = bettingManager;
+        private readonly DatabaseManager _databaseManager = databaseManager;
 
         public async Task<IActionResult> Profile(int playerId)
         {
-            var userResolve = await TryResolveUserAsync();
-            if (!userResolve.Success)
+            var player = await _playerManager.GetPlayerAsync(playerId);
+            var user = _databaseManager.GetIdentityUser(playerId);
+
+            if (player == null || user == null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Error", "Home");
             }
 
-            var activeBets = await _bettingManager.GetActiveBetsOfPlayerAsync(userResolve.Player!);
-			var closedBets = await _bettingManager.GetClosedBetsOfPlayerAsync(userResolve.Player!);
+            var activeBets = await _bettingManager.GetActiveBetsOfPlayerAsync(player);
+			var closedBets = await _bettingManager.GetClosedBetsOfPlayerAsync(player);
 
             var vm = new ProfileViewModel()
             {
-                User = userResolve.User!,
-                Player = userResolve.Player!,
+                User = user,
+                Player = player,
                 ClosedBets = closedBets,
                 ActiveBets = activeBets
             };

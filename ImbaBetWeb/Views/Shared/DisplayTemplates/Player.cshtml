@@ -1,17 +1,15 @@
-﻿@using ImbaBetWeb.DataAccess.Interfaces
-@using Microsoft.AspNetCore.Identity
+﻿@using ImbaBetWeb.Business
+
 @model Player
-@inject IDataStoreManager DataStoreManager
-@inject UserManager<MyIdentityUser> UserManager
+@inject DatabaseManager DatabaseManager
 
 @{
-    // Get the user associated with the player
-	var users = UserManager.Users;
-	var user = users.Single(x => x.PlayerId == Model.Id);
+    // Get the user associated with the player id
+	var identityUser = DatabaseManager.GetIdentityUser(Model.Id);
 }
 
 <div>
-	<a asp-controller="Account" asp-action="Profile" asp-route-userId="@(Model.Id)" style="text-decoration:none" class="text-dark">
-		<img src="@Url.Content(Model.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" alt="Image" width="24" height="24" style="border-radius: 50%;" />&nbsp;&nbsp;@user.UserName
+	<a asp-controller="Account" asp-action="Profile" asp-route-playerId="@(Model.Id)" style="text-decoration:none" class="text-dark">
+		<img src="@Url.Content(Model.ProfilePicturePath ?? "/Resources/Profile/DefaultProfile.png")" onerror="this.onerror=null; this.src='/Resources/Profile/DefaultProfile.png'" alt="Image" width="24" height="24" style="border-radius: 50%;" />&nbsp;&nbsp;@identityUser.UserName
 	</a>
 </div>

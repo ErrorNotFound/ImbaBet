@@ -125,7 +125,7 @@ namespace ImbaBetWeb.Controllers
         }
 
         [HttpGet]
-        [Route("Orga/KickMember/{userId}")]
+        [Route("Orga/KickMember/{playerId}")]
         public async Task<IActionResult> KickMember(int playerId)
         {
             var userResolve = await TryResolveUserAsync();
@@ -151,8 +151,7 @@ namespace ImbaBetWeb.Controllers
             return RedirectToAction(nameof(MyCommunity));
         }
 
-        [HttpGet]
-        [Route("Orga/PromoteToOwner/{userId}")]
+        [Route("Orga/PromoteToOwner/{playerId}")]
         public async Task<IActionResult> PromoteToOwner(int playerId)
         {
             var userResolve = await TryResolveUserAsync();

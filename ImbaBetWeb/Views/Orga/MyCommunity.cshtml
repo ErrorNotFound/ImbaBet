@@ -36,7 +36,7 @@ else if (Model.Player.MemberOfCommunityId == null)
     <br />
     if (Model.Communities.Any())
     {
-        <h3>Or join someone else</h3>
+        <h3>Or join someone else's</h3>
         <br />
         @using (Html.BeginForm("JoinCommunity", "Orga", FormMethod.Post))
         {
@@ -59,7 +59,7 @@ else if (Model.Player.MemberOfCommunityId == null)
 }
 else if (Model.CommunityOfPlayer != null)
 {
-    var isOwner = Model.Player.Id == Model.CommunityOfPlayer.Id;
+    var isOwner = Model.Player.Id == Model.CommunityOfPlayer.OwnerId;
 
     <h2>@Html.DisplayFor(model => Model.CommunityOfPlayer.Name)</h2>
     <br />

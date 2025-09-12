@@ -6,46 +6,29 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImbaBetWeb.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController(
+        UserManager<MyIdentityUser> userManager,
+        PlayerManager playerManager,
+        BettingManager bettingManager) : ImbaBetControllerBase(userManager, playerManager)
     {
-        private readonly UserManager<MyIdentityUser> _userManager;
-        private readonly PlayerManager _playerManager;
-        private readonly BettingManager _bettingManager;
-        private readonly DatabaseManager _databaseManager;
 
-        public AccountController(
-            UserManager<MyIdentityUser> userManager, 
-            PlayerManager playerManager,
-            BettingManager bettingManager,
-            DatabaseManager databaseManager)
-        {
-            _userManager = userManager;
-            _playerManager = playerManager;
-            _bettingManager = bettingManager;
-            _databaseManager = databaseManager;
-        }
+        private readonly BettingManager _bettingManager = bettingManager;
 
-        public async Task<IActionResult> Profile(string userId)
+        public async Task<IActionResult> Profile(int playerId)
         {
-            var idUser = await _userManager.FindByIdAsync(userId);
-            if (idUser == null)
+            var userResolve = await TryResolveUserAsync();
+            if (!userResolve.Success)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
-            if (player == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            var activeBets = await _bettingManager.GetActiveBetsOfPlayerAsync(player);
-			var closedBets = await _bettingManager.GetClosedBetsOfPlayerAsync(player);
+            var activeBets = await _bettingManager.GetActiveBetsOfPlayerAsync(userResolve.Player!);
+			var closedBets = await _bettingManager.GetClosedBetsOfPlayerAsync(userResolve.Player!);
 
             var vm = new ProfileViewModel()
             {
-                User = idUser,
-                Player = player,
+                User = userResolve.User!,
+                Player = userResolve.Player!,
                 ClosedBets = closedBets,
                 ActiveBets = activeBets
             };

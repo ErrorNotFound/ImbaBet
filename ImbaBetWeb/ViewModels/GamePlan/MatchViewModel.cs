@@ -1,7 +1,7 @@
 ﻿using ImbaBetWeb.Model;
 using ImbaBetWeb.ViewModels.DTO;
 
-namespace ImbaBetWeb.ViewModels.GamePlan
+namespace ImbaBetWeb.ViewModels.MatchPlan
 {
     public class MatchViewModel
     {

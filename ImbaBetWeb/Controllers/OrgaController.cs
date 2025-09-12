@@ -10,47 +10,28 @@ using Microsoft.AspNetCore.Mvc;
 namespace ImbaBetWeb.Controllers
 {
     [Authorize]
-    public class OrgaController : Controller
+    public class OrgaController(
+        UserManager<MyIdentityUser> userManager,
+        CommunityManager communityManager,
+        PlayerManager playerManager) : ImbaBetControllerBase(userManager, playerManager)
     {
-        private readonly UserManager<MyIdentityUser> _userManager;
-        private readonly CommunityManager _communityManager;
-        private readonly DatabaseManager _databaseManager;
-        private readonly PlayerManager _playerManager;
-
-        public OrgaController( 
-            UserManager<MyIdentityUser> userManager,
-            CommunityManager communityManager,
-            DatabaseManager databaseManager,
-            PlayerManager playerManager)
-        {
-            _userManager = userManager;
-            _communityManager = communityManager;
-            _databaseManager = databaseManager;
-            this._playerManager = playerManager;
-        }
-
+        private readonly CommunityManager _communityManager = communityManager;
 
         public async Task<IActionResult> MyCommunity()
         {
+            var userResolve = await TryResolveUserAsync();
+            if(!userResolve.Success)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
             var communities = await _communityManager.GetCommunitiesAsync();
-            var idUser = await _userManager.GetUserAsync(User);
-            if(idUser == null)
-            {
-                return RedirectToAction("Error", "Home");
-            }
-
-            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
-            if (player == null)
-            {
-                return RedirectToAction("Error", "Home");
-            }
-
-            var communityOfPlayer = await _communityManager.GetCommunityByIdAsync(player.MemberOfCommunityId ?? -1);
+            var communityOfPlayer = await _communityManager.GetCommunityByIdAsync(userResolve.Player!.MemberOfCommunityId ?? -1);
 
             var vm = new MyCommunityViewModel()
             {
                 Communities = [.. communities],
-                Player = player,
+                Player = userResolve.Player!,
                 CommunityOfPlayer = communityOfPlayer
             };
 
@@ -60,14 +41,8 @@ namespace ImbaBetWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCommunity(string communityName)
         {
-            var idUser = await _userManager.GetUserAsync(User);
-            if (idUser == null)
-            {
-                return RedirectToAction("Error", "Home");
-            }
-
-            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
-            if (player == null)
+            var userResolve = await TryResolveUserAsync();
+            if (!userResolve.Success)
             {
                 return RedirectToAction("Error", "Home");
             }
@@ -78,7 +53,7 @@ namespace ImbaBetWeb.Controllers
             var validationResult = validator.Validate(communityName);
             if(validationResult.IsValid)
             {
-                await _communityManager.CreateCommunityAsync(player, communityName);
+                await _communityManager.CreateCommunityAsync(userResolve.Player!, communityName);
             }
             else
             {
@@ -94,14 +69,8 @@ namespace ImbaBetWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> JoinCommunity()
         {
-            var idUser = await _userManager.GetUserAsync(User);
-            if (idUser == null)
-            {
-                return RedirectToAction("Error", "Home");
-            }
-
-            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
-            if (player == null)
+            var userResolve = await TryResolveUserAsync();
+            if (!userResolve.Success)
             {
                 return RedirectToAction("Error", "Home");
             }
@@ -113,7 +82,7 @@ namespace ImbaBetWeb.Controllers
             }
             var communityId = int.Parse(dropdownValue!);
 
-            var wasSuccessful = await _communityManager.JoinCommunityAsync(player, communityId);
+            var wasSuccessful = await _communityManager.JoinCommunityAsync(userResolve.Player!, communityId);
             if(wasSuccessful)
             {
                 this.SetSuccessAlert($"Community joined successfully.");
@@ -125,29 +94,23 @@ namespace ImbaBetWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> LeaveCommunity()
         {
-            var idUser = await _userManager.GetUserAsync(User);
-            if (idUser == null)
+            var userResolve = await TryResolveUserAsync();
+            if (!userResolve.Success)
             {
                 return RedirectToAction("Error", "Home");
             }
 
-            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
-            if (player == null)
-            {
-                return RedirectToAction("Error", "Home");
-            }
-
-            var community = await _communityManager.GetCommunityByIdAsync(player.MemberOfCommunityId ?? -1);
+            var community = await _communityManager.GetCommunityByIdAsync(userResolve.Player!.MemberOfCommunityId ?? -1);
             if (community != null)
             {
-                var isOwner = community.OwnerId == player.Id;
+                var isOwner = community.OwnerId == userResolve.Player!.Id;
                 if (isOwner)
                 {
-                    await _communityManager.DeleteCommunityOfPlayerAsync(player);
+                    await _communityManager.DeleteCommunityOfPlayerAsync(userResolve.Player!);
                 }
                 else
                 {
-                    await _communityManager.LeaveCommunityAsync(player);
+                    await _communityManager.LeaveCommunityAsync(userResolve.Player!);
                 }
             }
             // todo
@@ -165,20 +128,17 @@ namespace ImbaBetWeb.Controllers
         [Route("Orga/KickMember/{userId}")]
         public async Task<IActionResult> KickMember(int playerId)
         {
-            var idUser = await _userManager.GetUserAsync(User);
-            if (idUser == null)
+            var userResolve = await TryResolveUserAsync();
+            if (!userResolve.Success)
             {
-                return RedirectToAction("Error", "Home");
+                this.SetErrorAlert("Error while kicking user");
+                return RedirectToAction(nameof(MyCommunity));
             }
-            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
-            if (player == null)
-            {
-                return RedirectToAction("Error", "Home");
-            }
-            var userToBeKicked = await _playerManager.GetPlayerAsync(playerId);
-            var community = await _communityManager.GetCommunityByIdAsync(player.MemberOfCommunityId ?? -1);
 
-            if (community == null || idUser == null || userToBeKicked == null)
+            var userToBeKicked = await _playerManager.GetPlayerAsync(playerId);
+            var community = await _communityManager.GetCommunityByIdAsync(userResolve.Player!.MemberOfCommunityId ?? -1);
+
+            if (community == null || userToBeKicked == null)
             {
                 this.SetErrorAlert("Error while kicking user");
                 return RedirectToAction(nameof(MyCommunity));
@@ -195,18 +155,15 @@ namespace ImbaBetWeb.Controllers
         [Route("Orga/PromoteToOwner/{userId}")]
         public async Task<IActionResult> PromoteToOwner(int playerId)
         {
-            var idUser = await _userManager.GetUserAsync(User);
-            if (idUser == null)
+            var userResolve = await TryResolveUserAsync();
+            if (!userResolve.Success)
             {
-                return RedirectToAction("Error", "Home");
+                this.SetErrorAlert("Error while kicking user");
+                return RedirectToAction(nameof(MyCommunity));
             }
-            var player = await _playerManager.GetPlayerAsync(idUser.PlayerId);
-            if (player == null)
-            {
-                return RedirectToAction("Error", "Home");
-            }
+
             var idNewOwner = await _playerManager.GetPlayerAsync(playerId);
-            var community = await _communityManager.GetCommunityByIdAsync(player.MemberOfCommunityId ?? -1);
+            var community = await _communityManager.GetCommunityByIdAsync(userResolve.Player!.MemberOfCommunityId ?? -1);
 
             if (community == null || idNewOwner == null)
             {

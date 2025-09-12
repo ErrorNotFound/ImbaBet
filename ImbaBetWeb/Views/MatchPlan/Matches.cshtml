@@ -34,7 +34,7 @@
         <tbody>
             @foreach (var match in matchGroup.Matches.OrderBy(x => x.DateTime))
             {
-                <tr onclick="location.href = '@Url.Action("Match","GamePlan", new { matchId = match.Id })'">
+                <tr onclick="location.href = '@Url.Action("Match","MatchPlan", new { matchId = match.Id })'">
                     <td>
                         @if (match.TeamA != null)
                         {

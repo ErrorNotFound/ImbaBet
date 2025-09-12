@@ -1,25 +1,26 @@
+using ImbaBetWeb.Business;
 using ImbaBetWeb.Business.Extensions;
+using ImbaBetWeb.Model;
 using ImbaBetWeb.Validation;
 using ImbaBetWeb.ViewModels;
 using ImbaBetWeb.ViewModels.Home;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace ImbaBetWeb.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(
+        ILogger<HomeController> logger, 
+        IEmailSender emailSender, 
+        IConfiguration configuration,
+        UserManager<MyIdentityUser> userManager,
+        PlayerManager playerManager) : ImbaBetControllerBase(userManager, playerManager)
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly IEmailSender _emailSender;
-        private readonly IConfiguration _configuration;
-
-        public HomeController(ILogger<HomeController> logger, IEmailSender emailSender, IConfiguration configuration)
-        {
-            _logger = logger;
-            _emailSender = emailSender;
-            _configuration = configuration;
-        }
+        private readonly ILogger<HomeController> _logger = logger;
+        private readonly IEmailSender _emailSender = emailSender;
+        private readonly IConfiguration _configuration = configuration;
 
         public IActionResult Index()
         {

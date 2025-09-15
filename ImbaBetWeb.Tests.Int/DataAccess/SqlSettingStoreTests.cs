@@ -9,6 +9,34 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
     public class SqlSettingStoreTests : SqlDatabaseTestsBase
     {
         [Test]
+        public void ParametersAndPropertyMap_ItemIsDuplicated_Identical()
+        {
+            // Arrange
+            var setting = new Setting()
+            {
+                Id = "Id",
+                Value = "Value",
+                Default = "Default",
+                Description = "Description"
+            };
+
+            var store = new SqlSettingStore(string.Empty);
+
+            // Act
+            var parameters = store.GetParameters(setting);
+            var map = store.GetPropertyMap();
+            var newSetting = new Setting() { Id = string.Empty, Value = string.Empty, Default = string.Empty, Description = string.Empty };
+
+            foreach (var param in parameters)
+            {
+                map[param.Key](newSetting, param.Value);
+            }
+
+            // Assert
+            Assert.That(newSetting, Is.EqualTo(setting));
+        }
+
+        [Test]
         public async Task EnsureInitializedAsync_NoTableAvailable_TableIsAdded()
         {
             // Arrange

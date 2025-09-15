@@ -9,6 +9,34 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
     public class SqlPlayerStoreTests : SqlDatabaseTestsBase
     {
         [Test]
+        public void ParametersAndPropertyMap_ItemIsDuplicated_Identical()
+        {
+            // Arrange
+            var player = new Player()
+            {
+                Id = 1,
+                MemberOfCommunityId = 2,
+                Points = 3,
+                ProfilePicturePath = "Hello"
+            };
+
+            var store = new SqlPlayerStore(string.Empty);
+
+            // Act
+            var parameters = store.GetParameters(player);
+            var map = store.GetPropertyMap();
+            var newPlayer = new Player();
+            
+            foreach (var param in parameters)
+            {
+                map[param.Key](newPlayer, param.Value);
+            }
+
+            // Assert
+            Assert.That(newPlayer, Is.EqualTo(player));   
+        }
+
+        [Test]
         public async Task EnsureInitializedAsync_NoTableAvailable_TableIsAdded()
         {
             // Arrange

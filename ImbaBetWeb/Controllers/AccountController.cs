@@ -10,16 +10,15 @@ namespace ImbaBetWeb.Controllers
         UserManager<MyIdentityUser> userManager,
         PlayerManager playerManager,
         BettingManager bettingManager,
-        DatabaseManager databaseManager) : ImbaBetControllerBase(userManager, playerManager)
+        IdentityManager identityManager) : ImbaBetControllerBase(userManager, playerManager)
     {
-
         private readonly BettingManager _bettingManager = bettingManager;
-        private readonly DatabaseManager _databaseManager = databaseManager;
+        private readonly IdentityManager _identityManager = identityManager;
 
         public async Task<IActionResult> Profile(int playerId)
         {
             var player = await _playerManager.GetPlayerAsync(playerId);
-            var user = _databaseManager.GetIdentityUser(playerId);
+            var user = _identityManager.GetIdentityUser(playerId);
 
             if (player == null || user == null)
             {

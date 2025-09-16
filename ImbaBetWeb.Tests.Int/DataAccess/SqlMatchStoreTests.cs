@@ -9,6 +9,40 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
     public class SqlMatchStoreTests : SqlDatabaseTestsBase
     {
         [Test]
+        public void ParametersAndPropertyMap_ItemIsDuplicated_Identical()
+        {
+            // Arrange
+            var match = new Match()
+            {
+                Id = 1,
+                DateTime = DateTime.Now,
+                TeamATeamId = 2,
+                TeamBTeamId = 3,
+                AlternativeTeamAText = "a",
+                AlternativeTeamBText = "b",
+                GoalsA = 4,
+                GoalsB = 5,
+                IsOver = true,
+                MatchGroupId = 6
+            };
+
+            var store = new SqlMatchStore(string.Empty);
+
+            // Act
+            var parameters = store.GetParameters(match);
+            var map = store.GetPropertyMap();
+            var newMatch = new Match();
+
+            foreach (var param in parameters)
+            {
+                map[param.Key](newMatch, param.Value);
+            }
+
+            // Assert
+            Assert.That(newMatch, Is.EqualTo(match));
+        }
+
+        [Test]
         public async Task EnsureInitializedAsync_NoTableAvailable_TableIsAdded()
         {
             // Arrange

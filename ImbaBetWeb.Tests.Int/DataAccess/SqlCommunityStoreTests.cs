@@ -9,6 +9,33 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
     public class SqlCommunityStoreTests : SqlDatabaseTestsBase
     {
         [Test]
+        public void ParametersAndPropertyMap_ItemIsDuplicated_Identical()
+        {
+            // Arrange
+            var community = new Community()
+            {
+                Id = 1,
+                Name = "Test Community",
+                OwnerId = 2
+            };
+
+            var store = new SqlCommunityStore(string.Empty);
+
+            // Act
+            var parameters = store.GetParameters(community);
+            var map = store.GetPropertyMap();
+            var newCommunity = new Community() { Name = string.Empty, OwnerId = 0 };
+
+            foreach (var param in parameters)
+            {
+                map[param.Key](newCommunity, param.Value);
+            }
+
+            // Assert
+            Assert.That(newCommunity, Is.EqualTo(community));
+        }
+
+        [Test]
         public async Task EnsureInitializedAsync_NoTableAvailable_TableIsAdded()
         {
             // Arrange

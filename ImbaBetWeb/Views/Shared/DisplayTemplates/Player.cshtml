@@ -1,11 +1,11 @@
 ﻿@using ImbaBetWeb.Business
 
 @model Player
-@inject DatabaseManager DatabaseManager
+@inject IdentityManager IdentityManager
 
 @{
     // Get the user associated with the player id
-	var identityUser = DatabaseManager.GetIdentityUser(Model.Id);
+	var identityUser = IdentityManager.GetIdentityUser(Model.Id);
 }
 
 <div>

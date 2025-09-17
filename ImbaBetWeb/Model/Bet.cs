@@ -2,6 +2,8 @@
 {
     public record Bet : IIdentifiable<int>
     {
+        public const int ID_UNASSIGNED = -1;
+
         public int Id { get; set; }
 
         public Match? Match { get; set; } = null!;

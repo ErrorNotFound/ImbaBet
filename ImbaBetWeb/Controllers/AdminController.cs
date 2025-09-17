@@ -26,7 +26,8 @@ namespace ImbaBetWeb.Controllers
         CommunityManager communityManager,
         IDataStoreManager dataStoreManager,
         MatchPlanImportService matchPlanImportService,
-        IEmailSender emailSender) : ImbaBetControllerBase(userManager, playerManager)
+        IEmailSender emailSender,
+        IdentityManager identityManager) : ImbaBetControllerBase(userManager, playerManager)
     {
         private readonly BettingManager _bettingManager = bettingManager;
         private readonly GameManager _gameManager = gameManager;
@@ -35,7 +36,7 @@ namespace ImbaBetWeb.Controllers
         private readonly IDataStoreManager _dataStoreManager = dataStoreManager;
         private readonly MatchPlanImportService _matchPlanImportService = matchPlanImportService;
         private readonly IEmailSender _emailSender = emailSender;
-
+        private readonly IdentityManager _identityManager = identityManager;
 
         public async Task<IActionResult> Matches()
         {
@@ -163,7 +164,7 @@ namespace ImbaBetWeb.Controllers
                 if(dbUser != null)
                 {
                     success &= await _communityManager.UpdateCommunityMembershipAsync(dbUser.PlayerId, user.MemberOfCommunityId);
-                    success &= await _databaseManager.UpdateRolesAsync(user.Id, user.IsAdmin, user.IsEditor);
+                    success &= await _identityManager.UpdateRolesAsync(user.Id, user.IsAdmin, user.IsEditor);
                 }                
             }
 
@@ -234,7 +235,7 @@ namespace ImbaBetWeb.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> ConfirmEMail(string userId)
         {
-            var success = await _databaseManager.ConfirmEMail(userId);
+            var success = await _identityManager.ConfirmEMailAsync(userId);
             if (success)
             {
                 this.SetSuccessAlert($"E-Mail of user {userId} confirmed.");

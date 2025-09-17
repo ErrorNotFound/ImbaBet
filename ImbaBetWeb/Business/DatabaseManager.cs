@@ -1,70 +1,36 @@
 ﻿using ImbaBetWeb.DataAccess.Interfaces;
 using ImbaBetWeb.Model;
 using ImbaBetWeb.Model.Consts;
-using Microsoft.AspNetCore.Identity;
 
 namespace ImbaBetWeb.Business
 {
     public class DatabaseManager(
         IDataStoreManager _dataStoreManager,
-        RoleManager<IdentityRole> _roleManager,
-        UserManager<MyIdentityUser> _userManager,
         CommunityManager _communityManager,
         PlayerManager _playerManager,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IdentityManager identityManager)
     {
         private readonly IDataStoreManager _dataStoreManager = _dataStoreManager;
-        private readonly RoleManager<IdentityRole> _roleManager = _roleManager;
-        private readonly UserManager<MyIdentityUser> _userManager = _userManager;
         private readonly CommunityManager _communityManager = _communityManager;
         
         private readonly IConfiguration _configuration = configuration;
-
-        public MyIdentityUser GetIdentityUser(int playerId)
-        {
-            var identityUsers = _userManager.Users;
-            var identityUser = identityUsers.SingleOrDefault(x => x.PlayerId == playerId);
-
-            if (identityUser == null)
-            {
-                throw new Exception($"No identity user found for playerId {playerId}");
-            }
-
-            return identityUser;
-        }
+        private readonly IdentityManager _identityManager = identityManager;
 
         public async Task DeleteUserAsync(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _identityManager.GetIdentityUserByIdAsync(userId);
             if (user != null)
             {
                 await _communityManager.DeleteCommunityOfPlayerAsync(user.PlayerId);
                 await _playerManager.DeletePlayer(user.PlayerId);
-                await _userManager.DeleteAsync(user);
+                await _identityManager.DeleteIdentityUserAsync(userId);
             }
-        }
-
-        public async Task<bool> ConfirmEMail(string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-                return false;
-
-            user.EmailConfirmed = true;
-            await _userManager.UpdateAsync(user);
-            return true;
         }
 
         public async Task InitialDatabaseSeedAsync()
         {
-            // Create Roles
-            foreach (var role in UserRoles.AllRoles)
-            {
-                if (!await _roleManager.RoleExistsAsync(role))
-                {
-                    await _roleManager.CreateAsync(new IdentityRole(role));
-                }
-            }
+            await _identityManager.SeedUserRolesAsync();
 
             await _dataStoreManager.SeedSettingsAsync();
         }
@@ -80,7 +46,7 @@ namespace ImbaBetWeb.Business
 
             foreach (var newUser in userList)
             {
-                if (await _userManager.FindByEmailAsync(newUser.Email) == null)
+                if (await _identityManager.GetIdentityUserByEMailAsync(newUser.Email) == null)
                 {
                     var player = new Player();
                     player.Id = await _dataStoreManager.CreatePlayerAsync(player);
@@ -92,10 +58,10 @@ namespace ImbaBetWeb.Business
                     user.EmailConfirmed = true;
                     user.RemainingRenames = await _dataStoreManager.GetSettingValueAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
 
-                    await _userManager.CreateAsync(user, newUser.Password);
+                    await _identityManager.CreateIdentityUserAsync(user, newUser.Password);
                     foreach (var role in newUser.Roles)
                     {
-                        await _userManager.AddToRoleAsync(user, role);
+                        await _identityManager.AddRoleToIdentityAsync(user, role);
                     }
 
                 }
@@ -104,7 +70,7 @@ namespace ImbaBetWeb.Business
             var communities = await _dataStoreManager.GetCommunitiesAsync();
             if (!communities.Any())
             {
-                var idUser = await _userManager.FindByEmailAsync(userList.First().Email);
+                var idUser = await _identityManager.GetIdentityUserByEMailAsync(userList.First().Email);
                 if (idUser == null)
                     return;
 
@@ -125,40 +91,10 @@ namespace ImbaBetWeb.Business
             }
         }
 
-        public async Task<bool> UpdateRolesAsync(string userId, bool shouldBeAdmin, bool shouldBeEditor)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if(user == null)
-            {
-                return false;
-            }
-
-            var hasAdminRole = await _userManager.IsInRoleAsync(user, UserRoles.Admin);
-            if (hasAdminRole && !shouldBeAdmin)
-            {
-                await _userManager.RemoveFromRoleAsync(user, UserRoles.Admin);
-            }
-            else if(!hasAdminRole && shouldBeAdmin)
-            {
-                await _userManager.AddToRoleAsync(user, UserRoles.Admin);
-            }
-
-            var hasEditorRole = await _userManager.IsInRoleAsync(user, UserRoles.Editor);
-            if (hasEditorRole && !shouldBeEditor)
-            {
-                await _userManager.RemoveFromRoleAsync(user, UserRoles.Editor);
-            }
-            else if (!hasEditorRole && shouldBeEditor)
-            {
-                await _userManager.AddToRoleAsync(user, UserRoles.Editor);
-            }
-            return true;
-        }
-
         public async Task CreateAdminAsync()
         {
             // only create admin account if there is no other admin
-            var adminUsers = await _userManager.GetUsersInRoleAsync(UserRoles.Admin);
+            var adminUsers = await _identityManager.GetUsersInRoleAsync(UserRoles.Admin);
             if (adminUsers.Count > 0)
             {
                 return;
@@ -174,10 +110,10 @@ namespace ImbaBetWeb.Business
             user.EmailConfirmed = true;
             user.RemainingRenames = await _dataStoreManager.GetSettingValueAsync<int>(SettingNames.USERNAME_RENAME_LIMIT);
 
-            if (user.Email != null && await _userManager.FindByEmailAsync(user.Email) == null)
+            if (user.Email != null && await _identityManager.GetIdentityUserByEMailAsync(user.Email) == null)
             {
-                await _userManager.CreateAsync(user, _configuration.GetSection("InitialSetup")["AdminAccountPassword"]!);
-                await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+                await _identityManager.CreateIdentityUserAsync(user, _configuration.GetSection("InitialSetup")["AdminAccountPassword"]!);
+                await _identityManager.AddRoleToIdentityAsync(user, UserRoles.Admin);
             }
 
             return;

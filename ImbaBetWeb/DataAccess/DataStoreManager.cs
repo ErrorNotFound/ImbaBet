@@ -2,6 +2,7 @@
 using ImbaBetWeb.DataAccess.Stores;
 using ImbaBetWeb.Model;
 using ImbaBetWeb.Model.Consts;
+using ImbaBetWeb.Model.Questions;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -305,6 +306,34 @@ namespace ImbaBetWeb.DataAccess
             {
                 await settingStore.CreateAsync(setting);
             }
+        }
+
+        public async Task CreatePlayerAnswersAsync(IEnumerable<PlayerAnswer> answers)
+        {
+            foreach(var answer in answers)
+            {
+                answer.Id = await playerAnswerStore.CreateAsync(answer);
+            }
+        }
+
+        public async Task<IEnumerable<PlayerAnswer>> GetPlayerAnswersAsync(Player player)
+        {
+            var answers = await playerAnswerStore.GetAllAsync();
+
+            return answers.Where(a => a.PlayerId == player.Id);
+        }
+
+        public async Task UpdatePlayerAnswersAsync(IEnumerable<PlayerAnswer> answers)
+        {
+            foreach (var answer in answers)
+            {
+                await playerAnswerStore.UpdateAsync(answer);
+            }
+        }
+
+        public async Task<IEnumerable<Question>> GetQuestionsAsync()
+        {
+            return await questionStore.GetAllAsync();
         }
     }
 }

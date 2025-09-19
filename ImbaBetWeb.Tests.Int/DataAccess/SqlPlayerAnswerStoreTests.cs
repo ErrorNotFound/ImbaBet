@@ -1,14 +1,7 @@
 ﻿using Allure.NUnit;
-using ImbaBetWeb.DataAccess;
-using ImbaBetWeb.DataAccess.Interfaces;
 using ImbaBetWeb.DataAccess.Stores;
 using ImbaBetWeb.Model.Questions;
 using ImbaBetWeb.Tests.Int.DataAccess.TestHelper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImbaBetWeb.Tests.Int.DataAccess
 {

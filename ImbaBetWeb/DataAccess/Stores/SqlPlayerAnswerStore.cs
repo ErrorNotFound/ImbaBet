@@ -32,7 +32,7 @@ namespace ImbaBetWeb.DataAccess.Stores
                 { columnId, (player, valueToBeSet) => { player.Id = valueToBeSet; } },
                 { columnQuestionId, (player, valueToBeSet) => { player.QuestionId = valueToBeSet; } },
                 { columnPlayerId, (player, valueToBeSet) => { player.PlayerId = valueToBeSet; } },
-                { columnAnswer, (player, valueToBeSet) => { player.Answer = valueToBeSet; } }
+                { columnAnswer, (player, valueToBeSet) => { player.Answer = valueToBeSet!; } }
             };
         }
     }

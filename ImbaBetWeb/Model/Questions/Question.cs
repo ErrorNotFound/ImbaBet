@@ -10,6 +10,8 @@
 
         public DateTime DueDate { get; set; }
 
+        public bool IsOver { get; set; }
+
         public string? ChoicesRaw { get; set; }
 
         public IEnumerable<string> Choices

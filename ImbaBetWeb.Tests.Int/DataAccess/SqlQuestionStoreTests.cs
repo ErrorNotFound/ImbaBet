@@ -16,7 +16,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             {
                 Id = 1,
                 Text = "test",
-                Type = QuestionType.SingleChoice,
+                Type = QuestionType.SingleTeam,
                 DueDate = DateTime.Now,
                 IsOver = true,
                 ChoicesRaw = "1;2;3;4",
@@ -61,7 +61,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             var question = new Question()
             {
                 Text = "test",
-                Type = QuestionType.SingleChoice,
+                Type = QuestionType.SingleTeam,
                 DueDate = DateTime.Now,
                 IsOver = true,
                 ChoicesRaw = "1;2;3;4",

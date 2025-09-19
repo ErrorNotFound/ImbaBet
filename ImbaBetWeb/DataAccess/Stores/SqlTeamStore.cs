@@ -2,7 +2,7 @@
 using ImbaBetWeb.Model;
 using System.Data;
 
-namespace ImbaBetWeb.DataAccess
+namespace ImbaBetWeb.DataAccess.Stores
 {
     public class SqlTeamStore(string connectionString) : SqlStoreBase<Team, int>(), ITeamStore
     {

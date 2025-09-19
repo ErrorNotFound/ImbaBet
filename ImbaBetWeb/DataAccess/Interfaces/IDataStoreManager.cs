@@ -38,7 +38,8 @@ namespace ImbaBetWeb.DataAccess.Interfaces
         public Task SetSettingValueAsync<T>(string id, T value) where T : IConvertible;
 
         public Task CreatePlayerAnswersAsync(IEnumerable<PlayerAnswer> answers);
-        public Task<IEnumerable<PlayerAnswer>> GetPlayerAnswersAsync(Player player);
+        public Task<IEnumerable<PlayerAnswer>> GetPlayerAnswersAsync();
+        public Task<IEnumerable<PlayerAnswer>> GetPlayerAnswersOfPlayerAsync(Player player);
         public Task UpdatePlayerAnswersAsync(IEnumerable<PlayerAnswer> answers);
         public Task<IEnumerable<Question>> GetQuestionsAsync();
 

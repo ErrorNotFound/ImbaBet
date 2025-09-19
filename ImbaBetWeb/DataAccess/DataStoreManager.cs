@@ -316,13 +316,6 @@ namespace ImbaBetWeb.DataAccess
             }
         }
 
-        public async Task<IEnumerable<PlayerAnswer>> GetPlayerAnswersAsync(Player player)
-        {
-            var answers = await playerAnswerStore.GetAllAsync();
-
-            return answers.Where(a => a.PlayerId == player.Id);
-        }
-
         public async Task UpdatePlayerAnswersAsync(IEnumerable<PlayerAnswer> answers)
         {
             foreach (var answer in answers)
@@ -334,6 +327,26 @@ namespace ImbaBetWeb.DataAccess
         public async Task<IEnumerable<Question>> GetQuestionsAsync()
         {
             return await questionStore.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<PlayerAnswer>> GetPlayerAnswersAsync()
+        {
+            var answers = await playerAnswerStore.GetAllAsync();
+            var questions = await GetQuestionsAsync();
+            var players = await GetPlayersAsync();
+
+            foreach(var answer in answers)
+            {
+                answer.Question = questions.Single(q => q.Id == answer.QuestionId);
+                answer.Player = players.Single(p => p.Id == answer.PlayerId);
+            }
+
+            return answers;
+        }
+
+        public async Task<IEnumerable<PlayerAnswer>> GetPlayerAnswersOfPlayerAsync(Player player)
+        {
+            return await GetPlayerAnswersAsync().ContinueWith(t => t.Result.Where(a => a.PlayerId == player.Id) );
         }
     }
 }

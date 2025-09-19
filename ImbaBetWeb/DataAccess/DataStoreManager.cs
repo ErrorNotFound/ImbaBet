@@ -1,4 +1,5 @@
 ﻿using ImbaBetWeb.DataAccess.Interfaces;
+using ImbaBetWeb.DataAccess.Stores;
 using ImbaBetWeb.Model;
 using ImbaBetWeb.Model.Consts;
 using System.ComponentModel;
@@ -6,7 +7,7 @@ using System.Reflection;
 
 namespace ImbaBetWeb.DataAccess
 {
-    public class DataStoreManager(IBetStore betStore, IPlayerStore playerStore, ICommunityStore communityStore, IMatchGroupStore matchGroupStore, IMatchStore matchStore, ISettingStore settingStore, ITeamStore teamStore) : IDataStoreManager
+    public class DataStoreManager(IBetStore betStore, IPlayerStore playerStore, ICommunityStore communityStore, IMatchGroupStore matchGroupStore, IMatchStore matchStore, ISettingStore settingStore, ITeamStore teamStore, IQuestionStore questionStore, IPlayerAnswerStore playerAnswerStore) : IDataStoreManager
     {
         private readonly IBetStore betStore = betStore;
         private readonly IPlayerStore playerStore = playerStore;
@@ -15,6 +16,8 @@ namespace ImbaBetWeb.DataAccess
         private readonly IMatchStore matchStore = matchStore;
         private readonly ISettingStore settingStore = settingStore;
         private readonly ITeamStore teamStore = teamStore;
+        private readonly IQuestionStore questionStore = questionStore;
+        private readonly IPlayerAnswerStore playerAnswerStore = playerAnswerStore;
 
         private Dictionary<string, Setting> _cachedSettings = [];
 
@@ -27,7 +30,9 @@ namespace ImbaBetWeb.DataAccess
                 new SqlMatchGroupStore(connectionString), 
                 new SqlMatchStore(connectionString), 
                 new SqlSettingStore(connectionString), 
-                new SqlTeamStore(connectionString));
+                new SqlTeamStore(connectionString),
+                new SqlQuestionStore(connectionString),
+                new SqlPlayerAnswerStore(connectionString));
         }
 
         public async Task Initialize()
@@ -39,7 +44,9 @@ namespace ImbaBetWeb.DataAccess
                 matchGroupStore.EnsureInitializedAsync(),
                 matchStore.EnsureInitializedAsync(),
                 settingStore.EnsureInitializedAsync(),
-                teamStore.EnsureInitializedAsync());
+                teamStore.EnsureInitializedAsync(),
+                questionStore.EnsureInitializedAsync(),
+                playerAnswerStore.EnsureInitializedAsync());
         }
 
         public async Task<Matchplan> GetMatchplanAsync()

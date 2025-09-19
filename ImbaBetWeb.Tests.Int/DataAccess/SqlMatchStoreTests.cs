@@ -1,5 +1,5 @@
 ﻿using Allure.NUnit;
-using ImbaBetWeb.DataAccess;
+using ImbaBetWeb.DataAccess.Stores;
 using ImbaBetWeb.Model;
 using ImbaBetWeb.Tests.Int.DataAccess.TestHelper;
 

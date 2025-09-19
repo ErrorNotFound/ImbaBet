@@ -17,7 +17,7 @@ namespace ImbaBetWeb.Tests.Unit.DataAccess
             var setting = GetDefaultSetting();
             var settingStoreMock = GetSettingsStoreMock();
             settingStoreMock.Setup(mock => mock.GetAllAsync()).ReturnsAsync(() => { return [setting]; });
-            var dataStoreManager = new DataStoreManager(null, null, null, null, null, settingStoreMock.Object, null);
+            var dataStoreManager = new DataStoreManager(null, null, null, null, null, settingStoreMock.Object, null, null, null);
 
             // Act
             var settings = await dataStoreManager.GetSettingsAsync();
@@ -34,7 +34,7 @@ namespace ImbaBetWeb.Tests.Unit.DataAccess
             var settingStoreMock = GetSettingsStoreMock();
             settingStoreMock.Setup(mock => mock.GetAllAsync()).ReturnsAsync(() => { return [setting]; });
             settingStoreMock.Setup(mock => mock.GetAsync(It.IsAny<string>()));
-            var dataStoreManager = new DataStoreManager(null, null, null, null, null, settingStoreMock.Object, null);
+            var dataStoreManager = new DataStoreManager(null, null, null, null, null, settingStoreMock.Object, null, null, null);
             await dataStoreManager.GetSettingsAsync(); // preload cache    
 
             // Act
@@ -52,7 +52,7 @@ namespace ImbaBetWeb.Tests.Unit.DataAccess
             var setting = GetDefaultSetting();
             var settingStoreMock = GetSettingsStoreMock();
             settingStoreMock.Setup(mock => mock.GetAsync(It.Is<string>((arg) => arg == setting.Id))).ReturnsAsync(() => { return setting; });
-            var dataStoreManager = new DataStoreManager(null, null, null, null, null, settingStoreMock.Object, null);
+            var dataStoreManager = new DataStoreManager(null, null, null, null, null, settingStoreMock.Object, null, null, null);
 
             // Act
             var settingValue = await dataStoreManager.GetCachedSettingValueAsync<string>(setting.Id);
@@ -70,7 +70,7 @@ namespace ImbaBetWeb.Tests.Unit.DataAccess
             var settingStoreMock = GetSettingsStoreMock();
             settingStoreMock.Setup(mock => mock.GetAllAsync()).ReturnsAsync(() => { return [setting]; });
             settingStoreMock.Setup(mock => mock.GetAsync(It.Is<string>((arg) => arg == setting.Id))).ReturnsAsync(() => { return setting; });
-            var dataStoreManager = new DataStoreManager(null, null, null, null, null, settingStoreMock.Object, null);
+            var dataStoreManager = new DataStoreManager(null, null, null, null, null, settingStoreMock.Object, null, null, null);
             await dataStoreManager.GetSettingsAsync(); // preload cache 
 
             // Act
@@ -90,7 +90,7 @@ namespace ImbaBetWeb.Tests.Unit.DataAccess
             settingStoreMock.Setup(mock => mock.GetAllAsync()).ReturnsAsync(() => { return [setting]; });
             settingStoreMock.Setup(mock => mock.GetAsync(It.Is<string>((arg) => arg == setting.Id))).ReturnsAsync(() => { return setting; });
             settingStoreMock.Setup(mock => mock.UpdateAsync(It.Is<Setting>((set) => set.Id == setting.Id)));
-            var dataStoreManager = new DataStoreManager(null, null, null, null, null, settingStoreMock.Object, null);
+            var dataStoreManager = new DataStoreManager(null, null, null, null, null, settingStoreMock.Object, null, null, null);
             await dataStoreManager.GetSettingsAsync(); // preload cache 
             var newValue = 1337;
 
@@ -109,7 +109,7 @@ namespace ImbaBetWeb.Tests.Unit.DataAccess
             var settingStoreMock = GetSettingsStoreMock();
             settingStoreMock.Setup(mock => mock.GetAsync(It.Is<string>((arg) => arg == setting.Id))).ReturnsAsync(() => { return setting; });
             settingStoreMock.Setup(mock => mock.UpdateAsync(It.Is<Setting>((set) => set.Id == setting.Id && set.Value == setting.Default)));
-            var dataStoreManager = new DataStoreManager(null, null, null, null, null, settingStoreMock.Object, null);
+            var dataStoreManager = new DataStoreManager(null, null, null, null, null, settingStoreMock.Object, null, null, null);
 
             // Act
             await dataStoreManager.ResetSettingAsync(setting.Id);

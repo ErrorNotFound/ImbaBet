@@ -36,6 +36,7 @@ builder.Services.AddScoped<GameManager>();
 builder.Services.AddScoped<CommunityManager>();
 builder.Services.AddScoped<DatabaseManager>();
 builder.Services.AddScoped<PlayerManager>();
+builder.Services.AddScoped<IdentityManager>();
 builder.Services.AddScoped<MatchPlanImportService>();
 builder.Services.AddScoped<IDataStoreManager>((provider) => { return DataStoreManager.CreateDefault(connectionString); });
 

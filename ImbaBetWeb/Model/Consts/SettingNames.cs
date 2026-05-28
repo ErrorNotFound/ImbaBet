@@ -24,6 +24,10 @@ namespace ImbaBetWeb.Model.Consts
         [DefaultValue("2")]
         public const string BETTING_POINTS_CORRECT_TENDENCY = "BETTING_POINTS_CORRECT_TENDENCY";
 
+        [Description("How many points for a correctly answered bonus question")]
+        [DefaultValue("10")]
+        public const string QUESTION_POINTS_CORRECT_ANSWER = "QUESTION_POINTS_CORRECT_ANSWER";
+
         [Description("Communities can be created.")]
         [DefaultValue("true")]
         public const string ALLOW_COMMUNITY_CREATE = "ALLOW_COMMUNITY_CREATE";

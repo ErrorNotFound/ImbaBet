@@ -10,6 +10,7 @@ namespace ImbaBetWeb.DataAccess.Stores
         private readonly SqlColumnDefinition columnText = new("Text", SqlDbType.NVarChar, 512, false, true);
         private readonly SqlColumnDefinition columnType = new("Type", SqlDbType.Int);
         private readonly SqlColumnDefinition columnDueDate = new("DueDate", SqlDbType.DateTime2, 256);
+        private readonly SqlColumnDefinition columnIsOver = new("IsOver", SqlDbType.Bit);
         private readonly SqlColumnDefinition columnChoicesRaw = new("ChoicesRaw", SqlDbType.NVarChar, 512, false, true); 
         private readonly SqlColumnDefinition columnCorrectAnswer = new("CorrectAnswer", SqlDbType.NVarChar, 256, false, true);
         private readonly SqlColumnDefinition columnPoints = new("Points", SqlDbType.Int);
@@ -26,6 +27,7 @@ namespace ImbaBetWeb.DataAccess.Stores
                 { columnText, source.Text },
                 { columnType, (int)source.Type },
                 { columnDueDate, source.DueDate },
+                { columnIsOver, source.IsOver },
                 { columnChoicesRaw, source.ChoicesRaw },
                 { columnCorrectAnswer, source.CorrectAnswer },
                 { columnPoints, source.Points },
@@ -40,6 +42,7 @@ namespace ImbaBetWeb.DataAccess.Stores
                 { columnText, (player, valueToBeSet) => { player.Text = valueToBeSet!; } },
                 { columnType, (player, valueToBeSet) => { player.Type = (QuestionType)valueToBeSet; } },
                 { columnDueDate, (player, valueToBeSet) => { player.DueDate = valueToBeSet; } },
+                { columnIsOver, (player, valueToBeSet) => { player.IsOver = valueToBeSet; } },
                 { columnChoicesRaw, (player, valueToBeSet) => { player.ChoicesRaw = valueToBeSet; } },
                 { columnCorrectAnswer, (player, valueToBeSet) => { player.CorrectAnswer = valueToBeSet; } },
                 { columnPoints, (player, valueToBeSet) => { player.Points = valueToBeSet; } }

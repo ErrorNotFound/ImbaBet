@@ -1,13 +1,7 @@
 ﻿using Allure.NUnit;
 using ImbaBetWeb.DataAccess.Stores;
-using ImbaBetWeb.Model;
 using ImbaBetWeb.Model.Questions;
 using ImbaBetWeb.Tests.Int.DataAccess.TestHelper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImbaBetWeb.Tests.Int.DataAccess
 {
@@ -22,8 +16,9 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             {
                 Id = 1,
                 Text = "test",
-                Type = QuestionType.SingleChoice,
+                Type = QuestionType.SingleTeam,
                 DueDate = DateTime.Now,
+                IsOver = true,
                 ChoicesRaw = "1;2;3;4",
                 CorrectAnswer = "2",
                 Points = 5
@@ -66,8 +61,9 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             var question = new Question()
             {
                 Text = "test",
-                Type = QuestionType.SingleChoice,
+                Type = QuestionType.SingleTeam,
                 DueDate = DateTime.Now,
+                IsOver = true,
                 ChoicesRaw = "1;2;3;4",
                 CorrectAnswer = "2",
                 Points = 5
@@ -82,6 +78,7 @@ namespace ImbaBetWeb.Tests.Int.DataAccess
             question.Text = "updated";
             question.Type = QuestionType.Number;
             question.DueDate = question.DueDate.AddDays(1);
+            question.IsOver = false;
             question.ChoicesRaw = "5;6;7;8";
             question.CorrectAnswer = "6";
             question.Points = 10;
